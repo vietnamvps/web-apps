@@ -3,6 +3,8 @@
 }
 
 .dropdown-menu {
+    padding: 5px 0;
+
     &.scrollable-menu {
         height: auto;
         max-height: 400px;
@@ -26,7 +28,11 @@
     }
 
     li {
+        &.dropdown-item {
+            padding: 0;
+        }
         & > a {
+            display: block;
             padding: 5px 20px;
             cursor: pointer;
 

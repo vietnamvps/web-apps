@@ -5,6 +5,7 @@
 .btn {
     border-radius: 1px;
     color: @gray-deep;
+    padding: 1px 3px;
 
     .btnsize(@value) {
         min-width: @value;
@@ -51,9 +52,11 @@
     }
 
     .caret {
+        display: inline-block;
         width: 7px;
         height: 7px;
         border: 0;
+        vertical-align: middle;
         background-position: @arrow-small-offset-x @arrow-small-offset-y;
         position: relative;
     }
@@ -412,6 +415,7 @@
         + .dropdown-toggle {
             padding: 0 2px;
         }
+        flex: none;
     }
 
     > .dropdown-toggle:first-child {

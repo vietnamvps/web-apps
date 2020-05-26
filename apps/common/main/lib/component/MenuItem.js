@@ -152,7 +152,7 @@ define([
             me.trigger('render:before', me);
 
             if (me.caption === '--') {
-                el.addClass('divider');
+                el.addClass('dropdown-divider');
             } else {
                 if (!this.rendered) {
                     el.off('click');
@@ -178,6 +178,8 @@ define([
                             _.bind(me.onUnHoverItem, me)
                         );
                     }
+
+                    el.addClass('dropdown-item');
 
                     var firstChild = el.children(':first');
 

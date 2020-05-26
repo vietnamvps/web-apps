@@ -1,8 +1,8 @@
 .combobox {
     display: block;
 
-    //&.input-group-sm .btn { .input-sm(); } bootstrap error
-    //&.input-group-lg .btn { .input-lg(); } bootstrap error
+    &.input-group-sm .btn { .form-control-sm(); }
+    &.input-group-lg .btn { .form-control-lg(); }
     &.input-group-nr > .form-control,
     &.input-group-nr > .btn {
         height: @input-height-base;
