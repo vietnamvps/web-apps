@@ -59,6 +59,7 @@ define([
     'spreadsheeteditor/main/app/view/HeaderFooterDialog',
     'spreadsheeteditor/main/app/view/PrintTitlesDialog',
     'spreadsheeteditor/main/app/view/ScaleDialog',
+    'spreadsheeteditor/main/app/view/SlicerAddDialog',
     'spreadsheeteditor/main/app/view/CellsAddDialog'
 ], function () { 'use strict';
 
@@ -329,6 +330,7 @@ define([
                 toolbar.btnInsertShape.menu.on('hide:after',                _.bind(this.onInsertShapeHide, this));
                 toolbar.btnInsertEquation.on('click',                       _.bind(this.onInsertEquationClick, this));
                 toolbar.btnInsertSymbol.on('click',                         _.bind(this.onInsertSymbolClick, this));
+                toolbar.btnInsertSlicer.on('click',                         _.bind(this.onInsertSlicerClick, this));
                 toolbar.btnTableTemplate.menu.on('show:after',              _.bind(this.onTableTplMenuOpen, this));
                 toolbar.btnPercentStyle.on('click',                         _.bind(this.onNumberFormat, this));
                 toolbar.btnCurrencyStyle.on('click',                        _.bind(this.onNumberFormat, this));
@@ -785,22 +787,12 @@ define([
         },
 
         onTextOrientationMenu: function(menu, item) {
-            if (this.api.asc_getCellInfo().asc_getSelectionType() == Asc.c_oAscSelectionType.RangeShapeText) {
-                var angle = Asc.c_oAscVertDrawingText.normal;
-                switch (item.value) {
-                    case 'rotateup':    angle =  Asc.c_oAscVertDrawingText.vert270;    break;
-                    case 'rotatedown':  angle = Asc.c_oAscVertDrawingText.vert;    break;
-                }
-
-                var properties = new Asc.asc_CImgProperty();
-                properties.asc_putVert(angle);
-                this.api.asc_setGraphicObjectProps(properties);
-            } else {
                 var angle = 0;
 
                 switch (item.value) {
                     case 'countcw':     angle =  45;    break;
                     case 'clockwise':   angle = -45;    break;
+                    case 'vertical':    angle =  255;    break;
                     case 'rotateup':    angle =  90;    break;
                     case 'rotatedown':  angle = -90;    break;
                 }
@@ -808,7 +800,6 @@ define([
                 this._state.angle = undefined;
                 if (this.api)
                     this.api.asc_setCellAngle(angle);
-            }
 
             Common.NotificationCenter.trigger('edit:complete', this.toolbar);
             Common.component.Analytics.trackEvent('ToolBar', 'Text orientation');
@@ -926,7 +917,7 @@ define([
                     isLock  : cell.asc_getLockText(),
                     allowInternal: (seltype!==Asc.c_oAscSelectionType.RangeImage && seltype!==Asc.c_oAscSelectionType.RangeShape &&
                                     seltype!==Asc.c_oAscSelectionType.RangeShapeText && seltype!==Asc.c_oAscSelectionType.RangeChart &&
-                                    seltype!==Asc.c_oAscSelectionType.RangeChartText)
+                                    seltype!==Asc.c_oAscSelectionType.RangeChartText && seltype!==Asc.c_oAscSelectionType.RangeSlicer )
                 });
             }
 
@@ -1053,25 +1044,40 @@ define([
 
         onSortType: function(type, btn) {
             if (this.api) {
-                var res = this.api.asc_sortCellsRangeExpand();
-                if (res) {
-                    var config = {
-                        width: 500,
-                        title: this.txtSorting,
-                        msg: this.txtExpandSort,
-
-                        buttons: [  {caption: this.txtExpand, primary: true, value: 'expand'},
-                                    {caption: this.txtSortSelected, primary: true, value: 'sort'},
-                                    'cancel'],
-                        callback: _.bind(function(btn){
-                            if (btn == 'expand' || btn == 'sort') {
-                                this.api.asc_sortColFilter(type, '', undefined, undefined, btn == 'expand');
+                if (this.api.asc_getCellInfo().asc_getSelectionType()==Asc.c_oAscSelectionType.RangeSlicer) {
+                    var selectedObjects = this.api.asc_getGraphicObjectProps();
+                    for (var i = 0; i < selectedObjects.length; i++) {
+                        if (selectedObjects[i].asc_getObjectType() == Asc.c_oAscTypeSelectElement.Image) {
+                            var elValue = selectedObjects[i].asc_getObjectValue();
+                            if ( elValue.asc_getSlicerProperties() ) {
+                                elValue.asc_getSlicerProperties().asc_setSortOrder(type==Asc.c_oAscSortOptions.Ascending ? Asc.ST_tabularSlicerCacheSortOrder.Ascending : Asc.ST_tabularSlicerCacheSortOrder.Descending);
+                                this.api.asc_setGraphicObjectProps(elValue);
+                                break;
                             }
-                        }, this)
-                    };
-                    Common.UI.alert(config);
-                } else
-                    this.api.asc_sortColFilter(type, '', undefined, undefined, res !== null);
+                        }
+                    }
+                    Common.NotificationCenter.trigger('edit:complete', this.toolbar);
+                } else {
+                    var res = this.api.asc_sortCellsRangeExpand();
+                    if (res) {
+                        var config = {
+                            width: 500,
+                            title: this.txtSorting,
+                            msg: this.txtExpandSort,
+
+                            buttons: [  {caption: this.txtExpand, primary: true, value: 'expand'},
+                                {caption: this.txtSortSelected, primary: true, value: 'sort'},
+                                'cancel'],
+                            callback: _.bind(function(btn){
+                                if (btn == 'expand' || btn == 'sort') {
+                                    this.api.asc_sortColFilter(type, '', undefined, undefined, btn == 'expand');
+                                }
+                            }, this)
+                        };
+                        Common.UI.alert(config);
+                    } else
+                        this.api.asc_sortColFilter(type, '', undefined, undefined, res !== null);
+                }
             }
         },
 
@@ -1237,7 +1243,7 @@ define([
                     (new SSE.Views.NamedRangePasteDlg({
                         handler: function(result, settings) {
                             if (result == 'ok' && settings) {
-                                me.api.asc_insertFormula(settings.asc_getName(true), settings.asc_getIsTable() ? Asc.c_oAscPopUpSelectorType.Table : Asc.c_oAscPopUpSelectorType.Range, false);
+                                me.api.asc_insertInCell(settings.asc_getName(true), (settings.asc_getType()===Asc.c_oAscDefNameType.table) ? Asc.c_oAscPopUpSelectorType.Table : Asc.c_oAscPopUpSelectorType.Range, false);
                                 Common.component.Analytics.trackEvent('ToolBar', 'Paste Named Range');
                             }
                             Common.NotificationCenter.trigger('edit:complete', me.toolbar);
@@ -2289,6 +2295,7 @@ define([
                     need_disable = (fontparam == AscCommon.align_Justify || selectionType == Asc.c_oAscSelectionType.RangeShapeText || selectionType == Asc.c_oAscSelectionType.RangeShape);
                     toolbar.btnTextOrient.menu.items[1].setDisabled(need_disable);
                     toolbar.btnTextOrient.menu.items[2].setDisabled(need_disable);
+                    toolbar.btnTextOrient.menu.items[3].setDisabled(need_disable);
 
                     /* read cell vertical align */
                     fontparam = xfs.asc_getVertAlign();
@@ -2335,7 +2342,10 @@ define([
                 }
                 need_disable =  this._state.controlsdisabled.filters || (val===null);
                 toolbar.lockToolbar(SSE.enumLock.ruleFilter, need_disable,
-                            { array: toolbar.btnsSetAutofilter.concat(toolbar.btnsSortDown, toolbar.btnsSortUp, toolbar.btnCustomSort, toolbar.btnTableTemplate, toolbar.btnInsertTable, toolbar.btnRemoveDuplicates) });
+                            { array: toolbar.btnsSetAutofilter.concat(toolbar.btnCustomSort, toolbar.btnTableTemplate, toolbar.btnInsertTable, toolbar.btnRemoveDuplicates) });
+
+                need_disable = (selectionType !== Asc.c_oAscSelectionType.RangeSlicer) && (this._state.controlsdisabled.filters || (val===null));
+                toolbar.lockToolbar(SSE.enumLock.cantSort, need_disable, { array: toolbar.btnsSortDown.concat(toolbar.btnsSortUp) });
 
                 val = (formatTableInfo) ? formatTableInfo.asc_getTableStyleName() : null;
                 if (this._state.tablestylename !== val && this.toolbar.mnuTableTemplatePicker) {
@@ -2367,6 +2377,7 @@ define([
                 this._state.inpivot = !!info.asc_getPivotTableInfo();
                 toolbar.lockToolbar(SSE.enumLock.editPivot, this._state.inpivot, { array: toolbar.btnsSetAutofilter.concat(toolbar.btnsClearAutofilter, toolbar.btnsSortDown, toolbar.btnsSortUp, toolbar.btnCustomSort,
                                                                                           toolbar.btnMerge, toolbar.btnInsertHyperlink, toolbar.btnInsertTable, toolbar.btnRemoveDuplicates)});
+                toolbar.lockToolbar(SSE.enumLock.noSlicerSource, !(this._state.inpivot || formatTableInfo), { array: [toolbar.btnInsertSlicer]});
 
                 need_disable = !this.appConfig.canModifyFilter;
                 toolbar.lockToolbar(SSE.enumLock.cantModifyFilter, need_disable, { array: toolbar.btnsSetAutofilter.concat(toolbar.btnsSortDown, toolbar.btnsSortUp, toolbar.btnCustomSort, toolbar.btnTableTemplate,
@@ -2391,8 +2402,9 @@ define([
                 switch(val) {
                     case 45:    toolbar.btnTextOrient.menu.items[1].setChecked(true, true); break;
                     case -45:   toolbar.btnTextOrient.menu.items[2].setChecked(true, true); break;
-                    case 90:    toolbar.btnTextOrient.menu.items[3].setChecked(true, true); break;
-                    case -90:   toolbar.btnTextOrient.menu.items[4].setChecked(true, true); break;
+                    case 255:   toolbar.btnTextOrient.menu.items[3].setChecked(true, true); break;
+                    case 90:    toolbar.btnTextOrient.menu.items[4].setChecked(true, true); break;
+                    case -90:   toolbar.btnTextOrient.menu.items[5].setChecked(true, true); break;
                     case 0:     toolbar.btnTextOrient.menu.items[0].setChecked(true, true); break;
                 }
                 this._state.angle = val;
@@ -2463,7 +2475,7 @@ define([
                     is_chart = seltype == Asc.c_oAscSelectionType.RangeChart,
                     is_shape_text = seltype == Asc.c_oAscSelectionType.RangeShapeText,
                     is_shape = seltype == Asc.c_oAscSelectionType.RangeShape,
-                    is_image = seltype == Asc.c_oAscSelectionType.RangeImage,
+                    is_image = seltype == Asc.c_oAscSelectionType.RangeImage || seltype == Asc.c_oAscSelectionType.RangeSlicer,
                     is_mode_2 = is_shape_text || is_shape || is_chart_text || is_chart,
                     is_objLocked = false;
 
@@ -2482,6 +2494,7 @@ define([
                 var _set = SSE.enumLock;
                 var type = seltype;
                 switch ( seltype ) {
+                case Asc.c_oAscSelectionType.RangeSlicer:
                 case Asc.c_oAscSelectionType.RangeImage: type = _set.selImage; break;
                 case Asc.c_oAscSelectionType.RangeShape: type = _set.selShape; break;
                 case Asc.c_oAscSelectionType.RangeShapeText: type = _set.selShapeText; break;
@@ -2528,7 +2541,7 @@ define([
                     is_chart = seltype == Asc.c_oAscSelectionType.RangeChart,
                     is_shape_text = seltype == Asc.c_oAscSelectionType.RangeShapeText,
                     is_shape = seltype == Asc.c_oAscSelectionType.RangeShape,
-                    is_image = seltype == Asc.c_oAscSelectionType.RangeImage,
+                    is_image = seltype == Asc.c_oAscSelectionType.RangeImage || seltype == Asc.c_oAscSelectionType.RangeSlicer,
                     is_mode_2 = is_shape_text || is_shape || is_chart_text || is_chart,
                     is_objLocked = false;
 
@@ -2814,6 +2827,22 @@ define([
             }
         },
 
+        onInsertSlicerClick: function() {
+            var me = this,
+                props = me.api.asc_beforeInsertSlicer();
+            if (props) {
+                (new SSE.Views.SlicerAddDialog({
+                    props: props,
+                    handler: function (result, settings) {
+                        if (me && me.api && result == 'ok') {
+                            me.api.asc_insertSlicer(settings);
+                        }
+                        Common.NotificationCenter.trigger('edit:complete', me.toolbar);
+                    }
+                })).show();
+            }
+        },
+
         onApiMathTypes: function(equation) {
             this._equationTemp = equation;
             var me = this;
@@ -2964,7 +2993,8 @@ define([
                 is_shape_text   = seltype == Asc.c_oAscSelectionType.RangeShapeText,
                 is_shape        = seltype == Asc.c_oAscSelectionType.RangeShape,
                 is_image        = seltype == Asc.c_oAscSelectionType.RangeImage,
-                is_mode_2       = is_shape_text || is_shape || is_chart_text || is_chart,
+                is_slicer       = seltype == Asc.c_oAscSelectionType.RangeSlicer,
+                is_mode_2       = is_shape_text || is_shape || is_chart_text || is_chart || is_slicer,
                 is_objLocked    = false;
 
             if (!(is_mode_2 || is_image) && this._state.selection_type===seltype && this._state.coauthdisable===coauth_disable) return (seltype===Asc.c_oAscSelectionType.RangeImage);
@@ -2989,6 +3019,7 @@ define([
                 case Asc.c_oAscSelectionType.RangeShapeText:    type = _set.selShapeText; break;
                 case Asc.c_oAscSelectionType.RangeChart:        type = _set.selChart; break;
                 case Asc.c_oAscSelectionType.RangeChartText:    type = _set.selChartText; break;
+                case Asc.c_oAscSelectionType.RangeSlicer:       type = _set.selSlicer; break;
                 }
 
                 if ( !this.appConfig.isEditDiagram && !this.appConfig.isEditMailMerge )
@@ -3000,7 +3031,7 @@ define([
                             toolbar.btnClearStyle.menu.items[4]
                         ],
                         merge: true,
-                        clear: [_set.selImage, _set.selChart, _set.selChartText, _set.selShape, _set.selShapeText, _set.coAuth]
+                        clear: [_set.selImage, _set.selChart, _set.selChartText, _set.selShape, _set.selShapeText, _set.selSlicer, _set.coAuth]
                     });
 
                 toolbar.lockToolbar(SSE.enumLock.coAuthText, is_objLocked);
@@ -3117,8 +3148,8 @@ define([
             var me = this;
 
             Common.NotificationCenter.on({
-                'edit:complete': function () {
-                    if (me.api && me.modeAlwaysSetStyle) {
+                'edit:complete': function (cmp) {
+                    if (me.api && me.modeAlwaysSetStyle && cmp!=='tab') {
                         me.api.asc_formatPainter(AscCommon.c_oAscFormatPainterState.kOff);
                         me.toolbar.btnCopyStyle.toggle(false, true);
                         me.modeAlwaysSetStyle = false;
