@@ -127,7 +127,8 @@ require([
     'jszip',
     'jsziputils',
     'sockjs',
-	'underscore'
+	'underscore',
+    'popper'
 ], function (Backbone, Bootstrap, Core) {
     Backbone.history.start();
 

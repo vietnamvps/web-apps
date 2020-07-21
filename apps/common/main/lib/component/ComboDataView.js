@@ -473,7 +473,7 @@ define([
             var picker = this.menuPicker;
             _.each(picker.dataViewItems, function(item) {
                 var tip = item.$el.data('bs.tooltip');
-                if (tip) (tip.tip()).remove();
+                if (tip) $(tip.getTipElement()).remove();
             }, picker);
         }
     })

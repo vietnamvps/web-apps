@@ -387,7 +387,7 @@ define([
                     });
 
                     if (modalParents.length > 0) {
-                        me.btnEl.data('bs.tooltip').tip().css('z-index', parseInt(modalParents.css('z-index')) + 10);
+                        $(me.btnEl.data('bs.tooltip').getTipElement()).css('z-index', parseInt(modalParents.css('z-index')) + 10);
                         me.btnMenuEl && me.btnMenuEl.data('bs.tooltip').tip().css('z-index', parseInt(modalParents.css('z-index')) + 10);
                         var onModalClose = function(dlg) {
                             if (modalParents[0] !== dlg.$window[0]) return;

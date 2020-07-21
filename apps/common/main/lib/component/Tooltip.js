@@ -100,8 +100,8 @@
             this.$element.tooltip({
                 title       : opts.title,
                 trigger     : 'manual',
-                placement   : opts.placement,
-                offset      : opts.offset,
+                placement   : opts.placement || 'top',
+                offset      : opts.offset || 0,
                 cls         : opts.cls,
                 html        : opts.html,
                 hideonclick : opts.hideonclick

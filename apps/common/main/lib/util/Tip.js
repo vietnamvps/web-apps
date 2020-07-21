@@ -77,137 +77,151 @@
 *
 */
 
-(function ($) {
+define([
+    'jquery',
+    'popper'
+], function ($, Popper) {
     var _superclass = $.fn.tooltip;
     _superclass.prototype = $.fn.tooltip.Constructor.prototype;
 
-    $.extend($.fn.tooltip.Constructor.DEFAULTS, {
-        container: 'body',
-        delay: {show:500},
-        arrow: false
-    });
-
     var Tip = function (element, options) {
-        this.init('tooltip', element, options);
+        this.init(element, options);
     };
 
-    Tip.prototype = $.extend({}, $.fn.tooltip.Constructor.prototype, {
+    Tip['VERSION'] = $.fn.tooltip.Constructor['VERSION'];
+    Tip['Default'] = $.extend($.fn.tooltip.Constructor['Default'], {container: 'body', delay: {show:500}, arrow: false});
+    Tip['NAME'] = $.fn.tooltip.Constructor['NAME'];
+    Tip['DATA_KEY'] = $.fn.tooltip.Constructor['DATA_KEY'];
+    Tip['Event'] = $.fn.tooltip.Constructor['Event'];
+    Tip['EVENT_KEY'] = $.fn.tooltip.Constructor['EVENT_KEY'];
+    Tip['DefaultType'] = $.fn.tooltip.Constructor['DefaultType'];
+
+    Tip.prototype = $.extend({}, $.fn.tooltip.Constructor.prototype,  {
         constructor: Tip,
         
-        init: function() {
-            _superclass.prototype.init.apply(this, arguments);
+        init: function(element, config) {
+            this._isEnabled = true;
+            this._timeout = 0;
+            this._hoverState = '';
+            this._activeTrigger = {};
+            this._popper = null; // Protected
+            this.element = element;
+            this.config = this._getConfig(config);
+            this.tip = null;
 
-            if (this.options.placement == 'cursor') {
-                if (/hover/.exec(this.options.trigger)) {
-                    this.$element.on('mousemove.tooltip', this.options.selector, $.proxy(this.mousemove, this))
+            this._setListeners();
+
+            /*if (this.config.placement == 'cursor') {
+                if (/hover/.exec(this.config.trigger)) {
+                    $(this.element).on('mousemove.tooltip', this.config.selector, $.proxy(this.mousemove, this))
                 }
-            }
+            }*/
 
-            if (this.options.zIndex) {
-                this.tip().css('z-index', this.options.zIndex);
+            if (this.config.zIndex) {
+                $(this.getTipElement()).css('z-index', this.config.zIndex);
             }
 
             var me = this;
             Common.NotificationCenter.on({'layout:changed': function(e){
-                if (!me.options.hideonclick && me.tip().is(':visible'))
+                if (!me.config.hideonclick && $(me.getTipElement()).is(':visible'))
                     me.hide();
             }});
         },
 
-        mousemove: function (e) {
-            this.targetXY = [e.clientX*Common.Utils.zoom(), e.clientY*Common.Utils.zoom()];
-        },
+        /*mousemove: function (e) {
+            this.mouse = {clientX: e.clientX*Common.Utils.zoom(), clientY: e.clientY*Common.Utils.zoom()};
+        },*/
 
-        leave: function(obj) {
-            _superclass.prototype.leave.apply(this, arguments);
+        _leave: function(obj) {
+            _superclass.prototype._leave.apply(this, arguments);
             this.dontShow = undefined;
+            this.mouse = undefined;
         },
 
-        show: function(at) {
-            if (this.hasContent() && this.enabled && !this.dontShow) {
-                if (!this.$element.is(":visible") && this.$element.closest('[role=menu]').length>0) return;
-                var $tip = this.tip();
+        show: function (at) {
+            var _this = this;
 
-                if (this.options.arrow === false) $tip.addClass('arrow-free');
-                if (this.options.cls) $tip.addClass(this.options.cls);
+            if (this.isWithContent() && this._isEnabled && !this.dontShow) {
 
-                var placementEx = (typeof this.options.placement !== 'function') ? /^([a-zA-Z]+)-?([a-zA-Z]*)$/.exec(this.options.placement) : null;
-                if (!at && placementEx && !placementEx[2].length) {
+                if (!$(this.element).is(":visible") && $(this.element).closest('[role=menu]').length > 0) return;
+
+                var placementEx = (typeof this.config.placement !== 'function') ? /^([a-zA-Z]+)-?([a-zA-Z]*)$/.exec(this.config.placement) : null;
+                if (!at && placementEx && !placementEx[2].length && this.config.placement !== 'cursor' || typeof this.config.placement === 'function') {
                     _superclass.prototype.show.apply(this, arguments);
                 } else {
-                    var e = $.Event('show.bs.tooltip');
-                    this.$element.trigger(e);
-                    if (e.isDefaultPrevented()) { return; }
-
+                    var showEvent = $.Event(this.constructor.Event.SHOW);
+                    $(this.element).trigger(showEvent);
+                    if (showEvent.isDefaultPrevented()) {
+                        return;
+                    }
+                    var tip = this.getTipElement();
                     this.setContent();
-
-                    if (this.options.animation) $tip.addClass('fade');
-
-                    $tip.detach()
-                        .css({top: 0, left: 0, display: 'block'});
-
-                    this.options.container ?
-                        $tip.appendTo(this.options.container) : $tip.insertAfter(this.$element);
-
-                    if (typeof this.options.placement === 'function') {
-                        this.options.placement.call(this, $tip[0], this.$element[0]);
-                    } else if (typeof at == 'object') {
-                        var tp = {top: at[1] + 15, left: at[0] + 18},
-                            innerWidth = Common.Utils.innerWidth(),
-                            innerHeight = Common.Utils.innerHeight();
-
-                        if (tp.left + $tip.width() > innerWidth) {
-                            tp.left = innerWidth - $tip.width() - 30;
+                    var placement = this.config.placement;
+                    var container = this._getContainer();
+                    $(tip).data(this.constructor.DATA_KEY, this);
+                    if (!$.contains(this.element.ownerDocument.documentElement, this.tip)) {
+                        $(tip).appendTo(container);
+                    }
+                    $(this.element).trigger(this.constructor.Event.INSERTED);
+                    if (placement === 'cursor') {
+                        if (at) {
+                            this.mouse = {clientX: at[0], clientY: at[1]};
+                        } else if (!this.mouse) {
+                            this.mouse = {clientX: 0, clientY: 0};
                         }
-                        if (tp.top + $tip.height() > innerHeight) {
-                            tp.top = innerHeight - $tip.height() - 30;
-                        }
+                        var ref = {
+                            getBoundingClientRect: function getBoundingClientRect() {
+                                return {
+                                    top: _this.mouse.clientY,
+                                    right: _this.mouse.clientX,
+                                    bottom: _this.mouse.clientY,
+                                    left: _this.mouse.clientX,
+                                    width: 0,
+                                    height: 0
+                                };
+                            }
+                        };
+                        this._popper = new Popper(ref, tip, {
+                            onCreate: function onCreate(_ref) {
+                                var instance = _ref.instance;
+                                document.onmousemove = function (e) {
+                                    var x = e.clientX * Common.Utils.zoom();
+                                    var y = e.clientY * Common.Utils.zoom();
 
-                        $tip.offset(tp).addClass('in');
-                    } else {
-                        var pos = this.getPosition();
+                                    _this.mouse = {clientX: x, clientY: y};
+                                    instance.scheduleUpdate();
+                                };
+                            }
+                        });
+                    }
 
-                        var actualWidth = $tip[0].offsetWidth,
-                            actualHeight = $tip[0].offsetHeight;
+                    $(tip).addClass('show');
 
-                        switch (placementEx[1]) {
-                        case 'bottom':  tp = {top: pos.top + pos.height + 10}; break;
-                        case 'top':     tp = {top: pos.top - actualHeight - 10}; break;
-                        }
+                    if ('ontouchstart' in document.documentElement) {
+                        $(document.body).children().on('mouseover', null, $.noop);
+                    }
 
-                        switch (placementEx[2]) {
-                        case 'left':    
-                            tp.left = pos.left; 
-                            if (this.$element.outerWidth() <= 18) {tp.left -= 4;} // if button is small move tooltip left
-                            break;
-                        case 'right':   
-                            tp.left = pos.left + pos.width - actualWidth; 
-                            if (this.$element.outerWidth() <= 18) { tp.left += 4;} 
-                            break;
-                        }
+                    var prevHoverState = _this._hoverState;
+                    _this._hoverState = null;
+                    $(_this.element).trigger(_this.constructor.Event.SHOWN);
 
-                        this.applyPlacement(tp, placementEx[1]);
-                        this.moveArrow();
+                    if (prevHoverState === 'out') {
+                        _this._leave(null, _this);
+                    }
 
-                        $tip/*.removeClass(orgPlacement)*/
-                            .addClass(placementEx[1])
-                            .addClass(placementEx[0]);
-
-                    } 
-
-                    this.$element.trigger('shown.bs.tooltip');
                 }
-
-                var self = this;
-                clearTimeout(self.timeout);
-                self.timeout = setTimeout(function () {
-                    if (self.hoverState == 'in') self.hide();
-                    self.dontShow = false;
-                }, 5000);
             }
+
+
+            clearTimeout(_this.timeout);
+            _this.timeout = setTimeout(function () {
+                if (_this.hoverState == 'in') _this.hide();
+                _this.dontShow = false;
+            }, 5000);
+
         },
 
-        moveArrow: function () {
+        /*moveArrow: function () {
             var $arrow = this.tip().find(".tooltip-arrow, .arrow");
             var new_arrow_position = 10;
             switch (this.options.placement) {
@@ -220,36 +234,46 @@
                 $arrow.css("right", new_arrow_position);
                 break;
           }
-        },
+        },*/
 
-        enter: function(obj) {
-            if (obj.type !== 'mouseenter') return;
-            var $target = $(obj.target);
-            if ($target.is('[role=menu]') || $target.parentsUntil(obj.currentTarget,'[role=menu]').length && obj.target !== obj.currentTarget || this.tip().is(':visible') ) {return;}
+        _enter: function(event, context) {
+            if (event.type !== 'mouseenter') return;
+            var $target = $(event.target);
+            if ($target.is('[role=menu]') || $target.parentsUntil(event.currentTarget,'[role=menu]').length && event.target !== event.currentTarget || $(this.getTipElement()).is(':visible') ) {return;}
 
-            var self = obj instanceof this.constructor ?
-                                obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.tooltip');
+            var dataKey = this.constructor.DATA_KEY;
+            context = context || $(event.currentTarget).data(dataKey);
 
-            clearTimeout(self.timeout);
-            self.hoverState = 'in';
-
-            if (!self.options.delay || !self.options.delay.show) { 
-                self.show(); 
-            } else {
-                self.timeout = setTimeout(function () {
-                    if (self.hoverState == 'in') {
-                        self.show(self.options.placement == 'cursor' ? self.targetXY : undefined);
-                    }
-                }, self.options.delay.show);
+            if (!context) {
+                context = new this.constructor(event.currentTarget, this._getDelegateConfig());
+                $(event.currentTarget).data(dataKey, context);
             }
-        },
 
-        replaceArrow: function(delta, dimension, position) {
-            this.options.arrow === false ?
-                this.arrow().hide() : _superclass.prototype.replaceArrow.apply(this, arguments);
-        },
+            if (event) {
+                context._activeTrigger[event.type === 'focusin' ? 'focus' : 'hover'] = true;
+            }
 
-        getCalculatedOffset: function (placement, pos, actualWidth, actualHeight) {
+            if ($(context.getTipElement()).hasClass('show') || context._hoverState === 'show') {
+                context._hoverState = 'show';
+                return;
+            }
+
+            clearTimeout(context._timeout);
+            context._hoverState = 'show';
+
+            if (!context.config.delay || !context.config.delay.show) {
+                context.show();
+                return;
+            }
+
+            context._timeout = setTimeout(function () {
+                if (context._hoverState === 'show') {
+                    context.show(context.config.placement == 'cursor' && context.mouse ? [context.mouse.clientX, context.mouse.clientY] : undefined);
+                }
+            }, context.config.delay.show);
+        }
+
+        /*_getOffset: function (placement, pos, actualWidth, actualHeight) {
             var out = _superclass.prototype.getCalculatedOffset.apply(this, arguments);
 
             if (this.options.offset > 0 || this.options.offset < 0) {
@@ -260,7 +284,7 @@
             }
 
             return out;
-        }
+        }*/
     });
 
 
@@ -291,4 +315,4 @@
     return this;
   };
 
-})(window.jQuery);
+});

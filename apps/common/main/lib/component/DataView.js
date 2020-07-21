@@ -447,7 +447,7 @@ define([
                 if (tip) {
                     if (tip.dontShow===undefined)
                         tip.dontShow = true;
-                    (tip.tip()).remove();
+                    $(tip.getTipElement()).remove();
                 }
             }, this);
 
@@ -501,7 +501,7 @@ define([
             if (tip) {
                 if (tip.dontShow===undefined)
                     tip.dontShow = true;
-                (tip.tip()).remove();
+                $(tip.getTipElement()).remove();
             }
             this.stopListening(view);
             view.stopListening();
@@ -533,7 +533,7 @@ define([
             this.lastSelectedRec = null;
 
             var tip = view.$el.data('bs.tooltip');
-            if (tip) (tip.tip()).remove();
+            if (tip) $(tip.getTipElement()).remove();
 
             if (!this.isSuspendEvents) {
                 this.trigger('item:click', this, view, record, e);
@@ -932,7 +932,7 @@ define([
                 if (tip) {
                     if (tip.dontShow===undefined)
                         tip.dontShow = true;
-                    (tip.tip()).remove();
+                    $(tip.getTipElement()).remove();
                 }
             }, this);
             this.dataViewItems = null;
@@ -986,7 +986,7 @@ define([
 
             record.set({selected: true});
             var tip = view.el.data('bs.tooltip');
-            if (tip) (tip.tip()).remove();
+            if (tip) $(tip.getTipElement()).remove();
 
             if (!this.isSuspendEvents) {
                 this.trigger('item:click', this, view.el, record, e);
