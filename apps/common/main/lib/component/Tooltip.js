@@ -100,7 +100,7 @@
             this.$element.tooltip({
                 title       : opts.title,
                 trigger     : 'manual',
-                placement   : opts.placement || 'top',
+                placement   : opts.placement || 'cursor',
                 offset      : opts.offset || 0,
                 cls         : opts.cls,
                 html        : opts.html,
@@ -109,7 +109,7 @@
 
             if (opts.hideonclick) {
                 var tip = this.$element.data('bs.tooltip');
-                if (tip) tip.tip().on('click', function() {tip.hide();});
+                if (tip) tip.getTipElement().on('click', function() {tip.hide();});
             }
 
             this.$element.on('shown.bs.tooltip', _.bind(this.onTipShown, this));
@@ -126,7 +126,7 @@
 
         setTitle: function(title) {
             var tip = this.getBSTip();
-            if (tip) tip.options.title = title;
+            if (tip) tip.config.title = title;
         },
 
         updateTitle: function() {

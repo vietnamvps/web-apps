@@ -219,12 +219,12 @@ define([
                 });
 
                 this.btnZoomUp = new Common.UI.Button({
-                    hintAnchor: 'top-right'
+                    hintAnchor: 'top'
                 });
 
                 this.btnLanguage = new Common.UI.Button({
                     // el: panelLang,
-                    hintAnchor: 'top-left',
+                    hintAnchor: 'top',
                     disabled: true
                 });
 

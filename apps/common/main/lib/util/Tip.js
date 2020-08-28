@@ -104,18 +104,18 @@ define([
             this._timeout = 0;
             this._hoverState = '';
             this._activeTrigger = {};
-            this._popper = null; // Protected
+            this._popper = null;
             this.element = element;
             this.config = this._getConfig(config);
             this.tip = null;
 
             this._setListeners();
 
-            /*if (this.config.placement == 'cursor') {
+            if (this.config.placement == 'cursor') {
                 if (/hover/.exec(this.config.trigger)) {
-                    $(this.element).on('mousemove.tooltip', this.config.selector, $.proxy(this.mousemove, this))
+                    $(this.element).on('mousemove.tooltip', this.config.selector, $.proxy(this.mousemove, this));
                 }
-            }*/
+            }
 
             if (this.config.zIndex) {
                 $(this.getTipElement()).css('z-index', this.config.zIndex);
@@ -128,25 +128,28 @@ define([
             }});
         },
 
-        /*mousemove: function (e) {
+        mousemove: function (e) {
             this.mouse = {clientX: e.clientX*Common.Utils.zoom(), clientY: e.clientY*Common.Utils.zoom()};
-        },*/
+        },
 
-        _leave: function(obj) {
+        _leave: function(event) {
             _superclass.prototype._leave.apply(this, arguments);
             this.dontShow = undefined;
             this.mouse = undefined;
         },
 
         show: function (at) {
-            var _this = this;
+            var me = this;
 
             if (this.isWithContent() && this._isEnabled && !this.dontShow) {
 
                 if (!$(this.element).is(":visible") && $(this.element).closest('[role=menu]').length > 0) return;
 
+                var tip = this.getTipElement();
+                if (this.config.cls) $(tip).addClass(this.config.cls);
+
                 var placementEx = (typeof this.config.placement !== 'function') ? /^([a-zA-Z]+)-?([a-zA-Z]*)$/.exec(this.config.placement) : null;
-                if (!at && placementEx && !placementEx[2].length && this.config.placement !== 'cursor' || typeof this.config.placement === 'function') {
+                if ((!at && placementEx && this.config.placement !== 'cursor') || (typeof this.config.placement === 'function')) {
                     _superclass.prototype.show.apply(this, arguments);
                 } else {
                     var showEvent = $.Event(this.constructor.Event.SHOW);
@@ -154,9 +157,15 @@ define([
                     if (showEvent.isDefaultPrevented()) {
                         return;
                     }
-                    var tip = this.getTipElement();
                     this.setContent();
-                    var placement = this.config.placement;
+                    if (this.config.animation) {
+                        $(tip).addClass('fade');
+                    }
+                    var placement = typeof this.config.placement === 'function' ? this.config.placement.call(this, tip, this.element) : this.config.placement;
+                    if (placement !== 'cursor') {
+                        var attachment = this._getAttachment(placement);
+                        this.addAttachmentClass(attachment);
+                    }
                     var container = this._getContainer();
                     $(tip).data(this.constructor.DATA_KEY, this);
                     if (!$.contains(this.element.ownerDocument.documentElement, this.tip)) {
@@ -164,33 +173,51 @@ define([
                     }
                     $(this.element).trigger(this.constructor.Event.INSERTED);
                     if (placement === 'cursor') {
-                        if (at) {
-                            this.mouse = {clientX: at[0], clientY: at[1]};
-                        } else if (!this.mouse) {
-                            this.mouse = {clientX: 0, clientY: 0};
+                        if (typeof at == "object") {
+                            var innerWidth = Common.Utils.innerWidth(),
+                                innerHeight = Common.Utils.innerHeight();
+                            var tp = {left: at[0], top: at[1]};
+                            if (tp.left + $(tip).width() > innerWidth) {
+                                tp.left = at[0] - $(tip).width()/2 - 10;
+                            } else {
+                                tp.left = at[0] + $(tip).width()/2 + 18;
+                            }
+                            if (tp.top + $(tip).height() > innerHeight) {
+                                tp.top = innerHeight - $(tip).height() - 30;
+                            } else {
+                                tp.top = at[1] + 15;
+                            }
                         }
-                        var ref = {
-                            getBoundingClientRect: function getBoundingClientRect() {
+                        function generateGetBoundingClientRect (x, y) {
+                            return function () {
                                 return {
-                                    top: _this.mouse.clientY,
-                                    right: _this.mouse.clientX,
-                                    bottom: _this.mouse.clientY,
-                                    left: _this.mouse.clientX,
+                                    top: y,
+                                    right: x,
+                                    bottom: y,
+                                    left: x,
                                     width: 0,
                                     height: 0
-                                };
-                            }
+                                }
+                            };
+                        }
+                        var virtualElement = {
+                            getBoundingClientRect: generateGetBoundingClientRect(),
                         };
-                        this._popper = new Popper(ref, tip, {
-                            onCreate: function onCreate(_ref) {
-                                var instance = _ref.instance;
-                                document.onmousemove = function (e) {
-                                    var x = e.clientX * Common.Utils.zoom();
-                                    var y = e.clientY * Common.Utils.zoom();
-
-                                    _this.mouse = {clientX: x, clientY: y};
-                                    instance.scheduleUpdate();
-                                };
+                        this._popper = new Popper(virtualElement, tip, {
+                            modifiers: {
+                                offset: this._getOffset(),
+                                arrow: {
+                                    enabled: false
+                                },
+                                preventOverflow: {
+                                    boundariesElement: this.config.boundary
+                                }
+                            },
+                            onCreate: function onCreate() {
+                                var x = tp.left;
+                                var y = tp.top;
+                                virtualElement.getBoundingClientRect = generateGetBoundingClientRect(x, y);
+                                me.update();
                             }
                         });
                     }
@@ -201,27 +228,25 @@ define([
                         $(document.body).children().on('mouseover', null, $.noop);
                     }
 
-                    var prevHoverState = _this._hoverState;
-                    _this._hoverState = null;
-                    $(_this.element).trigger(_this.constructor.Event.SHOWN);
+                    var prevHoverState = me._hoverState;
+                    me._hoverState = null;
+                    $(me.element).trigger(me.constructor.Event.SHOWN);
 
                     if (prevHoverState === 'out') {
-                        _this._leave(null, _this);
+                        me._leave(null, me);
                     }
 
                 }
             }
 
-
-            clearTimeout(_this.timeout);
-            _this.timeout = setTimeout(function () {
-                if (_this.hoverState == 'in') _this.hide();
-                _this.dontShow = false;
+            clearTimeout(me.timeout);
+            me.timeout = setTimeout(function () {
+                if (prevHoverState == 'show') me.hide();
+                me.dontShow = false;
             }, 5000);
-
         },
 
-        /*moveArrow: function () {
+        moveArrow: function () {
             var $arrow = this.tip().find(".tooltip-arrow, .arrow");
             var new_arrow_position = 10;
             switch (this.options.placement) {
@@ -234,7 +259,7 @@ define([
                 $arrow.css("right", new_arrow_position);
                 break;
           }
-        },*/
+        },
 
         _enter: function(event, context) {
             if (event.type !== 'mouseenter') return;
