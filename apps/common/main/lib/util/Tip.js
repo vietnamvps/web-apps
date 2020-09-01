@@ -89,7 +89,7 @@ define([
     };
 
     Tip['VERSION'] = $.fn.tooltip.Constructor['VERSION'];
-    Tip['Default'] = $.extend($.fn.tooltip.Constructor['Default'], {container: 'body', delay: {show:500}, arrow: false});
+    Tip['Default'] = $.extend($.fn.tooltip.Constructor['Default'], {container: 'body', delay: {show:500}, arrow: false, boundary: $('#viewport')[0]});
     Tip['NAME'] = $.fn.tooltip.Constructor['NAME'];
     Tip['DATA_KEY'] = $.fn.tooltip.Constructor['DATA_KEY'];
     Tip['Event'] = $.fn.tooltip.Constructor['Event'];
@@ -106,6 +106,11 @@ define([
             this._activeTrigger = {};
             this._popper = null;
             this.element = element;
+            if (!config.template) {
+                config.template = config.arrow ?
+                    '<div class="tooltip" role="tooltip">' + '<div class="arrow"></div>' + '<div class="tooltip-inner"></div></div>' :
+                    '<div class="tooltip" role="tooltip"><div class="tooltip-inner"></div></div>';
+            }
             this.config = this._getConfig(config);
             this.tip = null;
 
@@ -139,7 +144,8 @@ define([
         },
 
         show: function (at) {
-            var me = this;
+            var me = this,
+                prevHoverState = this._hoverState;
 
             if (this.isWithContent() && this._isEnabled && !this.dontShow) {
 
@@ -162,10 +168,6 @@ define([
                         $(tip).addClass('fade');
                     }
                     var placement = typeof this.config.placement === 'function' ? this.config.placement.call(this, tip, this.element) : this.config.placement;
-                    if (placement !== 'cursor') {
-                        var attachment = this._getAttachment(placement);
-                        this.addAttachmentClass(attachment);
-                    }
                     var container = this._getContainer();
                     $(tip).data(this.constructor.DATA_KEY, this);
                     if (!$.contains(this.element.ownerDocument.documentElement, this.tip)) {
@@ -228,19 +230,18 @@ define([
                         $(document.body).children().on('mouseover', null, $.noop);
                     }
 
-                    var prevHoverState = me._hoverState;
-                    me._hoverState = null;
-                    $(me.element).trigger(me.constructor.Event.SHOWN);
+                    this._hoverState = null;
+                    $(this.element).trigger(this.constructor.Event.SHOWN);
 
                     if (prevHoverState === 'out') {
-                        me._leave(null, me);
+                        this._leave(null, this);
                     }
 
                 }
             }
 
-            clearTimeout(me.timeout);
-            me.timeout = setTimeout(function () {
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(function () {
                 if (prevHoverState == 'show') me.hide();
                 me.dontShow = false;
             }, 5000);
@@ -296,6 +297,36 @@ define([
                     context.show(context.config.placement == 'cursor' && context.mouse ? [context.mouse.clientX, context.mouse.clientY] : undefined);
                 }
             }, context.config.delay.show);
+        },
+
+        _getPopperConfig: function (attachment) {
+            var me = this;
+            var config = {
+                placement: attachment,
+                modifiers: {
+                    offset: this._getOffset(),
+                    flip: {
+                        behavior: this.config.fallbackPlacement
+                    },
+                    preventOverflow: {
+                        boundariesElement: this.config.boundary
+                    }
+                },
+                onCreate: function onCreate(data) {
+                    if (data.originalPlacement !== data.placement) {
+                        me._handlePopperPlacementChange(data);
+                    }
+                },
+                onUpdate: function onUpdate(data) {
+                    return me._handlePopperPlacementChange(data);
+                }
+            };
+            if (this.config.arrow) {
+                config.modifiers.arrow = {
+                    element: '.arrow'
+                };
+            }
+            return config;
         }
 
         /*_getOffset: function (placement, pos, actualWidth, actualHeight) {
