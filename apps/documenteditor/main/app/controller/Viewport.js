@@ -275,7 +275,8 @@ define([
                         '</div>'
                     ].join('')),
                     stopPropagation: true,
-                    value: me.header.mnuZoom.options.value
+                    value: me.header.mnuZoom.options.value,
+                    clsDropdownItem: false
                 });
 
                 me.header.btnOptions.setMenu(new Common.UI.Menu({

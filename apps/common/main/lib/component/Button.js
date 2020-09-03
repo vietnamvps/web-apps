@@ -223,7 +223,7 @@ define([
                     templateBtnIcon +
                 '</span>' +
             '</button>' +
-            '<button type="button" class="btn <%= cls %> inner-box-caption dropdown-toggle" data-toggle="dropdown">' +
+            '<button type="button" class="btn <%= cls %> inner-box-caption dropdown-toggle" data-toggle="dropdown" data-reference="parent">' +
                 '<span class="btn-fixflex-vcenter">' +
                     '<span class="caption"><%= caption %></span>' +
                     '<i class="caret img-commonctrl"></i>' +
@@ -281,7 +281,7 @@ define([
                         '<% applyicon() %>',
                         '<span class="caption"><%= caption %></span>',
                     '</button>',
-                    '<button type="button" class="btn <%= cls %> dropdown-toggle" data-toggle="dropdown">',
+                    '<button type="button" class="btn <%= cls %> dropdown-toggle" data-toggle="dropdown" data-reference="parent">',
                         '<i class="caret img-commonctrl"></i>',
                         '<span class="sr-only"></span>',
                     '</button>',
@@ -388,7 +388,7 @@ define([
 
                     if (modalParents.length > 0) {
                         $(me.btnEl.data('bs.tooltip').getTipElement()).css('z-index', parseInt(modalParents.css('z-index')) + 10);
-                        me.btnMenuEl && me.btnMenuEl.data('bs.tooltip').tip().css('z-index', parseInt(modalParents.css('z-index')) + 10);
+                        me.btnMenuEl && $(me.btnMenuEl.data('bs.tooltip').getTipElement()).css('z-index', parseInt(modalParents.css('z-index')) + 10);
                         var onModalClose = function(dlg) {
                             if (modalParents[0] !== dlg.$window[0]) return;
                             var tip = me.btnEl.data('bs.tooltip');
@@ -719,8 +719,8 @@ define([
             });
 
             if (modalParents.length > 0) {
-                this.btnEl.data('bs.tooltip').tip().css('z-index', parseInt(modalParents.css('z-index')) + 10);
-                this.btnMenuEl && this.btnMenuEl.data('bs.tooltip').tip().css('z-index', parseInt(modalParents.css('z-index')) + 10);
+                $(this.btnEl.data('bs.tooltip').getTipElement()).css('z-index', parseInt(modalParents.css('z-index')) + 10);
+                this.btnMenuEl && $(this.btnMenuEl.data('bs.tooltip').getTipElement()).css('z-index', parseInt(modalParents.css('z-index')) + 10);
             }
 
             if (this.disabled || !Common.Utils.isGecko) {

@@ -169,7 +169,7 @@ define([
                     if (this._input.closest('.asc-window').length>0)
                         var onModalClose = function() {
                             var errorTip = el.find('.input-error').data('bs.tooltip');
-                            if (errorTip) errorTip.tip().remove();
+                            if (errorTip) $(errorTip.getTipElement()).remove();
                             Common.NotificationCenter.off({'modal:close': onModalClose});
                         };
                         Common.NotificationCenter.on({'modal:close': onModalClose});
@@ -334,7 +334,7 @@ define([
                             modalParents = errorBadge.closest('.asc-window'),
                             errorTip = errorBadge.data('bs.tooltip');
 
-                        if (errorTip) errorTip.tip().remove();
+                        if (errorTip) $(errorTip.getTipElement()).remove();
                         errorBadge.attr('data-toggle', 'tooltip');
                         errorBadge.removeData('bs.tooltip');
                         errorBadge.tooltip({
@@ -342,7 +342,7 @@ define([
                             placement   : 'cursor'
                         });
                         if (modalParents.length > 0) {
-                            errorBadge.data('bs.tooltip').tip().css('z-index', parseInt(modalParents.css('z-index')) + 10);
+                            $(errorBadge.data('bs.tooltip').getTipElement()).css('z-index', parseInt(modalParents.css('z-index')) + 10);
                         }
 
                         return errors;
@@ -363,7 +363,7 @@ define([
                         modalParents = errorBadge.closest('.asc-window'),
                         errorTip = errorBadge.data('bs.tooltip');
 
-                    if (errorTip) errorTip.tip().remove();
+                    if (errorTip) $(errorTip.getTipElement()).remove();
                     errorBadge.attr('data-toggle', 'tooltip');
                     errorBadge.removeData('bs.tooltip');
                     errorBadge.tooltip({
@@ -372,7 +372,7 @@ define([
                     });
 
                     if (modalParents.length > 0) {
-                        errorBadge.data('bs.tooltip').tip().css('z-index', parseInt(modalParents.css('z-index')) + 10);
+                        $(errorBadge.data('bs.tooltip').getTipElement()).css('z-index', parseInt(modalParents.css('z-index')) + 10);
                     }
                 } else {
                     me.cmpEl.removeClass('error');
@@ -476,7 +476,7 @@ define([
                     if (this._input.closest('.asc-window').length>0)
                         var onModalClose = function() {
                             var errorTip = el.find('.input-error').data('bs.tooltip');
-                            if (errorTip) errorTip.tip().remove();
+                            if (errorTip) $(errorTip.getTipElement()).remove();
                             Common.NotificationCenter.off({'modal:close': onModalClose});
                         };
                     Common.NotificationCenter.on({'modal:close': onModalClose});

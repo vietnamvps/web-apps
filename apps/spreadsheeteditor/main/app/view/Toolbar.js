@@ -253,7 +253,7 @@ define([
                         '<div style="display: inline-block; width: 100%; max-width: 300px; overflow: hidden; text-overflow: ellipsis; text-align: right; vertical-align: bottom; padding-left: 100px; color: silver;white-space: nowrap;"><%= item.exampleval ? item.exampleval : "" %></div>',
                         '</div></a></li>',
                         '<% }); %>',
-                        '<li class="divider">',
+                        '<li class="dropdown-divider">',
                         '<li id="id-toolbar-mnu-item-more-formats" data-value="-1"><a tabindex="-1" type="menuitem">' + me.textMoreFormats + '</a></li>'
                     ].join(''));
 

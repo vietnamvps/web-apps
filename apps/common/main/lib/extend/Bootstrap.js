@@ -95,7 +95,7 @@ function patchDropDownKeyDown(e) {
     }
 
 //    var $items = $('[role=menu] li:not(.divider):visible a', $parent)   - original search function
-    var $items = $('> [role=menu] > li:not(.divider):not(.disabled):visible', $parent).find('> a');
+    var $items = $('> [role=menu] > li:not(.dropdown-divider):not(.disabled):visible', $parent).find('> a');
 
     if (!$items.length) return;
 
@@ -109,9 +109,9 @@ function patchDropDownKeyDown(e) {
             li.addClass('focused-submenu');
              _.delay(function() {
                  var mnu = $('> [role=menu]', li),
-                    $subitems = mnu.find('> li:not(.divider):not(.disabled):visible > a'),
-                    $dataviews = mnu.find('> li:not(.divider):not(.disabled):visible .dataview'),
-                    $internal_menu = mnu.find('> li:not(.divider):not(.disabled):visible ul.internal-menu');
+                    $subitems = mnu.find('> li:not(.dropdown-divider):not(.disabled):visible > a'),
+                    $dataviews = mnu.find('> li:not(.dropdown-divider):not(.disabled):visible .dataview'),
+                    $internal_menu = mnu.find('> li:not(.dropdown-divider):not(.disabled):visible ul.internal-menu');
                 if ($subitems.length>0 && $dataviews.length<1 && $internal_menu.length<1)
                     ($subitems.index($subitems.filter(':focus'))<0) && $subitems.eq(0).focus();
             }, 250);
@@ -153,7 +153,7 @@ function patchDropDownKeyDownAdditional(e) { // only for formula menu when typin
         return (isActive) ? $this.click() : undefined;
     }
 
-    var $items = $('> [role=menu] > li:not(.divider):not(.disabled):visible', $parent).find('> a');
+    var $items = $('> [role=menu] > li:not(.dropdown-divider):not(.disabled):visible', $parent).find('> a');
 
     if (!$items.length) return;
 

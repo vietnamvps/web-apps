@@ -44,10 +44,10 @@
  *  Default template
  *
  *  <ul class="dropdown-menu" role="menu">
- *      <li><a href="#">item 1</a></li>-->
- *      <li><a href="#">item 2</a></li>-->
- *      <li class="divider"></li>-->
- *      <li><a href="#">item 3</a></li>
+ *      <li class="dropdown-item"><a href="#">item 1</a></li>-->
+ *      <li class="dropdown-item"><a href="#">item 2</a></li>-->
+ *      <li class="dropdown-divider"></li>-->
+ *      <li class="dropdown-item"><a href="#">item 3</a></li>
  *  </ul>
  *
  *  A useful classes of menu position
@@ -186,7 +186,8 @@ define([
                         me.items.push(
                             new Common.UI.MenuItem(_.extend({
                                 tagName : 'li',
-                                template: me.itemTemplate
+                                template: me.itemTemplate,
+                                clsDropdownItem: me.clsDropdownItem
                             }, item))
                         );
                     }

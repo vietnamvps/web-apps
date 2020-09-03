@@ -108,7 +108,7 @@ define([
                     menuAlign: 'tl-tl',
                     offset: [0, 3],
                     items: [
-                        {template: _.template('<div class="menu-picker-container"></div>')}
+                        {template: _.template('<div class="menu-picker-container"></div>'), clsDropdownItem: false}
                     ]
                 })
             });

@@ -963,7 +963,7 @@ define([
                     } else if (event.keyCode == Common.UI.Keys.DOWN) {
                         if (me.emailMenu && me.emailMenu.rendered && me.emailMenu.isVisible()) {
                             _.delay(function () {
-                                var selected = me.emailMenu.cmpEl.find('li:not(.divider):first');
+                                var selected = me.emailMenu.cmpEl.find('li:not(.dropdown-divider):first');
                                 selected = selected.find('a');
                                 selected.focus();
                             }, 10);

@@ -147,7 +147,7 @@
         },
 
         isVisible: function() {
-            return this.getBSTip().tip().is(':visible');
+            return $(this.getBSTip().getTipElement()).is(':visible');
         }
     });
     Common.UI = Common.UI || {};

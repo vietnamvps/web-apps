@@ -43,7 +43,7 @@
  *
  *  <div class="input-group input-group-nr combobox" id="id-combobox">
  *      <input type="text" class="form-control">
- *      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+ *      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-reference="parent"><span class="caret"></span></button>
  *      <ul class="dropdown-menu"></ul>
  * </div>
  *
@@ -92,10 +92,10 @@ define([
             template: _.template([
                 '<span class="input-group combobox <%= cls %>" id="<%= id %>" style="<%= style %>">',
                     '<input type="text" class="form-control" spellcheck="false">',
-                    '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret img-commonctrl"></span></button>',
+                    '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-reference="parent"><span class="caret img-commonctrl"></span></button>',
                     '<ul class="dropdown-menu <%= menuCls %>" style="<%= menuStyle %>" role="menu">',
                         '<% _.each(items, function(item) { %>',
-                            '<li id="<%= item.id %>" data-value="<%= item.value %>"><a tabindex="-1" type="menuitem"><%= scope.getDisplayValue(item) %></a></li>',
+                            '<li id="<%= item.id %>" class="dropdown-item" data-value="<%= item.value %>"><a tabindex="-1" type="menuitem"><%= scope.getDisplayValue(item) %></a></li>',
                         '<% }); %>',
                     '</ul>',
                 '</span>'
@@ -192,7 +192,7 @@ define([
 
                         var modalParents = el.closest('.asc-window');
                         if (modalParents.length > 0) {
-                            el.data('bs.tooltip').tip().css('z-index', parseInt(modalParents.css('z-index')) + 10);
+                            $(el.data('bs.tooltip').getTipElement()).css('z-index', parseInt(modalParents.css('z-index')) + 10);
                             var onModalClose = function(dlg) {
                                 if (modalParents[0] !== dlg.$window[0]) return;
                                 var tip = el.data('bs.tooltip');
@@ -644,7 +644,7 @@ define([
                 } else {
                     $(this.el).find('ul').html(_.template([
                         '<% _.each(items, function(item) { %>',
-                           '<li id="<%= item.id %>" data-value="<%- item.value %>"><a tabindex="-1" type="menuitem"><%= scope.getDisplayValue(item) %></a></li>',
+                           '<li id="<%= item.id %>" class="dropdown-item" data-value="<%- item.value %>"><a tabindex="-1" type="menuitem"><%= scope.getDisplayValue(item) %></a></li>',
                         '<% }); %>'
                     ].join(''))({
                         items: this.store.toJSON(),

@@ -48,7 +48,7 @@
  *  <li><a href="#">Caption</a></li>
  *
  *  Separator:
- *  <li class="divider"></li>
+ *  <li class="dropdown-divider"></li>
  *
  *  Menu item with sub-menu:
  *  <li class="dropdown-submenu">
@@ -136,6 +136,7 @@ define([
             this.iconCls        = me.options.iconCls;
             this.hint           = me.options.hint;
             this.rendered       = false;
+            this.clsDropdownItem   = (!_.isUndefined(me.options.clsDropdownItem)) ? me.options.clsDropdownItem : true; // false for complex elements (forms, group buttons)
 
             if (this.menu !== null && !(this.menu instanceof Common.UI.Menu) && !(this.menu instanceof Common.UI.MenuSimple)) {
                 this.menu = new Common.UI.Menu(_.extend({}, me.options.menu));
@@ -179,7 +180,7 @@ define([
                         );
                     }
 
-                    el.addClass('dropdown-item');
+                    this.clsDropdownItem && el.addClass('dropdown-item');
 
                     var firstChild = el.children(':first');
 

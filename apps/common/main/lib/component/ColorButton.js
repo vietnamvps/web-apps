@@ -109,7 +109,7 @@ define([
                     id: id,
                     additionalAlign: options.additionalAlign,
                     items: (options.additionalItems ? options.additionalItems : []).concat([
-                        { template: _.template('<div id="' + id + '-color-menu" style="width: 169px; height: 220px; margin: 10px;"></div>') },
+                        { template: _.template('<div id="' + id + '-color-menu" style="width: 169px; height: 220px; margin: 10px;"></div>'), clsDropdownItem: false },
                         { template: _.template('<a id="' + id + '-color-new" style="padding-left:12px;">' + this.textNewColor + '</a>') }
                     ])
                 });

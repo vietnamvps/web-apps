@@ -120,7 +120,7 @@ define([
                 if (record.get('isRevision')) {
                     if (view.btnTip) {
                         view.btnTip.dontShow = true;
-                        view.btnTip.tip().remove();
+                        $(view.btnTip.getTipElement()).remove();
                         view.btnTip = null;
                     }
                     var btns = $(view.el).find('.revision-expand').tooltip({title: (record.get('isExpanded')) ? me.textHide : me.textShow, placement: 'cursor'});

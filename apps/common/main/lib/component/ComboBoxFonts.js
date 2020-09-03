@@ -71,11 +71,11 @@ define([
                 '<div class="input-group combobox fonts <%= cls %>" id="<%= id %>" style="<%= style %>">',
                     '<input type="text" class="form-control" spellcheck="false"> ',
                     '<div style="display: table-cell;"></div>',
-                    '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret img-commonctrl"></span></button>',
+                    '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-reference="parent"><span class="caret img-commonctrl"></span></button>',
                     '<ul class="dropdown-menu <%= menuCls %>" style="<%= menuStyle %>" role="menu">',
-                        '<li class="divider">',
+                        '<li class="dropdown-divider">',
                     '<% _.each(items, function(item) { %>',
-                        '<li id="<%= item.id %>">',
+                        '<li id="<%= item.id %>" class="dropdown-item">',
                             '<a class="font-item" tabindex="-1" type="menuitem" style="height:<%=scope.getListItemHeight()%>px;"></a>',
                         '</li>',
                     '<% }); %>',
@@ -204,8 +204,8 @@ define([
 
                     if (e.keyCode == Common.UI.Keys.UP || e.keyCode == Common.UI.Keys.DOWN) {
                         _.delay(function() {
-                            var selected = (e.keyCode == Common.UI.Keys.DOWN) ? me.cmpEl.find('ul li.selected').nextAll('li:not(.divider)') : me.cmpEl.find('ul li.selected').prevAll('li:not(.divider)');
-                            selected = (selected.length>0) ? selected.eq(0) : ((e.keyCode == Common.UI.Keys.DOWN) ? me.cmpEl.find('ul li:not(.divider):first') : me.cmpEl.find('ul li:not(.divider):last'));
+                            var selected = (e.keyCode == Common.UI.Keys.DOWN) ? me.cmpEl.find('ul li.selected').nextAll('li:not(.dropdown-divider)') : me.cmpEl.find('ul li.selected').prevAll('li:not(.dropdown-divider)');
+                            selected = (selected.length>0) ? selected.eq(0) : ((e.keyCode == Common.UI.Keys.DOWN) ? me.cmpEl.find('ul li:not(.dropdown-divider):first') : me.cmpEl.find('ul li:not(.dropdown-divider):last'));
                             selected = selected.find('a');
 
                             me._skipInputChange = true;
@@ -379,7 +379,7 @@ define([
 
             onInsertItem: function(item) {
                 $(this.el).find('ul').prepend(_.template([
-                    '<li id="<%= item.id %>">',
+                    '<li id="<%= item.id %>" class="dropdown-item">',
                         '<a class="font-item" tabindex="-1" type="menuitem" style="height:<%=scope.getListItemHeight()%>px;"></a>',
                     '</li>'
                 ].join(''))({

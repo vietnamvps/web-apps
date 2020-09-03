@@ -350,7 +350,7 @@ define([
                     (li.length>0) && li.click();
                     Common.UI.Menu.Manager.hideAll();
                 } else if (e.namespace!=="after.bs.dropdown" && (e.keyCode == Common.UI.Keys.DOWN || e.keyCode == Common.UI.Keys.UP)) {
-                    var $items = $('> [role=menu] > li:not(.divider):not(.disabled):visible', menu.$el).find('> a');
+                    var $items = $('> [role=menu] > li:not(.dropdown-divider):not(.disabled):visible', menu.$el).find('> a');
                     if (!$items.length) return;
                     var index = $items.index($items.filter(':focus')),
                         me = this;

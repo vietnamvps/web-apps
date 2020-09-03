@@ -509,7 +509,7 @@ SSE.ApplicationController = new(function(){
                     $ttEl = $('.hyperlink-tooltip');
                     $ttEl.tooltip({'container': 'body', 'trigger': 'manual'});
                     $ttEl.on('shown.bs.tooltip', function(e) {
-                        $tooltip = $ttEl.data('bs.tooltip').tip();
+                        $tooltip = $($ttEl.data('bs.tooltip').getTipElement());
 
                         $tooltip.css({
                             left: $ttEl.ttpos[0] + ttOffset[0],

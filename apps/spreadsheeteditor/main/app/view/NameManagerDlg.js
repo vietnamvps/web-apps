@@ -260,7 +260,7 @@ define([  'text!spreadsheeteditor/main/app/template/NameManagerDlg.template',
                 var me = this,
                     tipdata = $(evt.target).tooltip({title: this.tipIsLocked,trigger:'manual'}).data('bs.tooltip');
 
-                this.userTooltip = tipdata.tip();
+                this.userTooltip = $(tipdata.getTipElement());
                 this.userTooltip.css('z-index', parseInt(this.$window.css('z-index')) + 10);
                 tipdata.show();
 
