@@ -75,7 +75,7 @@ define([
                         '</div>',
                         '<div id="id-dlg-hyperlink-url" class="input-row" style="margin-bottom: 5px;"></div>',
                     '</div>',
-                    '<div id="id-internal-link" class="hidden">',
+                    '<div id="id-internal-link" class="d-none">',
                         '<div class="input-row">',
                             '<label>' + this.strLinkTo + '</label>',
                             '<div style="display: inline-block; position: relative;min-width: 150px;float: right;">',
@@ -235,7 +235,7 @@ define([
             }
 
             me.linkGetLink = $('#id-dlg-hyperlink-get-link');
-            me.linkGetLink.toggleClass('hidden', !(me.appOptions && me.appOptions.canMakeActionLink));
+            me.linkGetLink.toggleClass('d-none', !(me.appOptions && me.appOptions.canMakeActionLink));
 
             me.btnOk = new Common.UI.Button({
                 el: $window.find('.primary'),
@@ -379,8 +379,8 @@ define([
         },
 
         ShowHideElem: function(value, props) {
-            this.externalPanel.toggleClass('hidden', value !== Asc.c_oAscHyperlinkType.WebLink);
-            this.internalPanel.toggleClass('hidden', value !== Asc.c_oAscHyperlinkType.RangeLink);
+            this.externalPanel.toggleClass('d-none', value !== Asc.c_oAscHyperlinkType.WebLink);
+            this.internalPanel.toggleClass('d-none', value !== Asc.c_oAscHyperlinkType.RangeLink);
             var store = this.internalList.store;
             if (value==Asc.c_oAscHyperlinkType.RangeLink) {
                 if (store.length<1 && this.settings) {

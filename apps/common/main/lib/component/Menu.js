@@ -187,7 +187,7 @@ define([
                             new Common.UI.MenuItem(_.extend({
                                 tagName : 'li',
                                 template: me.itemTemplate,
-                                clsDropdownItem: me.clsDropdownItem
+                                clsDropdownItem: item.clsDropdownItem
                             }, item))
                         );
                     }
@@ -253,13 +253,6 @@ define([
                             alwaysVisibleY: this.scrollAlwaysVisible
                         });
                     }
-
-                    menuRoot.css({
-                        position    : 'fixed',
-                        right       : 'auto',
-                        left        : -1000,
-                        top         : -1000
-                    });
 
                     this.parentEl = menuRoot.parent();
 
@@ -512,7 +505,7 @@ define([
             setOffset: function(offsetX, offsetY) {
                 this.offset[0] = _.isUndefined(offsetX) ? this.offset[0] : offsetX;
                 this.offset[1] = _.isUndefined(offsetY) ? this.offset[1] : offsetY;
-                this.alignPosition();
+                //this.alignPosition();
             },
 
             getOffset: function() {
@@ -546,14 +539,13 @@ define([
                 var left = offset.left - posMenu[m[1]][0] + posParent[m[2]][0] + this.offset[0];
                 var top  = offset.top  - posMenu[m[1]][1] + posParent[m[2]][1] + this.offset[1];
 
-                if (left + menuW > docW)
-                    if (menuParent.is('li.dropdown-submenu')) {
-                        left = offset.left - menuW + 2;
+                if (menuParent.is('li.dropdown-submenu')) {
+                    if (left + menuW > docW) {
+                        menuParent.addClass('dropleft');
                     } else {
-                        left = docW - menuW;
+                        menuParent.addClass('dropright');
                     }
-                if (left < 0)
-                    left = 0;
+                }
 
                 if (this.options.restoreHeight) {
                     if (typeof (this.options.restoreHeight) == "number") {
@@ -574,25 +566,32 @@ define([
                 } else {
                     var cg = Common.Utils.croppedGeometry();
                     docH = cg.height - 10;
-                    if (top + menuH > docH) {
+                    var newTop = top;
+                    if (top + menuH > docH + cg.top) {
                         if (fixedAlign && typeof fixedAlign == 'string') { // how to align if menu height > window height
                             m = fixedAlign.match(/^([a-z]+)-([a-z]+)/);
-                            top  = offset.top  - posMenu[m[1]][1] + posParent[m[2]][1] + this.offset[1] + (fixedOffset || 0);
+                            newTop  = offset.top  - posMenu[m[1]][1] + posParent[m[2]][1] + this.offset[1] + (fixedOffset || 0);
                         } else
-                            top = docH - menuH;
+                            newTop = docH - menuH;
                     }
 
 
-                    if (top < cg.top)
-                        top = cg.top;
+                    if (newTop < cg.top)
+                        newTop = cg.top;
+
+                    var margin = newTop - top;
+                    if (Math.abs(margin) > 1) {
+                        menuRoot.css({'margin-top': margin});
+                    }
                 }
-                if (this.options.additionalAlign)
+
+                if (this.options.additionalAlign) {
                     this.options.additionalAlign.call(this, menuRoot, left, top);
-                else {
-                    var _css = {left: Math.ceil(left), top: Math.ceil(top)};
+                } else {
+                    /*var _css = {top: Math.ceil(newTop)};
                     if (!(menuH < docH)) _css['margin-top'] = 0;
 
-                    menuRoot.css(_css);
+                    menuRoot.css(_css);*/
                 }
             },
 
@@ -715,13 +714,6 @@ define([
                         alwaysVisibleY: this.scrollAlwaysVisible
                     });
                 }
-
-                menuRoot.css({
-                    position    : 'fixed',
-                    right       : 'auto',
-                    left        : -1000,
-                    top         : -1000
-                });
 
                 this.parentEl = menuRoot.parent();
 
@@ -858,7 +850,7 @@ define([
         onBeforeShowMenu: function(e) {
             Common.NotificationCenter.trigger('menu:show');
             this.trigger('show:before', this, e);
-            this.alignPosition();
+            //this.alignPosition();
         },
 
         onAfterShowMenu: function(e) {
@@ -974,7 +966,7 @@ define([
         setOffset: function(offsetX, offsetY) {
             this.offset[0] = _.isUndefined(offsetX) ? this.offset[0] : offsetX;
             this.offset[1] = _.isUndefined(offsetY) ? this.offset[1] : offsetY;
-            this.alignPosition();
+            //this.alignPosition();
         },
 
         getOffset: function() {
@@ -1008,14 +1000,22 @@ define([
             var left = offset.left - posMenu[m[1]][0] + posParent[m[2]][0] + this.offset[0];
             var top  = offset.top  - posMenu[m[1]][1] + posParent[m[2]][1] + this.offset[1];
 
-            if (left + menuW > docW)
+            if (menuParent.is('li.dropdown-submenu')) {
+                if (left + menuW > docW) {
+                    menuParent.addClass('dropleft');
+                } else {
+                    menuParent.addClass('dropright');
+                }
+            }
+
+            /*if (left + menuW > docW)
                 if (menuParent.is('li.dropdown-submenu')) {
                     left = offset.left - menuW + 2;
                 } else {
                     left = docW - menuW;
-                }
+                }*/
 
-            if (this.options.restoreHeight) {
+            /*if (this.options.restoreHeight) {
                 if (typeof (this.options.restoreHeight) == "number") {
                     if (top + menuH > docH) {
                         menuRoot.css('max-height', (docH - top) + 'px');
@@ -1040,12 +1040,12 @@ define([
 
                 if (top < 0)
                     top = 0;
-            }
+            }*/
 
-            if (this.options.additionalAlign)
+            /*if (this.options.additionalAlign)
                 this.options.additionalAlign.call(this, menuRoot, left, top);
             else
-                menuRoot.css({left: Math.ceil(left), top: Math.ceil(top)});
+                menuRoot.css({left: Math.ceil(left), top: Math.ceil(top)});*/
         },
 
         clearAll: function() {

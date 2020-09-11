@@ -1030,7 +1030,7 @@ define([    'text!spreadsheeteditor/main/app/template/ChartSettingsDlg.template'
                           type == Asc.c_oAscChartTypeSettings.lineStackedPer || type == Asc.c_oAscChartTypeSettings.scatter);
             this.chMarkers.setVisible(value);
             this.cmbLines.setVisible(value);
-            this.lblLines.toggleClass('hidden', !value);
+            this.lblLines.toggleClass('d-none', !value);
 
             if (value) {
                 this.chMarkers.setValue(this.chartSettings.getShowMarker(), true);

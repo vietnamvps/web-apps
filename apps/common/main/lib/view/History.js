@@ -79,7 +79,7 @@ define([
                 store: this.storeHistory,
                 enableKeyEvents: false,
                 itemTemplate: _.template([
-                    '<div id="<%= id %>" class="history-item-wrap ' + '<% if (!isVisible) { %>' + 'hidden' + '<% } %>' + '" ',
+                    '<div id="<%= id %>" class="history-item-wrap ' + '<% if (!isVisible) { %>' + 'd-none' + '<% } %>' + '" ',
                     'style="display: block; ' + '<% if (!isRevision) { %>' + 'padding-left: 40px;' + '<% } %>' + '<% if (canRestore && selected) { %>' + 'padding-bottom: 6px;' + '<% } %>' +'">',
                         '<div class="user-date"><%= created %></div>',
                         '<% if (markedAsVersion) { %>',

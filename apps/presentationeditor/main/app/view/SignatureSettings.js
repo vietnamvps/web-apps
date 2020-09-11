@@ -171,8 +171,8 @@ define([
             this.viewValidList.store.reset(validSignatures);
             this.viewInvalidList.store.reset(invalidSignatures);
 
-            this.$el.find('.valid').toggleClass('hidden', !me._state.hasValid);
-            this.$el.find('.invalid').toggleClass('hidden', !me._state.hasInvalid);
+            this.$el.find('.valid').toggleClass('d-none', !me._state.hasValid);
+            this.$el.find('.invalid').toggleClass('d-none', !me._state.hasInvalid);
 
             me.disableEditing(me._state.hasValid || me._state.hasInvalid);
         },

@@ -95,7 +95,7 @@ define([
                         '</td>',
                     '</tr>',
                 '</table>',
-                '<table id="id-about-licensee-info" cols="1" style="width: 100%; margin-top: 20px;" class="hidden margin-bottom"><tbody>',
+                '<table id="id-about-licensee-info" cols="1" style="width: 100%; margin-top: 20px;" class="d-none margin-bottom"><tbody>',
                     '<tr>',
                         '<td align="center" class="padding-small"><div id="id-about-company-logo"></div></td>',
                     '</tr>',
@@ -133,7 +133,7 @@ define([
                         '</td>',
                     '</tr>',
                 '</table>',
-                '<table id="id-about-licensor-short" cols="1" style="width: 100%; margin-top: 31px;" class="hidden"><tbody>',
+                '<table id="id-about-licensor-short" cols="1" style="width: 100%; margin-top: 31px;" class="d-none"><tbody>',
                     '<tr>',
                         '<td style="width:50%;"><div class="separator horizontal short left"></div></td>',
                         '<td align="center"><label class="asc-about-header">' + this.txtPoweredBy + '</label></td>',
@@ -198,42 +198,42 @@ define([
                 if (data && typeof data == 'object' && typeof(data.customer)=='object') {
                     var customer = data.customer;
 
-                    $('#id-about-licensor-logo').addClass('hidden');
-                    $('#id-about-licensor-short').removeClass('hidden');
-                    this.cntLicensorInfo.addClass('hidden');
+                    $('#id-about-licensor-logo').addClass('d-none');
+                    $('#id-about-licensor-short').removeClass('d-none');
+                    this.cntLicensorInfo.addClass('d-none');
 
-                    this.cntLicenseeInfo.removeClass('hidden');
+                    this.cntLicenseeInfo.removeClass('d-none');
                     this.cntLicensorInfo.removeClass('margin-bottom');
 
                     var value = customer.name;
                     value && value.length ?
                         this.lblCompanyName.text(value) :
-                        this.lblCompanyName.parents('tr').addClass('hidden');
+                        this.lblCompanyName.parents('tr').addClass('d-none');
 
                     value = customer.address;
                     value && value.length ?
                         this.lblCompanyAddress.text(value) :
-                        this.lblCompanyAddress.parents('tr').addClass('hidden');
+                        this.lblCompanyAddress.parents('tr').addClass('d-none');
 
                     (value = customer.mail) && value.length ?
                         this.lblCompanyMail.attr('href', "mailto:"+value).text(value) :
-                        this.lblCompanyMail.parents('tr').addClass('hidden');
+                        this.lblCompanyMail.parents('tr').addClass('d-none');
 
                     if ((value = customer.www) && value.length) {
                         var http = !/^https?:\/{2}/i.test(value) ? "http:\/\/" : '';
                         this.lblCompanyUrl.attr('href', http+value).text(value);
                     } else
-                        this.lblCompanyUrl.parents('tr').addClass('hidden');
+                        this.lblCompanyUrl.parents('tr').addClass('d-none');
 
                     (value = customer.info) && value.length ?
                         this.lblCompanyLic.text(value) :
-                        this.lblCompanyLic.parents('tr').addClass('hidden');
+                        this.lblCompanyLic.parents('tr').addClass('d-none');
 
                     (value = customer.logo) && value.length ?
                         this.divCompanyLogo.html('<img src="'+value+'" style="max-width:216px; max-height: 35px;" />') :
-                        this.divCompanyLogo.parents('tr').addClass('hidden');
+                        this.divCompanyLogo.parents('tr').addClass('d-none');
                 } else {
-                    this.cntLicenseeInfo.addClass('hidden');
+                    this.cntLicenseeInfo.addClass('d-none');
                     this.cntLicensorInfo.addClass('margin-bottom');
                 }
             }

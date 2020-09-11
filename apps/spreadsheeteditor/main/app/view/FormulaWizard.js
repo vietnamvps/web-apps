@@ -156,9 +156,9 @@ define([
             var me = this;
             if (this.funcprops) {
                 var props = this.funcprops;
-                props.args ? $('#formula-wizard-args').html('<b>' + props.name + '</b>' + props.args) : $('#formula-wizard-args').addClass('hidden');
-                props.desc ? $('#formula-wizard-desc').text(props.desc) : $('#formula-wizard-desc').addClass('hidden');
-                props.name ? $('#formula-wizard-name').html(this.textFunction + ': ' + props.name) : $('#formula-wizard-name').addClass('hidden');
+                props.args ? $('#formula-wizard-args').html('<b>' + props.name + '</b>' + props.args) : $('#formula-wizard-args').addClass('d-none');
+                props.desc ? $('#formula-wizard-desc').text(props.desc) : $('#formula-wizard-desc').addClass('d-none');
+                props.name ? $('#formula-wizard-name').html(this.textFunction + ': ' + props.name) : $('#formula-wizard-name').addClass('d-none');
 
                 this.$window.find('#formula-wizard-help').on('click', function (e) {
                     me.showHelp();
@@ -205,7 +205,7 @@ define([
             }
             if (this.args.length<1) {
                 this.panelArgs.text('This function has no arguments');
-                this.lblArgDesc.addClass('hidden');
+                this.lblArgDesc.addClass('d-none');
             } else {
                 if (this.args.length==1 && this.repeatedArg && this.repeatedArg.length<this.maxArgCount) {// add new repeated arguments
                     this.fillArgs(this.repeatedArg);
@@ -335,7 +335,7 @@ define([
         onSelectArgument: function(input) {
             var index = input.options.index,
                 arg = this.args[index];
-            arg.argDesc ? this.lblArgDesc.html('<b>' + arg.argName + ': </b>' + arg.argDesc) : this.lblArgDesc.addClass('hidden');
+            arg.argDesc ? this.lblArgDesc.html('<b>' + arg.argName + ': </b>' + arg.argDesc) : this.lblArgDesc.addClass('d-none');
             if (!this._noApply && index==this.args.length-1 && this.repeatedArg && index+this.repeatedArg.length<this.maxArgCount) {// add new repeated arguments
                 this.fillArgs(this.repeatedArg);
                 this.scrollerY.update();

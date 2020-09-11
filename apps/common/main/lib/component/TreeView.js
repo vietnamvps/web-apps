@@ -170,7 +170,7 @@ define([
                 options.store = options.store || new Common.UI.TreeViewStore();
                 options.emptyItemText = options.emptyItemText || '';
                 options.itemTemplate = options.itemTemplate || _.template([
-                    '<div id="<%= id %>" class="tree-item <% if (!isVisible) { %>' + 'hidden' + '<% } %>" style="display: block;padding-left: <%= level*16 + 24 %>px;">',
+                    '<div id="<%= id %>" class="tree-item <% if (!isVisible) { %>' + 'd-none' + '<% } %>" style="display: block;padding-left: <%= level*16 + 24 %>px;">',
                     '<% if (hasSubItems) { %>',
                         '<div class="tree-caret img-commonctrl ' + '<% if (!isExpanded) { %>' + 'up' + '<% } %>' + '" style="margin-left: <%= level*16 %>px;"></div>',
                     '<% } %>',

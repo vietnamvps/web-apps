@@ -180,8 +180,8 @@ define([
                         var _menu = new Common.UI.Menu({
                             cls: 'toc-menu',
                             items: [
-                                {template: contentsTemplate, offsety: 0, value: 0},
-                                {template: contentsTemplate, offsety: 72, value: 1},
+                                {template: contentsTemplate, offsety: 0, value: 0, clsDropdownItem: false},
+                                {template: contentsTemplate, offsety: 72, value: 1, clsDropdownItem: false},
                                 {caption: me.textContentsSettings, value: 'settings'},
                                 {caption: me.textContentsRemove, value: 'remove'}
                             ]
@@ -233,7 +233,8 @@ define([
                                         '<button id="id-menu-goto-footnote-prev-' + index + '" type="button" style="float:right; margin-top: 2px;" class="btn small btn-toolbar"><i class="icon menu__icon btn-previtem">&nbsp;</i></button>',
                                         '</div>'
                                     ].join('')),
-                                    stopPropagation: true
+                                    stopPropagation: true,
+                                    clsDropdownItem: false
                                 }),
                                 {caption: '--'},
                                 {caption: me.mniDelFootnote, value: 'delele'},

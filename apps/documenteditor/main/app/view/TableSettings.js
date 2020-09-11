@@ -323,6 +323,7 @@ define([
                 cls: 'btn-icon-default',
                 iconCls: 'btn-edit-table',
                 menu        : new Common.UI.Menu({
+                    cls: 'dropdown-menu-right',
                     menuAlign: 'tr-br',
                     items: [
                         { caption: this.selectRowText, value: 0 },
@@ -669,7 +670,7 @@ define([
                     menu        : new Common.UI.Menu({
                         style: 'width: 575px;',
                         items: [
-                            { template: _.template('<div id="id-table-menu-template" class="menu-table-template"  style="margin: 5px 5px 5px 10px;"></div>') }
+                            { template: _.template('<div id="id-table-menu-template" class="menu-table-template"  style="margin: 5px 5px 5px 10px;"></div>'), clsDropdownItem: false }
                         ]
                     })
                 });

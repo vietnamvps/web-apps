@@ -184,8 +184,8 @@ define([
         },
 
         ShowHideElem: function(value) {
-            this.externalPanel.toggleClass('hidden', value !== c_oHyperlinkType.WebLink);
-            this.internalPanel.toggleClass('hidden', value !== c_oHyperlinkType.InternalLink);
+            this.externalPanel.toggleClass('d-none', value !== c_oHyperlinkType.WebLink);
+            this.internalPanel.toggleClass('d-none', value !== c_oHyperlinkType.InternalLink);
             var store = this.internalList.store;
             if (value==c_oHyperlinkType.InternalLink) {
                 if (store.length<1) {

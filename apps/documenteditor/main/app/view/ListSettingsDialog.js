@@ -125,7 +125,7 @@ define([
                 '<% } %>',
                 '<table cols="2" style="width: 100%;">',
                         '<tr>',
-                            '<td class="<% if (type != 2) { %> hidden <% } %>" style="width: 50px; padding-right: 10px;">',
+                            '<td class="<% if (type != 2) { %> d-none <% } %>" style="width: 50px; padding-right: 10px;">',
                                 '<label>' + this.textLevel + '</label>',
                                 '<div id="levels-list" class="no-borders" style="width:100%; height:208px;margin-top: 2px; "></div>',
                             '</td>',

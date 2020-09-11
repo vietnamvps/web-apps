@@ -216,10 +216,12 @@ define([
                                 }
                             },
                             onCreate: function onCreate() {
-                                var x = tp.left;
-                                var y = tp.top;
-                                virtualElement.getBoundingClientRect = generateGetBoundingClientRect(x, y);
-                                me.update();
+                                if (tp) {
+                                    var x = tp.left;
+                                    var y = tp.top;
+                                    virtualElement.getBoundingClientRect = generateGetBoundingClientRect(x, y);
+                                    me.update();
+                                }
                             }
                         });
                     }

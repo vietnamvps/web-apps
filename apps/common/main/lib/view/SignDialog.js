@@ -234,7 +234,7 @@ define([
             me.cntVisibleSign = $('#id-dlg-sign-visible');
             me.cntInvisibleSign = $('#id-dlg-sign-invisible');
 
-            (me.signType == 'visible') ? me.cntInvisibleSign.addClass('hidden') : me.cntVisibleSign.addClass('hidden');
+            (me.signType == 'visible') ? me.cntInvisibleSign.addClass('d-none') : me.cntVisibleSign.addClass('d-none');
 
             $window.find('.dlg-btn').on('click', _.bind(me.onBtnClick, me));
 

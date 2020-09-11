@@ -101,7 +101,7 @@ define([
                                                 '<label class="input-label">' + me.textLevels + '</label>',
                                                 '<div id="tableofcontents-spin-levels" style="display: inline-block; width:95px; margin-left: 10px;"></div>',
                                             '</div>',
-                                            '<div id="tableofcontents-from-styles" class="hidden">',
+                                            '<div id="tableofcontents-from-styles" class="d-none">',
                                                 '<table><tr><td style="height: 25px;">',
                                                         '<label class="input-label" style="width: 144px; margin-left: 23px;">' + me.textStyle + '</label>',
                                                         '<label class="input-label" style="">' + me.textLevel + '</label>',
@@ -224,8 +224,8 @@ define([
             });
             this.radioLevels.on('change', _.bind(function(field, newValue, eOpts) {
                 if (newValue) {
-                    this.levelsContainer.toggleClass('hidden', !newValue);
-                    this.stylesContainer.toggleClass('hidden', newValue);
+                    this.levelsContainer.toggleClass('d-none', !newValue);
+                    this.stylesContainer.toggleClass('d-none', newValue);
                     if (this._needUpdateOutlineLevels)
                         this.synchronizeLevelsFromStyles();
                 }
@@ -238,8 +238,8 @@ define([
             });
             this.radioStyles.on('change', _.bind(function(field, newValue, eOpts) {
                 if (newValue) {
-                    this.stylesContainer.toggleClass('hidden', !newValue);
-                    this.levelsContainer.toggleClass('hidden', newValue);
+                    this.stylesContainer.toggleClass('d-none', !newValue);
+                    this.levelsContainer.toggleClass('d-none', newValue);
                     if (this._needUpdateStyles)
                         this.synchronizeLevelsFromOutline();
                     this.stylesList.scroller.update({alwaysVisibleY: true});

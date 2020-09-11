@@ -470,7 +470,7 @@ define([
         hideTextOnlySettings: function(value) {
             if (this._state.HideTextOnlySettings !== value) {
                 this._state.HideTextOnlySettings = value;
-                this.TextOnlySettings.toggleClass('hidden', value==true);
+                this.TextOnlySettings.toggleClass('d-none', value==true);
             }
         },
 

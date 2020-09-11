@@ -2,10 +2,6 @@
     position:relative;
 
     & > .dropdown-menu {
-        top: 0;
-        left: 100%;
-        margin-top: -6px;
-        margin-left: -1px;
       	border-radius:@border-radius-base;
 
         &.pull-right {
@@ -34,5 +30,19 @@
 
     &.over > a:after {
         border-left-color: @dropdown-link-color;
+    }
+
+    &.dropright {
+        & > .dropdown-menu {
+            margin-top: -6px;
+            margin-left: -1px;
+        }
+    }
+
+    &.dropleft {
+        & > .dropdown-menu {
+            margin-top: -6px;
+            margin-right: -1px;
+        }
     }
 }

@@ -676,7 +676,7 @@ define([
         },
 
         setVisible: function(visible) {
-            if (this.cmpEl) this.cmpEl.toggleClass('hidden', !visible);
+            if (this.cmpEl) this.cmpEl.toggleClass('d-none', !visible);
             this.visible = visible;
         },
 

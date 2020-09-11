@@ -1672,7 +1672,7 @@ define([
                                 menu: new Common.UI.Menu({
                                     menuAlign: 'tl-tr',
                                     items: [
-                                        {template: _.template('<div id="id-toolbar-menu-pageposition" class="menu-pageposition"></div>')},
+                                        {template: _.template('<div id="id-toolbar-menu-pageposition" class="menu-pageposition"></div>'), clsDropdownItem: false},
                                         this.mnuPageNumCurrentPos = new Common.UI.MenuItem({
                                             caption: this.textToCurrent,
                                             disabled: this.mnuPageNumCurrentPos.isDisabled(),

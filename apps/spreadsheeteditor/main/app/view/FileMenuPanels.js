@@ -1769,7 +1769,7 @@ define([
                     me.trAuthor.before(div);
                     me.authors.push(item);
                 });
-                this.tblAuthor.find('.close').toggleClass('hidden', !this.mode.isEdit);
+                this.tblAuthor.find('.close').toggleClass('d-none', !this.mode.isEdit);
                 !this.mode.isEdit && this._ShowHideInfoItem(this.tblAuthor, !!this.authors.length);
             }
             this.SetDisabled();
@@ -1790,7 +1790,7 @@ define([
             this.mode = mode;
             this.inputAuthor.setVisible(mode.isEdit);
             this.btnApply.setVisible(mode.isEdit);
-            this.tblAuthor.find('.close').toggleClass('hidden', !mode.isEdit);
+            this.tblAuthor.find('.close').toggleClass('d-none', !mode.isEdit);
             if (!mode.isEdit) {
                 this.inputTitle._input.attr('placeholder', '');
                 this.inputSubject._input.attr('placeholder', '');
@@ -2152,13 +2152,13 @@ define([
 
             var me = this;
             this.templateSignature = _.template([
-                '<table cols="2" width="300" class="<% if (!hasRequested && !hasSigned) { %>hidden<% } %>"">',
+                '<table cols="2" width="300" class="<% if (!hasRequested && !hasSigned) { %>d-none<% } %>"">',
                     '<tr>',
                         '<td colspan="2"><label style="cursor: default;"><%= tipText %></label></td>',
                     '</tr>',
                     '<tr>',
                         '<td><label class="link signature-view-link">' + me.txtView + '</label></td>',
-                        '<td align="right"><label class="link signature-edit-link <% if (!hasSigned) { %>hidden<% } %>">' + me.txtEdit + '</label></td>',
+                        '<td align="right"><label class="link signature-edit-link <% if (!hasSigned) { %>d-none<% } %>">' + me.txtEdit + '</label></td>',
                     '</tr>',
                 '</table>'
             ].join(''));
@@ -2211,8 +2211,8 @@ define([
 
         setMode: function(mode) {
             this.mode = mode;
-            this.cntSignature.toggleClass('hidden', !this.mode.isSignatureSupport);
-            this.cntPassword.toggleClass('hidden', !this.mode.isPasswordSupport);
+            this.cntSignature.toggleClass('d-none', !this.mode.isSignatureSupport);
+            this.cntPassword.toggleClass('d-none', !this.mode.isPasswordSupport);
         },
 
         setApi: function(o) {
@@ -2273,7 +2273,7 @@ define([
         },
 
         updateEncrypt: function() {
-            this.cntPasswordView.toggleClass('hidden', this.btnAddPwd.isVisible());
+            this.cntPasswordView.toggleClass('d-none', this.btnAddPwd.isVisible());
         },
 
         strProtect: 'Protect Workbook',

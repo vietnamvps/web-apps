@@ -80,7 +80,7 @@ define([
                         '</div>',
                         '<div id="id-dlg-hyperlink-url" class="input-row" style="margin-bottom: 5px;"></div>',
                     '</div>',
-                    '<div id="id-internal-link" class="hidden">',
+                    '<div id="id-internal-link" class="d-none">',
                         '<div class="input-row">',
                             '<label>' + this.strLinkTo + '</label>',
                         '</div>',
@@ -285,8 +285,8 @@ define([
         },
 
         ShowHideElem: function(value, url) {
-            this.externalPanel.toggleClass('hidden', value !== c_oHyperlinkType.WebLink);
-            this.internalPanel.toggleClass('hidden', value !== c_oHyperlinkType.InternalLink);
+            this.externalPanel.toggleClass('d-none', value !== c_oHyperlinkType.WebLink);
+            this.internalPanel.toggleClass('d-none', value !== c_oHyperlinkType.InternalLink);
             if (value==c_oHyperlinkType.InternalLink) {
                 if (url===null || url===undefined || url=='' )
                     url = "ppaction://hlinkshowjump?jump=firstslide";

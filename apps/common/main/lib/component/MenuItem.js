@@ -108,7 +108,7 @@ define([
         tagName : 'li',
 
         template: _.template([
-            '<a id="<%= id %>" style="<%= style %>" <% if(options.canFocused) { %> tabindex="-1" type="menuitem" <% }; if(!_.isUndefined(options.stopPropagation)) { %> data-stopPropagation="true" <% }; %> >',
+            '<a id="<%= id %>" style="<%= style %>" <% if(menu) { %> data-toggle="dropdown" class="dropdown-toggle" <% } %> <% if(options.canFocused) { %> tabindex="-1" type="menuitem" <% }; if(!_.isUndefined(options.stopPropagation)) { %> data-stopPropagation="true" <% }; %> >',
                 '<% if (!_.isEmpty(iconCls)) { %>',
                     '<span class="menu-item-icon <%= iconCls %>"></span>',
                 '<% } %>',
@@ -164,14 +164,15 @@ define([
                         caption : me.caption,
                         iconCls : me.iconCls,
                         style   : me.style,
-                        options : me.options
+                        options : me.options,
+                        menu    : me.menu
                     }));
 
                     if (me.menu) {
                         el.addClass('dropdown-submenu');
 
                         me.menu.render(el);
-                        el.mouseenter(_.bind(me.menu.alignPosition, me.menu));
+                        //el.mouseenter(_.bind(me.menu.alignPosition, me.menu));
 //                        el.focusin(_.bind(me.onFocusItem, me));
                         el.focusout(_.bind(me.onBlurItem, me));
                         el.hover(

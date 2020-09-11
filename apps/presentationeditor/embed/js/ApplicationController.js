@@ -243,7 +243,7 @@ PE.ApplicationController = new(function(){
             $('#idt-fullscreen').hide();
 
         if ( !embedConfig.saveUrl && permissions.print === false && !embedConfig.shareUrl && !embedConfig.embedUrl && !embedConfig.fullscreenUrl)
-            $('#box-tools').addClass('hidden');
+            $('#box-tools').addClass('d-none');
 
         common.controller.modals.attach({
             share: '#idt-share',

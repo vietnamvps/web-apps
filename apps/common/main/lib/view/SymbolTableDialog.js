@@ -410,7 +410,7 @@ define([
 
             this.template = [
                 '<div class="box">',
-                    '<div style="margin-bottom: 16px;" class="'+ (this.special ? '' : 'hidden') +'">',
+                    '<div style="margin-bottom: 16px;" class="'+ (this.special ? '' : 'd-none') +'">',
                         '<button type="button" class="btn btn-text-default auto" id="symbol-table-symbols" style="border-top-right-radius: 0;border-bottom-right-radius: 0;">', this.textSymbols,'</button>',
                         '<button type="button" class="btn btn-text-default auto" id="symbol-table-special" style="border-top-left-radius: 0;border-bottom-left-radius: 0;border-left-width: 0;margin-left: -1px;">', this.textSpecial,'</button>',
                     '</div>',
@@ -758,7 +758,7 @@ define([
             this.specialList.selectByIndex(0);
 
             this.lblShortCut = $window.find('#symbol-table-lbl-shortcut');
-            this.lblShortCut.toggleClass('hidden', !this.showShortcutKey);
+            this.lblShortCut.toggleClass('d-none', !this.showShortcutKey);
 
             $window.find('.dlg-btn').on('click', _.bind(this.onBtnClick, this));
             this.symbolsPanel = $window.find('#symbol-table-pnl-symbols');
@@ -1468,8 +1468,8 @@ define([
         },
 
         ShowHideElem: function(special) {
-            this.symbolsPanel.toggleClass('hidden', special);
-            this.specialPanel.toggleClass('hidden', !special);
+            this.symbolsPanel.toggleClass('d-none', special);
+            this.specialPanel.toggleClass('d-none', !special);
             var me = this;
             _.delay(function(){
                 special ? me.specialList.cmpEl.find('.listview').focus() : me.previewPanel.focus();

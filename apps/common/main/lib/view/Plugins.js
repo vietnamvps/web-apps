@@ -59,7 +59,7 @@ define([
                 '<div id="plugins-list" class="">',
                 '</div>',
             '</div>',
-            '<div id="current-plugin-box" class="layout-ct vbox hidden">',
+            '<div id="current-plugin-box" class="layout-ct vbox d-none">',
                 '<div id="current-plugin-header">',
                     '<label></label>',
                     '<div id="id-plugin-close" class="plugin-close img-commonctrl"></div>',
@@ -197,8 +197,8 @@ define([
         openInsideMode: function(name, url, frameId) {
             if (!this.pluginsPanel) return false;
 
-            this.pluginsPanel.toggleClass('hidden', true);
-            this.currentPluginPanel.toggleClass('hidden', false);
+            this.pluginsPanel.toggleClass('d-none', true);
+            this.currentPluginPanel.toggleClass('d-none', false);
 
             this.pluginName.text(name);
             if (!this.iframePlugin) {
@@ -232,7 +232,7 @@ define([
                 this.currentPluginFrame.empty();
                 this.iframePlugin = null;
             }
-            this.currentPluginPanel.toggleClass('hidden', true);
+            this.currentPluginPanel.toggleClass('d-none', true);
             // this.pluginsPanel.toggleClass('hidden', false);
 
             this.fireEvent('plugin:open', [this, 'onboard', 'close']);

@@ -357,7 +357,7 @@ define([
                 this.devHeight = this.developerHint.outerHeight();
                 $(window).on('resize', _.bind(this.onWindowResize, this));
             }
-            this.developerHint.toggleClass('hidden', !mode);
+            this.developerHint.toggleClass('d-none', !mode);
 
             var btns = this.$el.find('button.btn-category:visible'),
                 lastbtn = (btns.length>0) ? $(btns[btns.length-1]) : null;

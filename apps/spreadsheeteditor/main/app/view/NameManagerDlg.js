@@ -161,7 +161,7 @@ define([  'text!spreadsheeteditor/main/app/template/NameManagerDlg.template',
             $('#name-manager-sort-scope').on('click', _.bind(this.onSortNames, this, 'scopeName'));
             this.spanSortName = $('#name-manager-sort-name-span');
             this.spanSortScope = $('#name-manager-sort-scope-span');
-            (this.sort.type=='name') ? this.spanSortScope.addClass('hidden') : this.spanSortName.addClass('hidden');
+            (this.sort.type=='name') ? this.spanSortScope.addClass('d-none') : this.spanSortName.addClass('d-none');
             if (this.sort.direction<0) {
                 (this.sort.type=='name') ? this.spanSortName.addClass('sort-desc') : this.spanSortScope.addClass('sort-desc');
             }
@@ -343,8 +343,8 @@ define([  'text!spreadsheeteditor/main/app/template/NameManagerDlg.template',
         onSortNames: function(type) {
             if (type !== this.sort.type) {
                 this.sort = {type: type, direction: 1};
-                this.spanSortName.toggleClass('hidden');
-                this.spanSortScope.toggleClass('hidden');
+                this.spanSortName.toggleClass('d-none');
+                this.spanSortScope.toggleClass('d-none');
             } else {
                 this.sort.direction = -this.sort.direction;
             }

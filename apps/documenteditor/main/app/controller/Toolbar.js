@@ -2491,7 +2491,7 @@ define([
                     menu: new Common.UI.Menu({
                         menuAlign: 'tl-tr',
                         items: [
-                            { template: _.template('<div id="id-toolbar-menu-shapegroup' + i + '" class="menu-shape" style="width: ' + (shapeGroup.get('groupWidth') - 8) + 'px; margin-left: 5px;"></div>') }
+                            { template: _.template('<div id="id-toolbar-menu-shapegroup' + i + '" class="menu-shape" style="width: ' + (shapeGroup.get('groupWidth') - 8) + 'px; margin-left: 5px;"></div>'), clsDropdownItem: false }
                         ]
                     })
                 });
@@ -2547,9 +2547,12 @@ define([
                     menu: new Common.UI.Menu({
                         menuAlign: 'tl-tr',
                         items: [
-                            { template: _.template('<div id="id-toolbar-menu-equationgroup' + i +
+                            {
+                                template: _.template('<div id="id-toolbar-menu-equationgroup' + i +
                                 '" class="menu-shape" style="width:' + (equationGroup.get('groupWidth') + 8) + 'px; ' +
-                                equationGroup.get('groupHeight') + 'margin-left:5px;"></div>') }
+                                equationGroup.get('groupHeight') + 'margin-left:5px;"></div>'),
+                                clsDropdownItem: false
+                            }
                         ]
                     })
                 });

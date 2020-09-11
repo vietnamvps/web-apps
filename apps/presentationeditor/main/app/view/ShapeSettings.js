@@ -1678,14 +1678,14 @@ define([
         hideShapeOnlySettings: function(value) {
             if (this._state.HideShapeOnlySettings !== value) {
                 this._state.HideShapeOnlySettings = value;
-                this.ShapeOnlySettings.toggleClass('hidden', value==true);
+                this.ShapeOnlySettings.toggleClass('d-none', value==true);
             }
         },
 
         hideChangeTypeSettings: function(value) {
             if (this._state.HideChangeTypeSettings !== value) {
                 this._state.HideChangeTypeSettings = value;
-                this.CanChangeType.toggleClass('hidden', value==true);
+                this.CanChangeType.toggleClass('d-none', value==true);
             }
         },
 

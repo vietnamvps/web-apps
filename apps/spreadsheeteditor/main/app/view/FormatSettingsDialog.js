@@ -488,12 +488,12 @@ define([
 
             this.lblExample.text(this.api.asc_getLocaleExample(this.Format));
 
-            this._decimalPanel.toggleClass('hidden', !hasDecimal);
+            this._decimalPanel.toggleClass('d-none', !hasDecimal);
             this._negativePanel.css('visibility', hasNegative ? '' : 'hidden');
-            this._separatorPanel.toggleClass('hidden', !hasSeparator);
-            this._typePanel.toggleClass('hidden', !hasType);
-            this._symbolsPanel.toggleClass('hidden', !hasSymbols);
-            this._codePanel.toggleClass('hidden', !hasCode);
+            this._separatorPanel.toggleClass('d-none', !hasSeparator);
+            this._typePanel.toggleClass('d-none', !hasType);
+            this._symbolsPanel.toggleClass('d-none', !hasSymbols);
+            this._codePanel.toggleClass('d-none', !hasCode);
             this._state = { hasDecimal: hasDecimal, hasNegative: hasNegative, hasSeparator: hasSeparator, hasType: hasType, hasSymbols: hasSymbols, hasCode: hasCode};
         },
 

@@ -277,13 +277,13 @@ define([
             this.panelSpellcheck.btnChange.setDisabled(arr.length<1 || disabled);
             this.panelSpellcheck.btnIgnore.setDisabled(!word || disabled);
             this.panelSpellcheck.btnToDictionary.setDisabled(!word || disabled);
-            this.panelSpellcheck.lblComplete.toggleClass('hidden', !property || !!word);
-            this.panelSpellcheck.buttonNext.setDisabled(!this.panelSpellcheck.lblComplete.hasClass('hidden'));
+            this.panelSpellcheck.lblComplete.toggleClass('d-none', !property || !!word);
+            this.panelSpellcheck.buttonNext.setDisabled(!this.panelSpellcheck.lblComplete.hasClass('d-none'));
         },
 
         onApiEditCell: function(state) {
             if (state == Asc.c_oAscCellEditorState.editEnd) {
-                this.panelSpellcheck.buttonNext.setDisabled(!this.panelSpellcheck.lblComplete.hasClass('hidden'));
+                this.panelSpellcheck.buttonNext.setDisabled(!this.panelSpellcheck.lblComplete.hasClass('d-none'));
                 this.panelSpellcheck.cmbDictionaryLanguage.setDisabled((this.languages && this.languages.length > 0) ? false : true);
             } else {
                 this.panelSpellcheck.buttonNext.setDisabled(true);

@@ -670,9 +670,9 @@ define([
                     var self = this;
                     if (!me.$window.hasClass('notransform')) {
                         me.$window.addClass('notransform');
-                        menuRoot.addClass('hidden');
+                        menuRoot.addClass('d-none');
                         setTimeout(function() {
-                            menuRoot.removeClass('hidden');
+                            menuRoot.removeClass('d-none');
                             menuRoot.css({left: left, top: top});
                             self.options.additionalAlign = null;
                         }, 300);
