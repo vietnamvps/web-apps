@@ -72,6 +72,17 @@
     }
 }
 
+.btn-blank-format {
+    display: block;
+    width: 96px;
+    height: 96px;
+    cursor: pointer;
+
+    svg&:hover {
+        opacity:0.85;
+    }
+}
+
 #file-menu-panel {
     > div {
         height: 100%;
@@ -168,6 +179,31 @@
             }
         }
 
+        .flex-settings {
+            &.bordered {
+                border-bottom: 1px solid @gray;
+            }
+            overflow: hidden;
+            position: relative;
+        }
+
+        #panel-settings-general,
+        #panel-settings-print {
+            & > div {
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+        #panel-info {
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
         #panel-settings {
             padding: 0;
 
@@ -239,7 +275,6 @@
 
                 &.main {
                     width: 100%;
-                    margin: 30px 0;
                 }
 
                 &.no-padding {
@@ -285,7 +320,7 @@
 
                 h3 {
                     padding-left: 0;
-                    padding-top: 40px;
+                    padding-top: 45px;
                     white-space: nowrap;
                 }
             }
@@ -293,8 +328,8 @@
             .blank-document-btn {
                 display: inline-block;
                 margin: 25px 20px 65px;
-                width: 102px;
-                height: 128px;
+                width: 96px;
+                height: 96px;
                 cursor: pointer;
             }
 
@@ -313,8 +348,8 @@
                     cursor: pointer;
 
                     .thumb {
-                        width: 102px;
-                        height: 128px;
+                        width: 96px;
+                        height: 96px;
                         background-repeat: no-repeat;
                         background-position: center;
                     }
@@ -336,8 +371,7 @@
             }
 
             .recent-wrap {
-                height: 65px;
-                padding: 10px;
+                padding: 5px 10px;
                 cursor: pointer;
                 font-size: 12px;
 
@@ -348,11 +382,13 @@
 
                 .recent-icon {
                     float: left;
-                    width: 35px;
-                    height: 45px;
-                    margin-right: 10px;
-                    .background-ximage-v2('file-recent.png', 38px, @commonimage: false);
-                    background-position: 0 0;
+                    width: 25px;
+                    height: 25px;
+                    margin-top: 1px;
+                    svg {
+                        width: 100%;
+                        height: 100%;
+                    }
                 }
 
                 .file-name {
@@ -360,7 +396,6 @@
                     overflow: hidden;
                     white-space: nowrap;
                     text-overflow: ellipsis;
-                    margin: 5px 0;
                 }
 
                 .file-info {
@@ -417,9 +452,12 @@
             }
         }
 
-        #panel-info,
         #panel-rights {
             padding: 0 30px;
+        }
+
+        #panel-info,
+        #panel-rights {
             table {
                 tr {
                     td {
@@ -448,7 +486,6 @@
 
                 &.main {
                     width: 100%;
-                    margin: 30px 0;
                 }
             }
 

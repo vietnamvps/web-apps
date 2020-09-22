@@ -310,7 +310,7 @@ define([
             toolbar.btnInsertShape.menu.on('hide:after',                _.bind(this.onInsertShapeHide, this));
             toolbar.btnDropCap.menu.on('item:click',                    _.bind(this.onDropCapSelect, this));
             toolbar.btnContentControls.menu.on('item:click',            _.bind(this.onControlsSelect, this));
-            toolbar.mnuDropCapAdvanced.on('click',                      _.bind(this.onDropCapAdvancedClick, this));
+            toolbar.mnuDropCapAdvanced.on('click',                      _.bind(this.onDropCapAdvancedClick, this, false));
             toolbar.btnColumns.menu.on('item:click',                    _.bind(this.onColumnsSelect, this));
             toolbar.btnPageOrient.menu.on('item:click',                 _.bind(this.onPageOrientSelect, this));
             toolbar.btnPageMargins.menu.on('item:click',                _.bind(this.onPageMarginsSelect, this));
@@ -341,6 +341,8 @@ define([
             $('#id-save-style-plus, #id-save-style-link', toolbar.$el).on('click', this.onMenuSaveStyle.bind(this));
 
             this.onSetupCopyStyleButton();
+            this.onBtnChangeState('undo:disabled', toolbar.btnUndo, toolbar.btnUndo.isDisabled());
+            this.onBtnChangeState('redo:disabled', toolbar.btnRedo, toolbar.btnRedo.isDisabled());            
         },
 
         setApi: function(api) {
@@ -392,6 +394,7 @@ define([
                 this.api.asc_registerCallback('asc_onTableEraseModeChanged', _.bind(this.onTableErase, this));
                 Common.NotificationCenter.on('storage:image-load', _.bind(this.openImageFromStorage, this));
                 Common.NotificationCenter.on('storage:image-insert', _.bind(this.insertImageFromStorage, this));
+                Common.NotificationCenter.on('dropcap:settings', _.bind(this.onDropCapAdvancedClick, this));
             } else if (this.mode.isRestrictedEdit) {
                 this.api.asc_registerCallback('asc_onFocusObject', _.bind(this.onApiFocusObjectRestrictedEdit, this));
                 this.api.asc_registerCallback('asc_onCoAuthoringDisconnect', _.bind(this.onApiCoAuthoringDisconnect, this));
@@ -783,10 +786,10 @@ define([
             toolbar.btnContentControls.setDisabled(paragraph_locked || header_locked);
             if (!(paragraph_locked || header_locked)) {
                 var control_disable = control_plain || content_locked;
-                for (var i=0; i<7; i++)
+                for (var i=0; i<14; i++)
                     toolbar.btnContentControls.menu.items[i].setDisabled(control_disable);
-                toolbar.btnContentControls.menu.items[8].setDisabled(!in_control || lock_type==Asc.c_oAscSdtLockType.SdtContentLocked || lock_type==Asc.c_oAscSdtLockType.SdtLocked);
-                toolbar.btnContentControls.menu.items[10].setDisabled(!in_control);
+                toolbar.btnContentControls.menu.items[15].setDisabled(!in_control || lock_type==Asc.c_oAscSdtLockType.SdtContentLocked || lock_type==Asc.c_oAscSdtLockType.SdtLocked);
+                toolbar.btnContentControls.menu.items[17].setDisabled(!in_control);
             }
 
             var need_text_disable = paragraph_locked || header_locked || in_chart || rich_edit_lock || plain_edit_lock;
@@ -829,12 +832,12 @@ define([
             need_disable = toolbar.mnuPageNumCurrentPos.isDisabled() && toolbar.mnuPageNumberPosPicker.isDisabled() || control_plain;
             toolbar.mnuInsertPageNum.setDisabled(need_disable);
 
-            var in_footnote = this.api.asc_IsCursorInFootnote();
-            need_disable = paragraph_locked || header_locked || in_header || in_image || in_equation && !btn_eq_state || in_footnote || in_control || rich_edit_lock || plain_edit_lock || rich_del_lock;
+            var in_footnote = this.api.asc_IsCursorInFootnote() || this.api.asc_IsCursorInEndnote();
+            need_disable = paragraph_locked || header_locked || in_header || in_image || in_equation && !btn_eq_state || in_footnote || in_control || rich_edit_lock || plain_edit_lock || rich_del_lock || plain_del_lock;
             toolbar.btnsPageBreak.setDisabled(need_disable);
             toolbar.btnBlankPage.setDisabled(need_disable);
 
-            need_disable = paragraph_locked || header_locked || in_equation || control_plain || content_locked;
+            need_disable = paragraph_locked || header_locked || in_equation || control_plain || content_locked || in_footnote;
             toolbar.btnInsertShape.setDisabled(need_disable);
             toolbar.btnInsertText.setDisabled(need_disable);
 
@@ -1740,11 +1743,11 @@ define([
             this._state.dropcap = v;
         },
 
-        onDropCapAdvancedClick: function() {
+        onDropCapAdvancedClick: function(isFrame) {
             var win, props, text,
                 me = this;
 
-            if (_.isUndefined(me.fontstore)) {
+            if (!isFrame && _.isUndefined(me.fontstore)) {
                 me.fontstore = new Common.Collections.Fonts();
                 var fonts = me.toolbar.cmbFontName.store.toJSON();
                 var arr = [];
@@ -1774,16 +1777,18 @@ define([
                     (new DE.Views.DropcapSettingsAdvanced({
                         tableStylerRows: 2,
                         tableStylerColumns: 1,
-                        fontStore: me.fontstore,
+                        fontStore: !isFrame ? me.fontstore : null,
                         paragraphProps: props,
                         borderProps: me.borderAdvancedProps,
                         api: me.api,
-                        isFrame: false,
+                        isFrame: !!isFrame,
                         handler: function(result, value) {
                             if (result == 'ok') {
                                 me.borderAdvancedProps = value.borderProps;
-                                if (value.paragraphProps && value.paragraphProps.get_DropCap() === Asc.c_oAscDropCap.None) {
-                                    me.api.removeDropcap(true);
+                                if (value.paragraphProps &&
+                                    ( !isFrame && value.paragraphProps.get_DropCap() === Asc.c_oAscDropCap.None ||
+                                      isFrame && value.paragraphProps.get_Wrap() === c_oAscFrameWrap.None)) {
+                                    me.api.removeDropcap(!isFrame);
                                 } else
                                     me.api.put_FramePr(value.paragraphProps);
                             }
@@ -1826,16 +1831,29 @@ define([
                     }
                 }
             } else {
+                var isnew = (item.value.indexOf('new-')==0),
+                    oPr, oFormPr;
+                if (isnew) {
+                    oFormPr = new AscCommon.CSdtFormPr();
+                }
                 if (item.value == 'plain' || item.value == 'rich')
                     this.api.asc_AddContentControl((item.value=='plain') ? Asc.c_oAscSdtLevelType.Inline : Asc.c_oAscSdtLevelType.Block);
-                else if (item.value == 'picture')
-                    this.api.asc_AddContentControlPicture();
-                else if (item.value == 'checkbox')
-                    this.api.asc_AddContentControlCheckBox();
-                else if (item.value == 'date')
+                else if (item.value.indexOf('picture')>=0)
+                    this.api.asc_AddContentControlPicture(oFormPr);
+                else if (item.value.indexOf('checkbox')>=0 || item.value.indexOf('radiobox')>=0) {
+                    if (isnew) {
+                        oPr = new AscCommon.CSdtCheckBoxPr();
+                        (item.value.indexOf('radiobox')>=0) && oPr.put_GroupKey('Group 1');
+                    }
+                    this.api.asc_AddContentControlCheckBox(oPr, oFormPr);
+                } else if (item.value == 'date')
                     this.api.asc_AddContentControlDatePicker();
-                else if (item.value == 'combobox' || item.value == 'dropdown')
-                    this.api.asc_AddContentControlList(item.value == 'combobox');
+                else if (item.value.indexOf('combobox')>=0 || item.value.indexOf('dropdown')>=0)
+                    this.api.asc_AddContentControlList(item.value.indexOf('combobox')>=0, oPr, oFormPr);
+                else if (item.value == 'new-field') {
+                    oPr = new AscCommon.CSdtTextFormPr();
+                    this.api.asc_AddContentControlTextForm(oPr, oFormPr);
+                }
 
                 Common.component.Analytics.trackEvent('ToolBar', 'Add Content Control');
             }
@@ -2583,14 +2601,14 @@ define([
                     buttons: [{value: 'ok', caption: this.textInsert}, 'close'],
                     handler: function(dlg, result, settings) {
                         if (result == 'ok') {
-                            me.api.asc_insertSymbol(settings.font ? settings.font : me.api.get_TextProps().get_TextPr().get_FontFamily().get_Name(), settings.code);
+                            me.api.asc_insertSymbol(settings.font ? settings.font : me.api.get_TextProps().get_TextPr().get_FontFamily().get_Name(), settings.code, settings.special);
                         } else
                             Common.NotificationCenter.trigger('edit:complete', me.toolbar);
                     }
                 });
                 me.dlgSymbolTable.show();
                 me.dlgSymbolTable.on('symbol:dblclick', function(cmp, result, settings) {
-                    me.api.asc_insertSymbol(settings.font ? settings.font : me.api.get_TextProps().get_TextPr().get_FontFamily().get_Name(), settings.code);
+                    me.api.asc_insertSymbol(settings.font ? settings.font : me.api.get_TextProps().get_TextPr().get_FontFamily().get_Name(), settings.code, settings.special);
                 });
             }
         },

@@ -566,7 +566,9 @@ define([
                 } else {
                     var cg = Common.Utils.croppedGeometry();
                     docH = cg.height - 10;
+
                     var newTop = top;
+
                     if (top + menuH > docH + cg.top) {
                         if (fixedAlign && typeof fixedAlign == 'string') { // how to align if menu height > window height
                             m = fixedAlign.match(/^([a-z]+)-([a-z]+)/);

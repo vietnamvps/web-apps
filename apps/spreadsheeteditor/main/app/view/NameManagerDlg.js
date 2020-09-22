@@ -195,7 +195,7 @@ define([  'text!spreadsheeteditor/main/app/template/NameManagerDlg.template',
                         name: this.ranges[i].asc_getName(true),
                         scope: scope,
                         scopeName: (scope===null) ? this.textWorkbook: this.sheetNames[scope],
-                        range: this.ranges[i].asc_getRef(),
+                        range: (type===Asc.c_oAscDefNameType.slicer) ? '' : this.ranges[i].asc_getRef(),
                         lock: (id!==null && id!==undefined),
                         lockuser: (id) ? this.getUserName(id) : this.guestText,
                         type: type,
@@ -361,7 +361,7 @@ define([  'text!spreadsheeteditor/main/app/template/NameManagerDlg.template',
             if (usersStore){
                 var rec = usersStore.findUser(id);
                 if (rec)
-                    return rec.get('username');
+                    return Common.Utils.UserInfoParser.getParsedName(rec.get('username'));
             }
             return this.guestText;
         },

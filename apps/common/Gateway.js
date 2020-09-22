@@ -135,7 +135,7 @@ if (Common === undefined) {
 
         var _onMessage = function(msg) {
             // TODO: check message origin
-            if (msg.origin !== window.parentOrigin) return;
+            if (msg.origin !== window.parentOrigin && msg.origin !== window.location.origin) return;
 
             var data = msg.data;
             if (Object.prototype.toString.apply(data) !== '[object String]' || !window.JSON) {
@@ -320,6 +320,10 @@ if (Common === undefined) {
 
             requestSharingSettings:  function () {
                 _postMessage({event:'onRequestSharingSettings'});
+            },
+
+            requestCreateNew:  function () {
+                _postMessage({event:'onRequestCreateNew'});
             },
 
             on: function(event, handler){

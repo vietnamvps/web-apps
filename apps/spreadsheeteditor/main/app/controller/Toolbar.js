@@ -60,7 +60,8 @@ define([
     'spreadsheeteditor/main/app/view/PrintTitlesDialog',
     'spreadsheeteditor/main/app/view/ScaleDialog',
     'spreadsheeteditor/main/app/view/SlicerAddDialog',
-    'spreadsheeteditor/main/app/view/CellsAddDialog'
+    'spreadsheeteditor/main/app/view/CellsAddDialog',
+    'spreadsheeteditor/main/app/view/AdvancedSeparatorDialog'
 ], function () { 'use strict';
 
     SSE.Controllers.Toolbar = Backbone.Controller.extend(_.extend({
@@ -79,7 +80,8 @@ define([
                     'add:chart'     : this.onSelectChart,
                     'insert:textart': this.onInsertTextart,
                     'change:scalespn': this.onClickChangeScaleInMenu.bind(me),
-                    'click:customscale': this.onScaleClick.bind(me)
+                    'click:customscale': this.onScaleClick.bind(me),
+                    'home:open'        : this.onHomeOpen
                 },
                 'FileMenu': {
                     'menu:hide': me.onFileMenu.bind(me, 'hide'),
@@ -910,7 +912,7 @@ define([
                 win.show();
                 win.setSettings({
                     sheets  : items,
-                    ranges  : me.api.asc_getDefinedNames(Asc.c_oAscGetDefinedNamesList.All),
+                    ranges  : me.api.asc_getDefinedNames(Asc.c_oAscGetDefinedNamesList.All, true),
                     currentSheet: me.api.asc_getWorksheetName(me.api.asc_getActiveWorksheetIndex()),
                     props   : props,
                     text    : cell.asc_getText(),
@@ -1497,8 +1499,7 @@ define([
             this.api.asc_registerCallback('asc_onStopFormatPainter',        _.bind(this.onApiStyleChange, this));
             this.api.asc_registerCallback('asc_onSelectionChanged',         _.bind(this.onApiSelectionChanged, this));
 
-            Common.util.Shortcuts.delegateShortcuts({
-                shortcuts: {
+            var shortcuts = {
                     'command+l,ctrl+l': function(e) {
                         if ( me.editMode && !me._state.multiselect && me.appConfig.canModifyFilter) {
                             var cellinfo = me.api.asc_getCellInfo(),
@@ -1556,49 +1557,63 @@ define([
                         }
 
                         return false;
-                    },
-                    'command+shift+=,ctrl+shift+=': function(e) {
-                        if (me.editMode && !me.toolbar.btnAddCell.isDisabled()) {
-                            var items = me.toolbar.btnAddCell.menu.items,
-                                arr = [];
-                            for (var i=0; i<4; i++)
-                                arr.push({caption: items[i].caption, value: items[i].value, disabled: items[i].isDisabled()});
-                            (new SSE.Views.CellsAddDialog({
-                                title: me.txtInsertCells,
-                                items: arr,
-                                handler: function (dlg, result) {
-                                    if (result=='ok') {
-                                        me.api.asc_insertCells(dlg.getSettings());
-                                    }
-                                    Common.NotificationCenter.trigger('edit:complete', me.toolbar);
-                                }
-                            })).show();
-                        }
-
-                        return false;
-                    },
-                    'command+shift+-,ctrl+shift+-': function(e) {
-                        if (me.editMode && !me.toolbar.btnDeleteCell.isDisabled()) {
-                            var items = me.toolbar.btnDeleteCell.menu.items,
-                                arr = [];
-                            for (var i=0; i<4; i++)
-                                arr.push({caption: items[i].caption, value: items[i].value, disabled: items[i].isDisabled()});
-                            (new SSE.Views.CellsAddDialog({
-                                title: me.txtDeleteCells,
-                                items: arr,
-                                handler: function (dlg, result) {
-                                    if (result=='ok') {
-                                        me.api.asc_deleteCells(dlg.getSettings());
-                                    }
-                                    Common.NotificationCenter.trigger('edit:complete', me.toolbar);
-                                }
-                            })).show();
-                        }
-
-                        return false;
                     }
-                }
-            });
+            };
+            shortcuts['command+shift+=,ctrl+shift+=' + (Common.Utils.isGecko ? ',command+shift+ff=,ctrl+shift+ff=' : '')] = function(e) {
+                        if (me.editMode && !me.toolbar.btnAddCell.isDisabled()) {
+                            var cellinfo = me.api.asc_getCellInfo(),
+                                selectionType = cellinfo.asc_getSelectionType();
+                            if (selectionType === Asc.c_oAscSelectionType.RangeRow || selectionType === Asc.c_oAscSelectionType.RangeCol) {
+                                me.api.asc_insertCells(selectionType === Asc.c_oAscSelectionType.RangeRow ? Asc.c_oAscInsertOptions.InsertRows :Asc.c_oAscInsertOptions.InsertColumns );
+                                Common.NotificationCenter.trigger('edit:complete', me.toolbar);
+                            } else {
+                                var items = me.toolbar.btnAddCell.menu.items,
+                                    arr = [];
+                                for (var i=0; i<4; i++)
+                                    arr.push({caption: items[i].caption, value: items[i].value, disabled: items[i].isDisabled()});
+                                (new SSE.Views.CellsAddDialog({
+                                    title: me.txtInsertCells,
+                                    items: arr,
+                                    handler: function (dlg, result) {
+                                        if (result=='ok') {
+                                            me.api.asc_insertCells(dlg.getSettings());
+                                        }
+                                        Common.NotificationCenter.trigger('edit:complete', me.toolbar);
+                                    }
+                                })).show();
+                            }
+                        }
+
+                        return false;
+                    };
+            shortcuts['command+shift+-,ctrl+shift+-' + (Common.Utils.isGecko ? ',command+shift+ff-,ctrl+shift+ff-' : '')] = function(e) {
+                        if (me.editMode && !me.toolbar.btnDeleteCell.isDisabled()) {
+                            var cellinfo = me.api.asc_getCellInfo(),
+                                selectionType = cellinfo.asc_getSelectionType();
+                            if (selectionType === Asc.c_oAscSelectionType.RangeRow || selectionType === Asc.c_oAscSelectionType.RangeCol) {
+                                me.api.asc_deleteCells(selectionType === Asc.c_oAscSelectionType.RangeRow ? Asc.c_oAscDeleteOptions.DeleteRows :Asc.c_oAscDeleteOptions.DeleteColumns );
+                                Common.NotificationCenter.trigger('edit:complete', me.toolbar);
+                            } else {
+                                var items = me.toolbar.btnDeleteCell.menu.items,
+                                    arr = [];
+                                for (var i=0; i<4; i++)
+                                    arr.push({caption: items[i].caption, value: items[i].value, disabled: items[i].isDisabled()});
+                                (new SSE.Views.CellsAddDialog({
+                                    title: me.txtDeleteCells,
+                                    items: arr,
+                                    handler: function (dlg, result) {
+                                        if (result=='ok') {
+                                            me.api.asc_deleteCells(dlg.getSettings());
+                                        }
+                                        Common.NotificationCenter.trigger('edit:complete', me.toolbar);
+                                    }
+                                })).show();
+                            }
+                        }
+
+                        return false;
+                    };
+            Common.util.Shortcuts.delegateShortcuts({shortcuts: shortcuts});
 
             this.onApiSelectionChanged(this.api.asc_getCellInfo());
             this.attachToControlEvents();
@@ -1725,24 +1740,46 @@ define([
                 return;
             }
 
-            listStyles.menuPicker.store.reset([]); // remove all
-
             var mainController = this.getApplication().getController('Main');
-            _.each(styles, function(style){
-                listStyles.menuPicker.store.add({
-                    imageUrl: style.asc_getImage(),
-                    name    : style.asc_getName(),
-                    tip     : mainController.translationTable[style.get_Name()] || style.get_Name(),
-                    uid     : Common.UI.getId()
+            var count = listStyles.menuPicker.store.length;
+            var rec = listStyles.menuPicker.getSelectedRec();
+            if (count>0 && count==styles.length) {
+                var data = listStyles.menuPicker.dataViewItems;
+                data && _.each(styles, function(style, index){
+                    var img = style.asc_getImage();
+                    data[index].model.set('imageUrl', img, {silent: true});
+                    data[index].model.set({
+                        name    : style.asc_getName(),
+                        tip     : mainController.translationTable[style.get_Name()] || style.get_Name()
+                    });
+                    $(data[index].el).find('img').attr('src', img);
                 });
-            });
-
-            if (listStyles.menuPicker.store.length > 0 && listStyles.rendered) {
-                listStyles.fillComboView(listStyles.menuPicker.store.at(0), true);
-                listStyles.selectByIndex(0);
+            } else {
+                var arr = [];
+                _.each(styles, function(style){
+                    arr.push({
+                        imageUrl: style.asc_getImage(),
+                        name    : style.asc_getName(),
+                        tip     : mainController.translationTable[style.get_Name()] || style.get_Name(),
+                        uid     : Common.UI.getId()
+                    });
+                });
+                listStyles.menuPicker.store.reset(arr);
             }
-
+            if (listStyles.menuPicker.store.length > 0 && listStyles.rendered) {
+                rec = rec ? listStyles.menuPicker.store.findWhere({name: rec.get('name')}) : null;
+                listStyles.fillComboView(rec ? rec : listStyles.menuPicker.store.at(0), true, true);
+            }
             window.styles_loaded = true;
+        },
+
+        onHomeOpen: function() {
+            var listStyles = this.toolbar.listStyles;
+            if (listStyles && listStyles.needFillComboView &&  listStyles.menuPicker.store.length > 0 && listStyles.rendered){
+                var styleRec;
+                if (this._state.prstyle) styleRec = listStyles.menuPicker.store.findWhere({name: this._state.prstyle});
+                listStyles.fillComboView((styleRec) ? styleRec : listStyles.menuPicker.store.at(0), true);
+            }
         },
 
         onApiCoAuthoringDisconnect: function(enableDownload) {
@@ -2344,6 +2381,8 @@ define([
                 toolbar.lockToolbar(SSE.enumLock.ruleFilter, need_disable,
                             { array: toolbar.btnsSetAutofilter.concat(toolbar.btnCustomSort, toolbar.btnTableTemplate, toolbar.btnInsertTable, toolbar.btnRemoveDuplicates) });
 
+                toolbar.lockToolbar(SSE.enumLock.tableHasSlicer, filterInfo && filterInfo.asc_getIsSlicerAdded(), { array: toolbar.btnsSetAutofilter });
+
                 need_disable = (selectionType !== Asc.c_oAscSelectionType.RangeSlicer) && (this._state.controlsdisabled.filters || (val===null));
                 toolbar.lockToolbar(SSE.enumLock.cantSort, need_disable, { array: toolbar.btnsSortDown.concat(toolbar.btnsSortUp) });
 
@@ -2375,9 +2414,9 @@ define([
                 toolbar.lockToolbar(SSE.enumLock.multiselect, this._state.multiselect, { array: [toolbar.btnTableTemplate, toolbar.btnInsertHyperlink, toolbar.btnInsertTable]});
 
                 this._state.inpivot = !!info.asc_getPivotTableInfo();
-                toolbar.lockToolbar(SSE.enumLock.editPivot, this._state.inpivot, { array: toolbar.btnsSetAutofilter.concat(toolbar.btnsClearAutofilter, toolbar.btnsSortDown, toolbar.btnsSortUp, toolbar.btnCustomSort,
+                toolbar.lockToolbar(SSE.enumLock.editPivot, this._state.inpivot, { array: toolbar.btnsSetAutofilter.concat(toolbar.btnCustomSort,
                                                                                           toolbar.btnMerge, toolbar.btnInsertHyperlink, toolbar.btnInsertTable, toolbar.btnRemoveDuplicates)});
-                toolbar.lockToolbar(SSE.enumLock.noSlicerSource, !(this._state.inpivot || formatTableInfo), { array: [toolbar.btnInsertSlicer]});
+                toolbar.lockToolbar(SSE.enumLock.noSlicerSource, !(formatTableInfo), { array: [toolbar.btnInsertSlicer]});
 
                 need_disable = !this.appConfig.canModifyFilter;
                 toolbar.lockToolbar(SSE.enumLock.cantModifyFilter, need_disable, { array: toolbar.btnsSetAutofilter.concat(toolbar.btnsSortDown, toolbar.btnsSortUp, toolbar.btnCustomSort, toolbar.btnTableTemplate,
@@ -2815,14 +2854,14 @@ define([
                         buttons: [{value: 'ok', caption: this.textInsert}, 'close'],
                         handler: function(dlg, result, settings) {
                             if (result == 'ok') {
-                                me.api.asc_insertSymbol(settings.font ? settings.font : me.api.asc_getCellInfo().asc_getXfs().asc_getFontName(), settings.code);
+                                me.api.asc_insertSymbol(settings.font ? settings.font : me.api.asc_getCellInfo().asc_getXfs().asc_getFontName(), settings.code, settings.special);
                             } else
                                 Common.NotificationCenter.trigger('edit:complete', me.toolbar);
                         }
                     });
                 win.show();
                 win.on('symbol:dblclick', function(cmp, result, settings) {
-                    me.api.asc_insertSymbol(settings.font ? settings.font : me.api.asc_getCellInfo().asc_getXfs().asc_getFontName(), settings.code);
+                    me.api.asc_insertSymbol(settings.font ? settings.font : me.api.asc_getCellInfo().asc_getXfs().asc_getFontName(), settings.code, settings.special);
                 });
             }
         },

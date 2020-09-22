@@ -237,6 +237,7 @@ define([
                 view.pmiNumFormat.menu.on('item:click',             _.bind(me.onNumberFormatSelect, me));
                 view.pmiNumFormat.menu.on('show:after',             _.bind(me.onNumberFormatOpenAfter, me));
                 view.pmiAdvancedNumFormat.on('click',               _.bind(me.onCustomNumberFormat, me));
+                view.tableTotalMenu.on('item:click',                _.bind(me.onTotalMenuClick, me));
 
             } else {
                 view.menuViewCopy.on('click',                       _.bind(me.onCopyPaste, me));
@@ -321,6 +322,7 @@ define([
                 this.api.asc_registerCallback('asc_onFormulaInfo', _.bind(this.onFormulaInfo, this));
                 this.api.asc_registerCallback('asc_ChangeCropState', _.bind(this.onChangeCropState, this));
                 this.api.asc_registerCallback('asc_onInputMessage', _.bind(this.onInputMessage, this));
+                this.api.asc_registerCallback('asc_onTableTotalMenu', _.bind(this.onTableTotalMenu, this));
             }
             return this;
         },
@@ -507,7 +509,7 @@ define([
         onInsFunction: function(item) {
             var controller = this.getApplication().getController('FormulaDialog');
             if (controller && this.api) {
-                controller.showDialog();
+                controller.showDialog(undefined, item.value==Asc.ETotalsRowFunction.totalrowfunctionCustom);
             }
         },
 
@@ -546,7 +548,7 @@ define([
                 win.show();
                 win.setSettings({
                     sheets  : items,
-                    ranges  : me.api.asc_getDefinedNames(Asc.c_oAscGetDefinedNamesList.All),
+                    ranges  : me.api.asc_getDefinedNames(Asc.c_oAscGetDefinedNamesList.All, true),
                     currentSheet: me.api.asc_getWorksheetName(me.api.asc_getActiveWorksheetIndex()),
                     props   : props,
                     text    : cell.asc_getText(),
@@ -759,7 +761,7 @@ define([
         onSelectBulletMenu: function(menu, item) {
             if (this.api) {
                 if (item.options.value == -1) {
-                    this.api.asc_setListType(item.options.value);
+                    this.api.asc_setListType(0, item.options.value);
                     Common.NotificationCenter.trigger('edit:complete', this.documentHolder);
                     Common.component.Analytics.trackEvent('DocumentHolder', 'List Type');
                 } else if (item.options.value == 'settings') {
@@ -773,15 +775,17 @@ define([
                         }
                     }
                     if (props) {
+                        var listtype = me.api.asc_getCurrentListType();
                         (new Common.Views.ListSettingsDialog({
                             api: me.api,
                             props: props,
-                            type: me.api.asc_getCurrentListType().get_ListType(),
+                            type: 0,
                             interfaceLang: me.permissions.lang,
                             handler: function(result, value) {
                                 if (result == 'ok') {
                                     if (me.api) {
-                                        me.api.asc_setGraphicObjectProps(value);
+                                        props.asc_putBullet(value);
+                                        me.api.asc_setGraphicObjectProps(props);
                                     }
                                 }
                                 Common.NotificationCenter.trigger('edit:complete', me.documentHolder);
@@ -1061,7 +1065,7 @@ define([
                     if (usersStore){
                         var rec = usersStore.findUser(id);
                         if (rec)
-                            return rec.get('username');
+                            return Common.Utils.UserInfoParser.getParsedName(rec.get('username'));
                     }
                     return me.guestText;
                 };
@@ -1697,7 +1701,7 @@ define([
                             documentHolder.mnuChartEdit.chartInfo = elValue;
                             ischartmenu = true;
                             has_chartprops = true;
-                        }  if ( elValue.asc_getSlicerProperties() ) {
+                        }  else if ( elValue.asc_getSlicerProperties() ) {
                             documentHolder.mnuSlicerAdvanced.imageInfo = elValue;
                             isslicermenu = true;
                         } else {
@@ -1774,16 +1778,42 @@ define([
                             direct = value.asc_getVert(),
                             listtype = this.api.asc_getCurrentListType();
                         isObjLocked = isObjLocked || value.asc_getLocked();
+                        var cls = '';
+                        switch (align) {
+                            case Asc.c_oAscVAlign.Top:
+                                cls = 'menu__icon btn-align-top';
+                                break;
+                            case Asc.c_oAscVAlign.Center:
+                                cls = 'menu__icon btn-align-middle';
+                                break;
+                            case Asc.c_oAscVAlign.Bottom:
+                                cls = 'menu__icon btn-align-bottom';
+                                break;
+                        }
+                        documentHolder.menuParagraphVAlign.setIconCls(cls);
                         documentHolder.menuParagraphTop.setChecked(align == Asc.c_oAscVAlign.Top);
                         documentHolder.menuParagraphCenter.setChecked(align == Asc.c_oAscVAlign.Center);
                         documentHolder.menuParagraphBottom.setChecked(align == Asc.c_oAscVAlign.Bottom);
 
+                        cls = '';
+                        switch (direct) {
+                            case Asc.c_oAscVertDrawingText.normal:
+                                cls = 'menu__icon text-orient-hor';
+                                break;
+                            case Asc.c_oAscVertDrawingText.vert:
+                                cls = 'menu__icon text-orient-rdown';
+                                break;
+                            case Asc.c_oAscVertDrawingText.vert270:
+                                cls = 'menu__icon btn-align-rup';
+                                break;
+                        }
+                        documentHolder.menuParagraphDirection.setIconCls(cls);
                         documentHolder.menuParagraphDirectH.setChecked(direct == Asc.c_oAscVertDrawingText.normal);
                         documentHolder.menuParagraphDirect90.setChecked(direct == Asc.c_oAscVertDrawingText.vert);
                         documentHolder.menuParagraphDirect270.setChecked(direct == Asc.c_oAscVertDrawingText.vert270);
 
                         documentHolder.menuParagraphBulletNone.setChecked(listtype.get_ListType() == -1);
-                        documentHolder.mnuListSettings.setDisabled(listtype.get_ListType() == -1);
+                        // documentHolder.mnuListSettings.setDisabled(listtype.get_ListType() == -1);
                         var rec = documentHolder.paraBulletsPicker.store.findWhere({ type: listtype.get_ListType(), subtype: listtype.get_ListSubType() });
                         documentHolder.paraBulletsPicker.selectRecord(rec, true);
                     } else if (elType == Asc.c_oAscTypeSelectElement.Paragraph) {
@@ -1914,8 +1944,8 @@ define([
                     item.setDisabled(isCellLocked);
                 });
                 documentHolder.pmiCopy.setDisabled(false);
-                documentHolder.pmiCut.setDisabled(isCellLocked || inPivot); // can't edit pivot cells
-                documentHolder.pmiPaste.setDisabled(isCellLocked || inPivot);
+                documentHolder.pmiCut.setDisabled(isCellLocked); // can't edit pivot cells
+                documentHolder.pmiPaste.setDisabled(isCellLocked);
                 documentHolder.pmiInsertEntire.setDisabled(isCellLocked || isTableLocked);
                 documentHolder.pmiInsertCells.setDisabled(isCellLocked || isTableLocked || inPivot);
                 documentHolder.pmiInsertTable.setDisabled(isCellLocked || isTableLocked);
@@ -2118,6 +2148,63 @@ define([
             }
         },
 
+        onTableTotalMenu: function(current) {
+            if (current !== undefined) {
+                var me                  = this,
+                    documentHolderView  = me.documentHolder,
+                    menu                = documentHolderView.tableTotalMenu,
+                    menuContainer       = documentHolderView.cmpEl.find(Common.Utils.String.format('#menu-container-{0}', menu.id));
+
+                if (menu.isVisible()) {
+                    menu.hide();
+                    return;
+                }
+
+                Common.UI.Menu.Manager.hideAll();
+
+                if (!menu.rendered) {
+                    // Prepare menu container
+                    if (menuContainer.length < 1) {
+                        menuContainer = $(Common.Utils.String.format('<div id="menu-container-{0}" style="position: absolute; z-index: 10000;"><div class="dropdown-toggle" data-toggle="dropdown"></div></div>', menu.id));
+                        documentHolderView.cmpEl.append(menuContainer);
+                    }
+
+                    menu.render(menuContainer);
+                    menu.cmpEl.attr({tabindex: "-1"});
+                }
+
+                menu.clearAll();
+                var func = _.find(menu.items, function(item) { return item.value == current; });
+                if (func)
+                    func.setChecked(true, true);
+
+                var coord  = me.api.asc_getActiveCellCoord(),
+                    offset = {left:0,top:0},
+                    showPoint = [coord.asc_getX() + offset.left, (coord.asc_getY() < 0 ? 0 : coord.asc_getY()) + coord.asc_getHeight() + offset.top];
+                menuContainer.css({left: showPoint[0], top : showPoint[1]});
+
+                me._preventClick = true;
+                menuContainer.attr('data-value', 'prevent-canvas-click');
+                menu.show();
+
+                menu.alignPosition();
+                _.delay(function() {
+                    menu.cmpEl.focus();
+                }, 10);
+            } else {
+                this.documentHolder.tableTotalMenu.hide();
+            }
+        },
+
+        onTotalMenuClick: function(menu, item) {
+            if (item.value==Asc.ETotalsRowFunction.totalrowfunctionCustom) {
+                this.onInsFunction(item);
+            } else {
+                this.api.asc_insertInCell(item.value, Asc.c_oAscPopUpSelectorType.TotalRowFunc);
+            }
+            Common.NotificationCenter.trigger('edit:complete', this.documentHolder);
+        },
+
         onFormulaCompleteMenu: function(funcarr) {
             if (!this.documentHolder.funcMenu || Common.Utils.ModalWindow.isVisible() || this.rangeSelectionMode) return;
 
@@ -2146,10 +2233,22 @@ define([
                     var type = menuItem.asc_getType(),
                         name = menuItem.asc_getName(true),
                         origname = me.api.asc_getFormulaNameByLocale(name),
-                        mnu = new Common.UI.MenuItem({
-                            iconCls: 'menu__icon ' + ((type==Asc.c_oAscPopUpSelectorType.Func) ? 'btn-function': ((type==Asc.c_oAscPopUpSelectorType.Table) ? 'btn-menu-table' : 'btn-named-range')) ,
-                            caption: name,
-                            hint        : (funcdesc && funcdesc[origname]) ? funcdesc[origname].d : ''
+                        iconCls = 'btn-named-range';
+                    switch (type) {
+                        case Asc.c_oAscPopUpSelectorType.Func:
+                            iconCls = 'btn-function';
+                            break;
+                        case Asc.c_oAscPopUpSelectorType.Table:
+                            iconCls = 'btn-menu-table';
+                            break;
+                        case Asc.c_oAscPopUpSelectorType.Slicer:
+                            iconCls = 'btn-slicer';
+                            break;
+                    }
+                    var mnu = new Common.UI.MenuItem({
+                        iconCls: 'menu__icon ' + iconCls ,
+                        caption: name,
+                        hint        : (funcdesc && funcdesc[origname]) ? funcdesc[origname].d : ''
                     }).on('click', function(item, e) {
                         setTimeout(function(){ me.api.asc_insertInCell(item.caption, type, false ); }, 10);
                     });
@@ -2430,12 +2529,16 @@ define([
                                 type: Common.Utils.importTextType.Paste,
                                 preview: true,
                                 api: me.api,
-                                handler: function (result, encoding, delimiter, delimiterChar) {
+                                handler: function (result, encoding, delimiter, delimiterChar, decimal, thousands) {
                                     if (result == 'ok') {
                                         if (me && me.api) {
                                             var props = new Asc.SpecialPasteProps();
                                             props.asc_setProps(Asc.c_oSpecialPasteProps.useTextImport);
-                                            props.asc_setAdvancedOptions(new Asc.asc_CTextOptions(encoding, delimiter, delimiterChar));
+
+                                            var options = new Asc.asc_CTextOptions(encoding, delimiter, delimiterChar);
+                                            decimal && options.asc_setNumberDecimalSeparator(decimal);
+                                            thousands && options.asc_setNumberGroupSeparator(thousands);
+                                            props.asc_setAdvancedOptions(options);
                                             me.api.asc_SpecialPaste(props);
                                         }
                                         me._state.lastSpecPasteChecked = item;
@@ -2649,6 +2752,7 @@ define([
                         equation    : true,
                         disabled    : me._currentParaObjDisabled,
                         menu        : new Common.UI.Menu({
+                            cls: 'shifted-right',
                             menuAlign: 'tl-tr',
                             items   : [
                                 {
@@ -2819,6 +2923,7 @@ define([
                         equation    : true,
                         disabled    : me._currentParaObjDisabled,
                         menu        : new Common.UI.Menu({
+                            cls: 'shifted-right',
                             menuAlign: 'tl-tr',
                             items   : [
                                 {
@@ -2846,6 +2951,7 @@ define([
                         equation    : true,
                         disabled    : me._currentParaObjDisabled,
                         menu        : new Common.UI.Menu({
+                            cls: 'shifted-right',
                             menuAlign: 'tl-tr',
                             items   : [
                                 {
@@ -2865,6 +2971,7 @@ define([
                         equation    : true,
                         disabled    : me._currentParaObjDisabled,
                         menu        : new Common.UI.Menu({
+                            cls: 'shifted-right',
                             menuAlign: 'tl-tr',
                             items   : [
                                 {
@@ -2894,6 +3001,7 @@ define([
                         equation    : true,
                         disabled    : me._currentParaObjDisabled,
                         menu        : new Common.UI.Menu({
+                            cls: 'shifted-right',
                             menuAlign: 'tl-tr',
                             items   : [
                                 {
@@ -2946,6 +3054,7 @@ define([
                         equation    : true,
                         disabled    : me._currentParaObjDisabled,
                         menu        : new Common.UI.Menu({
+                            cls: 'shifted-right',
                             menuAlign: 'tl-tr',
                             items   : [
                                 {

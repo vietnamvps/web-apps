@@ -109,6 +109,8 @@ define([
         },
 
         zoomDocument: function(d,e) {
+            if (!this.api) return;
+
             switch (d) {
                 case 'up':
                     var f = Math.floor(this.api.asc_getZoom() * 10)/10;
@@ -125,7 +127,7 @@ define([
         },
 
         menuZoomClick: function(menu, item) {
-            this.api.asc_setZoom(item.value/100);
+            this.api && this.api.asc_setZoom(item.value/100);
             Common.NotificationCenter.trigger('edit:complete', this.statusbar);
         },
 
@@ -206,10 +208,13 @@ define([
                 statusbar = this.statusbar;
 
             statusbar.isEditFormula = disableAdd;
+            statusbar.tabbar && (statusbar.tabbar.isEditFormula = disableAdd);
             statusbar.btnZoomUp.setDisabled(disable);
             statusbar.btnZoomDown.setDisabled(disable);
             statusbar.labelZoom[disable?'addClass':'removeClass']('disabled');
             statusbar.btnAddWorksheet.setDisabled(disable || this.api.asc_isWorkbookLocked() || statusbar.rangeSelectionMode!=Asc.c_oAscSelectionDialogType.None);
+
+            statusbar.$el.find('#statusbar_bottom li span').attr('oo_editor_input', !disableAdd);
 
             if (disableAdd && mask.length>0 || !disableAdd && mask.length==0) return;
             statusbar.$el.find('.statusbar').toggleClass('masked', disableAdd);
@@ -230,6 +235,8 @@ define([
         },
 
         onWindowResize: function(area) {
+            this.statusbar.updateVisibleItemsBoxMath();
+            this.statusbar.updateTabbarBorders();
             this.statusbar.onTabInvisible(undefined, this.statusbar.tabbar.checkInvisible(true));
         },
 
