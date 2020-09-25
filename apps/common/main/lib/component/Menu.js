@@ -44,10 +44,10 @@
  *  Default template
  *
  *  <ul class="dropdown-menu" role="menu">
- *      <li class="dropdown-item"><a href="#">item 1</a></li>-->
- *      <li class="dropdown-item"><a href="#">item 2</a></li>-->
+ *      <li><a href="#" class="dropdown-item">item 1</a></li>-->
+ *      <li><a href="#" class="dropdown-item">item 2</a></li>-->
  *      <li class="dropdown-divider"></li>-->
- *      <li class="dropdown-item"><a href="#">item 3</a></li>
+ *      <li><a href="#" class="dropdown-item">item 3</a></li>
  *  </ul>
  *
  *  A useful classes of menu position
@@ -186,8 +186,7 @@ define([
                         me.items.push(
                             new Common.UI.MenuItem(_.extend({
                                 tagName : 'li',
-                                template: me.itemTemplate,
-                                clsDropdownItem: item.clsDropdownItem
+                                template: me.itemTemplate
                             }, item))
                         );
                     }
@@ -280,14 +279,14 @@ define([
             },
 
             show: function() {
-                if (this.rendered && this.parentEl && !this.parentEl.hasClass('open')) {
+                if (this.rendered && this.parentEl && !this.parentEl.hasClass('show')) {
                     this.cmpEl.dropdown('toggle');
                 }
             },
 
             hide: function() {
                 if (this.rendered && this.parentEl) {
-                    if ( this.parentEl.hasClass('open') )
+                    if ( this.parentEl.hasClass('show') )
                         this.cmpEl.dropdown('toggle');
                     else if (this.parentEl.hasClass('over'))
                         this.parentEl.removeClass('over');
@@ -760,14 +759,14 @@ define([
         },
 
         show: function() {
-            if (this.rendered && this.parentEl && !this.parentEl.hasClass('open')) {
+            if (this.rendered && this.parentEl && !this.parentEl.hasClass('show')) {
                 this.cmpEl.dropdown('toggle');
             }
         },
 
         hide: function() {
             if (this.rendered && this.parentEl) {
-                if ( this.parentEl.hasClass('open') )
+                if ( this.parentEl.hasClass('show') )
                     this.cmpEl.dropdown('toggle');
                 else if (this.parentEl.hasClass('over'))
                     this.parentEl.removeClass('over');

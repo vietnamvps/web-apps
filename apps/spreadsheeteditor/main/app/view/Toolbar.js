@@ -1087,7 +1087,7 @@ define([
                     })
                 });
 
-                var pageMarginsTemplate = _.template('<a id="<%= id %>" tabindex="-1" type="menuitem"><div><b><%= caption %></b></div>' +
+                var pageMarginsTemplate = _.template('<a id="<%= id %>" class="dropdown-item" tabindex="-1" type="menuitem"><div><b><%= caption %></b></div>' +
                     '<% if (options.value !== null) { %><div style="display: inline-block;margin-right: 20px;min-width: 80px;">' +
                     '<label style="display: block;">' + this.textTop + '<%= parseFloat(Common.Utils.Metric.fnRecalcFromMM(options.value[0]).toFixed(2)) %> <%= Common.Utils.Metric.getCurrentMetricName() %></label>' +
                     '<label style="display: block;">' + this.textLeft + '<%= parseFloat(Common.Utils.Metric.fnRecalcFromMM(options.value[1]).toFixed(2)) %> <%= Common.Utils.Metric.getCurrentMetricName() %></label></div><div style="display: inline-block;">' +
@@ -1136,7 +1136,7 @@ define([
                     })
                 });
 
-                var pageSizeTemplate = _.template('<a id="<%= id %>" tabindex="-1" type="menuitem"><div><b><%= caption %></b></div>' +
+                var pageSizeTemplate = _.template('<a id="<%= id %>" class="dropdown-item" tabindex="-1" type="menuitem"><div><b><%= caption %></b></div>' +
                     '<div><%= parseFloat(Common.Utils.Metric.fnRecalcFromMM(options.value[0]).toFixed(2)) %> <%= Common.Utils.Metric.getCurrentMetricName() %> x ' +
                     '<%= parseFloat(Common.Utils.Metric.fnRecalcFromMM(options.value[1]).toFixed(2)) %> <%= Common.Utils.Metric.getCurrentMetricName() %></div></a>');
 
@@ -2003,7 +2003,7 @@ define([
             this.mnuColorSchema.items = [];
 
             var itemTemplate = _.template([
-                '<a id="<%= id %>" class="<%= options.cls %>" tabindex="-1" type="menuitem">',
+                '<a id="<%= id %>" class="dropdown-item <%= options.cls %>" tabindex="-1" type="menuitem">',
                     '<span class="colors">',
                         '<% _.each(options.colors, function(color) { %>',
                             '<span class="color" style="background: <%= color %>;"></span>',

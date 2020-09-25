@@ -51,6 +51,7 @@
     .btn,
     .btn:hover,
     .btn:focus {
+        box-shadow: none;
         border-left: 0;
         border-color: @input-border;
         background-color: transparent;
@@ -61,12 +62,12 @@
     }
 
     .btn-default:not(.disabled),
-    &.open .dropdown-toggle.btn-default {
+    &.show .dropdown-toggle.btn-default {
         background-color: @input-bg;
         border-color: @input-border;
     }
 
-    &.input-group-nr.open:not(.no-highlighted) {
+    &.input-group-nr.show:not(.no-highlighted) {
         & > .form-control,
         & > .btn {
             border-color: @gray-darker;
@@ -132,7 +133,7 @@
     }
 }
 
-.open > .combobox.combo-dataview-menu {
+.show > .combobox.combo-dataview-menu {
     &.input-group-nr:not(.no-highlighted) {
         & > .form-control,
         & > .btn {

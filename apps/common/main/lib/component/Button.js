@@ -469,7 +469,7 @@ define([
                                     tip.hide();
                                 }
                             }
-                            var isOpen = el.hasClass('open');
+                            var isOpen = el.hasClass('show');
                             doSplitSelect(!isOpen, 'arrow', e);
                         }
                     }

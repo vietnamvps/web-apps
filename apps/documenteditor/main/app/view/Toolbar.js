@@ -242,7 +242,7 @@ define([
                         menu: new Common.UI.Menu({
                             style: 'min-width: 100px;',
                             items: [
-                                {template: _.template('<div id="id-toolbar-menu-highlight" style="width: 120px; height: 120px; margin: 10px;"></div>'), clsDropdownItem: false},
+                                {template: _.template('<div id="id-toolbar-menu-highlight" style="width: 120px; height: 120px; margin: 10px;"></div>')},
                                 {caption: '--'},
                                 this.mnuHighlightTransparent = new Common.UI.MenuItem({
                                     caption: this.strMenuNoFill,
@@ -265,11 +265,11 @@ define([
                                 {
                                     id: 'id-toolbar-menu-auto-fontcolor',
                                     caption: this.textAutoColor,
-                                    template: _.template('<a tabindex="-1" type="menuitem"><span class="menu-item-icon" style="background-image: none; width: 12px; height: 12px; margin: 1px 7px 0 1px; background-color: #000;"></span><%= caption %></a>')
+                                    template: _.template('<a class="dropdown-item" tabindex="-1" type="menuitem"><span class="menu-item-icon" style="background-image: none; width: 12px; height: 12px; margin: 1px 7px 0 1px; background-color: #000;"></span><%= caption %></a>')
                                 },
                                 {caption: '--'},
-                                {template: _.template('<div id="id-toolbar-menu-fontcolor" style="width: 169px; height: 220px; margin: 10px;"></div>'), clsDropdownItem: false},
-                                {template: _.template('<a id="id-toolbar-menu-new-fontcolor" style="padding-left:12px;">' + this.textNewColor + '</a>')}
+                                {template: _.template('<div id="id-toolbar-menu-fontcolor" style="width: 169px; height: 220px; margin: 10px;"></div>')},
+                                {template: _.template('<a id="id-toolbar-menu-new-fontcolor" class="dropdown-item" style="padding-left:12px;">' + this.textNewColor + '</a>')}
                             ]
                         })
                     });
@@ -282,8 +282,8 @@ define([
                         split: true,
                         menu: new Common.UI.Menu({
                             items: [
-                                {template: _.template('<div id="id-toolbar-menu-paracolor" style="width: 169px; height: 220px; margin: 10px;"></div>'), clsDropdownItem: false},
-                                {template: _.template('<a id="id-toolbar-menu-new-paracolor" style="padding-left:12px;">' + this.textNewColor + '</a>')}
+                                {template: _.template('<div id="id-toolbar-menu-paracolor" style="width: 169px; height: 220px; margin: 10px;"></div>')},
+                                {template: _.template('<a id="id-toolbar-menu-new-paracolor" class="dropdown-item" style="padding-left:12px;">' + this.textNewColor + '</a>')}
                             ]
                         })
                     });
@@ -439,7 +439,7 @@ define([
                         menu: new Common.UI.Menu({
                             cls: 'shifted-left',
                             items: [
-                                {template: _.template('<div id="id-toolbar-menu-tablepicker" class="dimension-picker" style="margin: 5px 10px;"></div>'), clsDropdownItem: false},
+                                {template: _.template('<div id="id-toolbar-menu-tablepicker" class="dimension-picker" style="margin: 5px 10px;"></div>')},
                                 {caption: this.mniCustomTable, value: 'custom'},
                                 {caption: this.mniDrawTable, value: 'draw', checkable: true},
                                 {caption: this.mniEraseTable, value: 'erase', checkable: true}
@@ -488,7 +488,7 @@ define([
                         menu: new Common.UI.Menu({
                             cls: 'menu-shapes',
                             items: [
-                                {template: _.template('<div id="id-toolbar-menu-insart" style="width: 239px; margin-left: 5px;"></div>'), clsDropdownItem: false}
+                                {template: _.template('<div id="id-toolbar-menu-insart" style="width: 239px; margin-left: 5px;"></div>')}
                             ]
                         })
                     });
@@ -787,7 +787,7 @@ define([
                     this.toolbarControls.push(this.btnPageOrient);
 
 
-                    var pageMarginsTemplate = _.template('<a id="<%= id %>" tabindex="-1" type="menuitem"><div><b><%= caption %></b></div>' +
+                    var pageMarginsTemplate = _.template('<a id="<%= id %>" class="dropdown-item" tabindex="-1" type="menuitem"><div><b><%= caption %></b></div>' +
                         '<% if (options.value !== null) { %><div style="display: inline-block;margin-right: 20px;min-width: 80px;">' +
                         '<label style="display: block;">' + this.textTop + '<%= parseFloat(Common.Utils.Metric.fnRecalcFromMM(options.value[0]).toFixed(2)) %> <%= Common.Utils.Metric.getCurrentMetricName() %></label>' +
                         '<label style="display: block;">' + this.textLeft + '<%= parseFloat(Common.Utils.Metric.fnRecalcFromMM(options.value[1]).toFixed(2)) %> <%= Common.Utils.Metric.getCurrentMetricName() %></label></div><div style="display: inline-block;">' +
@@ -850,7 +850,7 @@ define([
                     });
                     this.toolbarControls.push(this.btnPageMargins);
 
-                    var pageSizeTemplate = _.template('<a id="<%= id %>" tabindex="-1" type="menuitem"><div><b><%= caption %></b></div>' +
+                    var pageSizeTemplate = _.template('<a id="<%= id %>" class="dropdown-item" tabindex="-1" type="menuitem"><div><b><%= caption %></b></div>' +
                         '<div><%= parseFloat(Common.Utils.Metric.fnRecalcFromMM(options.value[0]).toFixed(2)) %> <%= Common.Utils.Metric.getCurrentMetricName() %> x ' +
                         '<%= parseFloat(Common.Utils.Metric.fnRecalcFromMM(options.value[1]).toFixed(2)) %> <%= Common.Utils.Metric.getCurrentMetricName() %></div></a>');
 
@@ -1114,8 +1114,7 @@ define([
                             '<div id="id-save-style-container" class = "save-style-container">' +
                             '<span id="id-save-style-plus" class="plus img-commonctrl"  ></span>' +
                             '<label id="id-save-style-link" class="save-style-link" >' + me.textStyleMenuNew + '</label>' +
-                            '</div>'),
-                        clsDropdownItem: false
+                            '</div>')
                     });
 
                     this.listStyles = new Common.UI.ComboDataView({
@@ -1653,7 +1652,7 @@ define([
                         cls: 'shifted-left',
                         style: 'min-width: 139px',
                         items: [
-                            {template: _.template('<div id="id-toolbar-menu-markers" class="menu-markers" style="width: 139px; margin: 0 9px;"></div>'), clsDropdownItem: false},
+                            {template: _.template('<div id="id-toolbar-menu-markers" class="menu-markers" style="width: 139px; margin: 0 9px;"></div>')},
                             this.mnuMarkerSettings = new Common.UI.MenuItem({
                                 caption: this.textListSettings,
                                 disabled: (this.mnuMarkersPicker.conf.index || 0)==0,
@@ -1667,7 +1666,7 @@ define([
                     new Common.UI.Menu({
                         cls: 'shifted-left',
                         items: [
-                            {template: _.template('<div id="id-toolbar-menu-numbering" class="menu-markers" style="width: 185px; margin: 0 9px;"></div>'), clsDropdownItem: false},
+                            {template: _.template('<div id="id-toolbar-menu-numbering" class="menu-markers" style="width: 185px; margin: 0 9px;"></div>')},
                             this.mnuNumberSettings = new Common.UI.MenuItem({
                                 caption: this.textListSettings,
                                 disabled: (this.mnuNumbersPicker.conf.index || 0)==0,
@@ -1682,7 +1681,7 @@ define([
                         cls: 'shifted-left',
                         style: 'min-width: 90px',
                         items: [
-                            {template: _.template('<div id="id-toolbar-menu-multilevels" class="menu-markers" style="width: 93px; margin: 0 9px;"></div>'), clsDropdownItem: false},
+                            {template: _.template('<div id="id-toolbar-menu-multilevels" class="menu-markers" style="width: 93px; margin: 0 9px;"></div>')},
                             this.mnuMultilevelSettings = new Common.UI.MenuItem({
                                 caption: this.textListSettings,
                                 disabled: (this.mnuMultilevelPicker.conf.index || 0)==0,
@@ -1706,7 +1705,7 @@ define([
                                     menuAlign: 'tl-tr',
                                     style: 'min-width: 90px;',
                                     items: [
-                                        {template: _.template('<div id="id-toolbar-menu-pageposition" class="menu-pageposition"></div>'), clsDropdownItem: false},
+                                        {template: _.template('<div id="id-toolbar-menu-pageposition" class="menu-pageposition"></div>')},
                                         this.mnuPageNumCurrentPos = new Common.UI.MenuItem({
                                             caption: this.textToCurrent,
                                             disabled: this.mnuPageNumCurrentPos.isDisabled(),
@@ -1728,7 +1727,7 @@ define([
                 this.btnInsertChart.setMenu( new Common.UI.Menu({
                     style: 'width: 364px;',
                     items: [
-                        {template: _.template('<div id="id-toolbar-menu-insertchart" class="menu-insertchart" style="margin: 5px 5px 5px 10px;"></div>'), clsDropdownItem: false}
+                        {template: _.template('<div id="id-toolbar-menu-insertchart" class="menu-insertchart" style="margin: 5px 5px 5px 10px;"></div>')}
                     ]
                 }));
 
@@ -2014,7 +2013,7 @@ define([
                 this.mnuColorSchema.items = [];
 
                 var itemTemplate = _.template([
-                    '<a id="<%= id %>"  tabindex="-1" type="menuitem" class="<%= options.cls %>">',
+                    '<a id="<%= id %>"  tabindex="-1" type="menuitem" class="dropdown-item <%= options.cls %>">',
                     '<span class="colors">',
                     '<% _.each(options.colors, function(color) { %>',
                     '<span class="color" style="background: <%= color %>;"></span>',

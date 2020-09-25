@@ -2509,7 +2509,7 @@ define([
                     menu: new Common.UI.Menu({
                         menuAlign: 'tl-tr',
                         items: [
-                            { template: _.template('<div id="id-toolbar-menu-shapegroup' + i + '" class="menu-shape" style="width: ' + (shapeGroup.get('groupWidth') - 8) + 'px; margin-left: 5px;"></div>'), clsDropdownItem: false }
+                            { template: _.template('<div id="id-toolbar-menu-shapegroup' + i + '" class="menu-shape" style="width: ' + (shapeGroup.get('groupWidth') - 8) + 'px; margin-left: 5px;"></div>') }
                         ]
                     })
                 });
@@ -2568,8 +2568,7 @@ define([
                             {
                                 template: _.template('<div id="id-toolbar-menu-equationgroup' + i +
                                 '" class="menu-shape" style="width:' + (equationGroup.get('groupWidth') + 8) + 'px; ' +
-                                equationGroup.get('groupHeight') + 'margin-left:5px;"></div>'),
-                                clsDropdownItem: false
+                                equationGroup.get('groupHeight') + 'margin-left:5px;"></div>')
                             }
                         ]
                     })

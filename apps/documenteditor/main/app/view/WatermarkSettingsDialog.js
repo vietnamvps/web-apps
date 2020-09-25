@@ -338,7 +338,7 @@ define(['text!documenteditor/main/app/template/WatermarkSettings.template',
                     },
                     {caption: '--'},
                         { template: _.template('<div id="watermark-menu-textcolor" style="width: 169px; height: 220px; margin: 10px;"></div>') },
-                        { template: _.template('<a id="watermark-menu-textcolor-new">' + this.textNewColor + '</a>') }
+                        { template: _.template('<a id="watermark-menu-textcolor-new" class="dropdown-item">' + this.textNewColor + '</a>') }
                     ]
                 })
             });

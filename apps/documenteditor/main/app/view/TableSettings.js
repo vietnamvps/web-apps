@@ -670,7 +670,7 @@ define([
                     menu        : new Common.UI.Menu({
                         style: 'width: 575px;',
                         items: [
-                            { template: _.template('<div id="id-table-menu-template" class="menu-table-template"  style="margin: 5px 5px 5px 10px;"></div>'), clsDropdownItem: false }
+                            { template: _.template('<div id="id-table-menu-template" class="menu-table-template"  style="margin: 5px 5px 5px 10px;"></div>') }
                         ]
                     })
                 });

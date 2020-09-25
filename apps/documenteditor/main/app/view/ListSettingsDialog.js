@@ -184,7 +184,7 @@ define([
             var itemsTemplate =
                 [
                     '<% _.each(items, function(item) { %>',
-                    '<li id="<%= item.id %>" class="dropdown-item" data-value="<%= item.value %>"><a tabindex="-1" type="menuitem">',
+                    '<li id="<%= item.id %>" data-value="<%= item.value %>"><a class="dropdown-item" tabindex="-1" type="menuitem">',
                     '<%= item.displayValue %><% if (item.value === Asc.c_oAscNumberingFormat.Bullet) { %><span style="font-family:<%=item.font%>;"><%=item.symbol%></span><% } %>',
                     '</a></li>',
                     '<% }); %>'

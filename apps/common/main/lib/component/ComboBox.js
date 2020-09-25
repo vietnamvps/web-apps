@@ -95,7 +95,7 @@ define([
                     '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-reference="parent"><span class="caret img-commonctrl"></span></button>',
                     '<ul class="dropdown-menu <%= menuCls %>" style="<%= menuStyle %>" role="menu">',
                         '<% _.each(items, function(item) { %>',
-                            '<li id="<%= item.id %>" class="dropdown-item" data-value="<%= item.value %>"><a tabindex="-1" type="menuitem"><%= scope.getDisplayValue(item) %></a></li>',
+                            '<li id="<%= item.id %>" data-value="<%= item.value %>"><a class="dropdown-item" tabindex="-1" type="menuitem"><%= scope.getDisplayValue(item) %></a></li>',
                         '<% }); %>',
                     '</ul>',
                 '</span>'
@@ -147,7 +147,7 @@ define([
                         scope       : me
                     }));
                     if (this.itemsTemplate)
-                        this.cmpEl.find('ul').html(
+                        this.cmpEl.find('.dropdown-menu').html(
                             $(this.itemsTemplate({
                                 items       : items,
                                 scope       : me
@@ -264,16 +264,17 @@ define([
                 }
 
                 _.delay(function(){
-                    me.cmpEl.addClass('open');
+                    me.cmpEl.addClass('show');
                 }, delay || 0);
             },
 
             closeMenu: function() {
-                this.cmpEl.removeClass('open');
+                this.cmpEl.removeClass('show');
+                this.cmpEl.find('.dropdown-menu').removeClass('show');
             },
 
             isMenuOpen: function() {
-                return this.cmpEl.hasClass('open');
+                return this.cmpEl.hasClass('show');
             },
 
             onBeforeShowMenu: function(e) {
@@ -298,7 +299,7 @@ define([
                     }
                 }
 
-                var $list = this.cmpEl.find('ul');
+                var $list = this.cmpEl.find('.dropdown-menu');
                 if ($list.hasClass('menu-absolute')) {
                     var offset = this.cmpEl.offset();
                     $list.css({left: offset.left, top: offset.top + this.cmpEl.outerHeight() + 2});
@@ -306,7 +307,7 @@ define([
             },
 
             onAfterShowMenu: function(e) {
-                var $list = $(this.el).find('ul'),
+                var $list = $(this.el).find('.dropdown-menu'),
                     $selected = $list.find('> li.selected');
 
                 if ($selected.length) {
@@ -319,7 +320,7 @@ define([
                         height = (Math.floor(height/itemHeight) * itemHeight);
                         $list.scrollTop(height);
                     }
-                    setTimeout(function(){$selected.find('a').focus();}, 1);
+                    setTimeout(function(){$selected.find('.dropdown-item').focus();}, 1);
                 }
 
                 if (this.scroller)
@@ -371,7 +372,7 @@ define([
                     (this._search.char !== e.key) && (this._search.full = true);
                     this._search.text += e.key;
                     if (this._search.index===undefined) {
-                        var $items = this.cmpEl.find('ul > li').find('> a');
+                        var $items = this.cmpEl.find('.dropdown-menu > li').find('> .dropdown-item');
                         this._search.index = $items.index($items.filter(':focus'));
                     }
                     this.selectCandidate();
@@ -403,7 +404,7 @@ define([
                     var item = $('#' + itemCandidate.get('id') + ' a', $(this.el));
                     if (this.scroller) {
                         this.scroller.update({alwaysVisibleY: this.scrollAlwaysVisible});
-                        var $list = $(this.el).find('ul');
+                        var $list = $(this.el).find('.dropdown-menu');
                         var itemTop = item.position().top,
                             itemHeight = item.outerHeight(),
                             listHeight = $list.outerHeight();
@@ -430,7 +431,8 @@ define([
 
                     _.delay(function() {
                         me._skipInputChange = true;
-                        me.cmpEl.find('ul li:first a').focus();
+                        var item = me.cmpEl.find('.dropdown-menu li:first .dropdown-item');
+                            item.focus();
                     }, 10);
                 } else if (e.keyCode == Common.UI.Keys.RETURN && $(e.target).val() === me.lastValue){
                     this._input.trigger('change', { reapply: true });
@@ -637,14 +639,14 @@ define([
 
             onResetItems: function() {
                 if (this.itemsTemplate) {
-                    $(this.el).find('ul').html( $(this.itemsTemplate({
+                    $(this.el).find('.dropdown-menu').html( $(this.itemsTemplate({
                         items: this.store.toJSON(),
                         scope: this
                     })));
                 } else {
-                    $(this.el).find('ul').html(_.template([
+                    $(this.el).find('.dropdown-menu').html(_.template([
                         '<% _.each(items, function(item) { %>',
-                           '<li id="<%= item.id %>" class="dropdown-item" data-value="<%- item.value %>"><a tabindex="-1" type="menuitem"><%= scope.getDisplayValue(item) %></a></li>',
+                           '<li id="<%= item.id %>" data-value="<%- item.value %>"><a class="dropdown-item" tabindex="-1" type="menuitem"><%= scope.getDisplayValue(item) %></a></li>',
                         '<% }); %>'
                     ].join(''))({
                         items: this.store.toJSON(),

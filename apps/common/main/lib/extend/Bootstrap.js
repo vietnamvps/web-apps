@@ -76,7 +76,7 @@ function patchDropDownKeyDown(e) {
     if ($this.is('.disabled, :disabled')) return;
 
     var $parent  = getParent($this);
-    var isActive = $parent.hasClass('open') || $parent.hasClass('over');
+    var isActive = $parent.hasClass('show') || $parent.hasClass('over');
 
     if (!isActive || (isActive && e.keyCode == 27)) {
         if (e.which == 27) {
@@ -145,7 +145,7 @@ function patchDropDownKeyDownAdditional(e) { // only for formula menu when typin
     if ($this.is('.disabled, :disabled')) return;
 
     var $parent  = getParent($this);
-    var isActive = $parent.hasClass('open') || $parent.hasClass('over');
+    var isActive = $parent.hasClass('show') || $parent.hasClass('over');
 
     if (!isActive || (isActive && (e.keyCode == 27 || e.keyCode == 37 || e.keyCode == 39))) {
 //        if (e.which == 27)
@@ -194,14 +194,16 @@ function getParent($this) {
 function clearMenus(isFromInputControl) {
     $('.dropdown-toggle').each(function (e) {
         var $parent = ($(this)).parent();
-        if (!$parent.hasClass('open')) return;
+        if (!$parent.hasClass('show')) return;
         if ($parent.attr('data-value') == 'prevent-canvas-click') {
             $parent.attr('data-value','');
             return;
         }
         $parent.trigger(e = $.Event('hide.bs.dropdown'));
         if (e.isDefaultPrevented()) return;
-        $parent.removeClass('open').trigger('hidden.bs.dropdown', isFromInputControl);
+        $parent.removeClass('show');
+        $parent.find('.dropdown-menu').removeClass('show');
+        $parent.trigger('hidden.bs.dropdown', isFromInputControl);
     })
 }
 

@@ -45,14 +45,14 @@
  *  Default template
  *
  *  Simple menu item:
- *  <li><a href="#">Caption</a></li>
+ *  <li><a href="#" class="dropdown-item">Caption</a></li>
  *
  *  Separator:
  *  <li class="dropdown-divider"></li>
  *
  *  Menu item with sub-menu:
  *  <li class="dropdown-submenu">
- *      <a href="#">Sub-menu item</a>
+ *      <a href="#" class="dropdown-item">Sub-menu item</a>
  *      <ul class="dropdown-menu"></ul>
  *  </li>
  *
@@ -108,7 +108,7 @@ define([
         tagName : 'li',
 
         template: _.template([
-            '<a id="<%= id %>" style="<%= style %>" <% if(menu) { %> data-toggle="dropdown" class="dropdown-toggle" <% } %> <% if(options.canFocused) { %> tabindex="-1" type="menuitem" <% }; if(!_.isUndefined(options.stopPropagation)) { %> data-stopPropagation="true" <% }; %> >',
+            '<a id="<%= id %>" class="dropdown-item" style="<%= style %>" <% if(menu) { %> data-toggle="dropdown" class="dropdown-toggle" <% } %> <% if(options.canFocused) { %> tabindex="-1" type="menuitem" <% }; if(!_.isUndefined(options.stopPropagation)) { %> data-stopPropagation="true" <% }; %> >',
                 '<% if (!_.isEmpty(iconCls)) { %>',
                     '<span class="menu-item-icon <%= iconCls %>"></span>',
                 '<% } %>',
@@ -136,7 +136,6 @@ define([
             this.iconCls        = me.options.iconCls;
             this.hint           = me.options.hint;
             this.rendered       = false;
-            this.clsDropdownItem   = (!_.isUndefined(me.options.clsDropdownItem)) ? me.options.clsDropdownItem : true; // false for complex elements (forms, group buttons)
 
             if (this.menu !== null && !(this.menu instanceof Common.UI.Menu) && !(this.menu instanceof Common.UI.MenuSimple)) {
                 this.menu = new Common.UI.Menu(_.extend({}, me.options.menu));
@@ -180,8 +179,6 @@ define([
                             _.bind(me.onUnHoverItem, me)
                         );
                     }
-
-                    this.clsDropdownItem && el.addClass('dropdown-item');
 
                     var firstChild = el.children(':first');
 

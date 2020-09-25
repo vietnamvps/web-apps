@@ -1309,7 +1309,7 @@ define([
                     mnuColorSchema.items = [];
 
                     var itemTemplate = _.template([
-                        '<a id="<%= id %>" class="<%= options.cls %>" tabindex="-1" type="menuitem">',
+                        '<a id="<%= id %>" class="dropdown-item <%= options.cls %>" tabindex="-1" type="menuitem">',
                         '<span class="colors">',
                         '<% _.each(options.colors, function(color) { %>',
                         '<span class="color" style="background: <%= color %>;"></span>',
