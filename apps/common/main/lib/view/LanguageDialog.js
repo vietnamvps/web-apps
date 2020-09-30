@@ -113,7 +113,7 @@ define([
 
     close: function(suppressevent) {
         var $window = this.getChild();
-        if (!$window.find('.combobox.open').length) {
+        if (!$window.find('.combobox.show').length) {
             Common.UI.Window.prototype.close.call(this, arguments);
         }
     },

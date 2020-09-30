@@ -806,13 +806,13 @@ define([
                     }
 
                     var statusbar = DE.getController('Statusbar');
-                    var menu_opened = statusbar.statusbar.$el.find('.open > [data-toggle="dropdown"]');
+                    var menu_opened = statusbar.statusbar.$el.find('.show > [data-toggle="dropdown"]');
                     if (menu_opened.length) {
                         $.fn.dropdown.Constructor.prototype.keydown.call(menu_opened[0], e);
                         return false;
                     }
                     if (this.mode.canPlugins && this.leftMenu.panelPlugins) {
-                        menu_opened = this.leftMenu.panelPlugins.$el.find('#menu-plugin-container.open > [data-toggle="dropdown"]');
+                        menu_opened = this.leftMenu.panelPlugins.$el.find('#menu-plugin-container.show > [data-toggle="dropdown"]');
                         if (menu_opened.length) {
                             $.fn.dropdown.Constructor.prototype.keydown.call(menu_opened[0], e);
                             return false;

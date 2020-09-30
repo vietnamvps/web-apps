@@ -265,6 +265,7 @@ define([
 
                 _.delay(function(){
                     me.cmpEl.addClass('show');
+                    me.cmpEl.find('.dropdown-menu').addClass('show');
                 }, delay || 0);
             },
 

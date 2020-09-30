@@ -82,7 +82,7 @@ define([
                 '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-reference="parent"><span class="caret img-commonctrl"></span></button>',
                 '<ul class="dropdown-menu <%= menuCls %>" style="<%= menuStyle %>" role="menu">',
                     '<% _.each(items, function(item) { %>',
-                        '<li id="<%= item.id %>" class="dropdown-item" data-value="<%= item.value %>"><a tabindex="-1" type="menuitem">',
+                        '<li id="<%= item.id %>" data-value="<%= item.value %>"><a class="dropdown-item" tabindex="-1" type="menuitem">',
                             '<span><%= item.displayValue %></span>',
                             '<% if (item.offsety!==undefined) { %>',
                                 '<img src="data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" align="right" style="background-position: 0 -<%= item.offsety %>px;">',

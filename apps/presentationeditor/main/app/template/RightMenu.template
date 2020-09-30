@@ -26,6 +26,6 @@
         <button id="id-right-menu-table" class="btn btn-category arrow-left" content-target="id-table-settings"><i class="icon toolbar__icon btn-menu-table">&nbsp;</i></button>
         <button id="id-right-menu-chart" class="btn btn-category arrow-left" content-target="id-chart-settings"><i class="icon toolbar__icon btn-menu-chart">&nbsp;</i></button>
         <button id="id-right-menu-textart" class="btn btn-category arrow-left" content-target="id-textart-settings"><i class="icon toolbar__icon btn-menu-textart">&nbsp;</i></button>
-        <button id="id-right-menu-signature" class="btn btn-category arrow-left hidden" content-target="id-signature-settings"><i class="icon toolbar__icon btn-menu-signature">&nbsp;</i></button>
+        <button id="id-right-menu-signature" class="btn btn-category arrow-left d-none" content-target="id-signature-settings"><i class="icon toolbar__icon btn-menu-signature">&nbsp;</i></button>
     </div>
 </div>
