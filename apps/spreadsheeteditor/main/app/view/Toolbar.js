@@ -325,7 +325,9 @@ define([
                         { caption: me.textTabInsert, action: 'ins', extcls: 'canedit'},
                         {caption: me.textTabLayout, action: 'layout', extcls: 'canedit'},
                         {caption: me.textTabFormula, action: 'formula', extcls: 'canedit'},
-                        {caption: me.textTabData, action: 'data', extcls: 'canedit'}
+                        {caption: me.textTabData, action: 'data', extcls: 'canedit'},
+                        undefined, undefined, undefined,
+                        {caption: me.textTabView, action: 'view', extcls: 'canedit'}
                     ]}
                 );
 
@@ -2435,6 +2437,7 @@ define([
         tipPrintTitles: 'Print titles',
         capBtnInsSlicer: 'Slicer',
         tipInsertSlicer: 'Insert slicer',
-        textVertical: 'Vertical Text'
+        textVertical: 'Vertical Text',
+        textTabView: 'View'
     }, SSE.Views.Toolbar || {}));
 });

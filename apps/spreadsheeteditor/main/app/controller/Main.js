@@ -358,6 +358,7 @@ define([
                 this.appOptions.mentionShare = !((typeof (this.appOptions.customization) == 'object') && (this.appOptions.customization.mentionShare==false));
                 this.appOptions.canMakeActionLink = this.editorConfig.canMakeActionLink;
                 this.appOptions.canFeaturePivot = true;
+                this.appOptions.canFeatureViews = !!this.api.asc_isSupportFeature("sheet-views");
 
                 this.headerView = this.getApplication().getController('Viewport').getView('Common.Views.Header');
                 this.headerView.setCanBack(this.appOptions.canBackToFolder === true, (this.appOptions.canBackToFolder) ? this.editorConfig.customization.goback.text : '');
@@ -1149,7 +1150,7 @@ define([
                     }
 
                     if (!me.appOptions.isEditMailMerge && !me.appOptions.isEditDiagram && me.appOptions.canFeaturePivot)
-                        application.getController('PivotTable').setMode(me.appOptions).setConfig({config: me.editorConfig}, me.api);
+                        application.getController('PivotTable').setMode(me.appOptions);
 
                     var viewport = this.getApplication().getController('Viewport').getView('Viewport');
                     viewport.applyEditorMode();
@@ -1531,6 +1532,10 @@ define([
 
                     case  Asc.c_oAscError.ID.MoveSlicerError:
                         config.msg = this.errorMoveSlicerError;
+                        break;
+
+                    case  Asc.c_oAscError.ID.LockedEditView:
+                        config.msg = this.errorEditView;
                         break;
 
                     default:
@@ -2220,13 +2225,16 @@ define([
                     disablefunc: function (disable) {
                         me.disableEditing(disable);
                         var app = me.getApplication();
+                        app.getController('Toolbar').DisableToolbar(disable,disable);
                         app.getController('RightMenu').SetDisabled(disable, true);
                         app.getController('Statusbar').SetDisabled(disable);
                         app.getController('Common.Controllers.ReviewChanges').SetDisabled(disable);
                         app.getController('DocumentHolder').SetDisabled(disable, true);
                         var leftMenu = app.getController('LeftMenu');
-                        leftMenu.leftMenu.getMenu('file').getButton('protect').setDisabled(disable);
                         leftMenu.setPreviewMode(disable);
+                        leftMenu.disableEditing(disable);
+                        app.getController('CellEditor').disableEditing(disable);
+                        app.getController('Viewport').disableEditing(disable);
                         var comments = app.getController('Common.Controllers.Comments');
                         if (comments) comments.setPreviewMode(disable);
                 }});
@@ -2662,7 +2670,8 @@ define([
             errorPasteSlicerError: 'Table slicers cannot be copied from one workbook to another.',
             errorFrmlMaxLength: 'You cannot add this formula as its length exceeded the allowed number of characters.<br>Please edit it and try again.',
             errorFrmlMaxReference: 'You cannot enter this formula because it has too many values,<br>cell references, and/or names.',
-            errorMoveSlicerError: 'Table slicers cannot be copied from one workbook to another.<br>Try again by selecting the entire table and the slicers.'
+            errorMoveSlicerError: 'Table slicers cannot be copied from one workbook to another.<br>Try again by selecting the entire table and the slicers.',
+            errorEditView: 'The existing sheet view cannot be edited and the new ones cannot be created at the moment as some of them are being edited.'
         }
     })(), SSE.Controllers.Main || {}))
 });

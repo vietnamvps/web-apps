@@ -2846,12 +2846,15 @@ define([
         onInsertSymbolClick: function() {
             if (this.api) {
                 var me = this,
+                    selected = me.api.asc_GetSelectedText(),
                     win = new Common.Views.SymbolTableDialog({
                         api: me.api,
                         lang: me.toolbar.mode.lang,
                         type: 1,
                         special: true,
                         buttons: [{value: 'ok', caption: this.textInsert}, 'close'],
+                        font: selected && selected.length>0 ? me.api.asc_getCellInfo().asc_getXfs().asc_getFontName() : undefined,
+                        symbol: selected && selected.length>0 ? selected.charAt(0) : undefined,
                         handler: function(dlg, result, settings) {
                             if (result == 'ok') {
                                 me.api.asc_insertSymbol(settings.font ? settings.font : me.api.asc_getCellInfo().asc_getXfs().asc_getFontName(), settings.code, settings.special);
@@ -3314,6 +3317,7 @@ define([
                     if ( config.canFeaturePivot ) {
                         tab = {action: 'pivot', caption: me.textPivot};
                         var pivottab = me.getApplication().getController('PivotTable');
+                        pivottab.setApi(me.api).setConfig({toolbar: me});
                         $panel = pivottab.createToolbarPanel();
                         if ($panel) {
                             me.toolbar.addTab(tab, $panel, 5);
@@ -3342,6 +3346,10 @@ define([
                                 me.toolbar.addTab(tab, $panel, 7);
                         }
                     }
+
+                    var viewtab = me.getApplication().getController('ViewTab');
+                    viewtab.setApi(me.api).setConfig({toolbar: me, mode: config});
+                    Array.prototype.push.apply(me.toolbar.lockControls, viewtab.getView('ViewTab').getButtons());
                 }
             }
         },
