@@ -339,7 +339,7 @@ define([
         },
 
         ShowHideElem: function(value) {
-            this.numberingControls.toggleClass('hidden', value==0);
+            this.numberingControls.toggleClass('d-none', value==0);
             this.cmbNumFormat.setVisible(value==1);
             this.cmbBulletFormat.setVisible(value==0);
         },

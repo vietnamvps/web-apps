@@ -1236,8 +1236,8 @@ define([
         setMode: function(mode) {
             this.mode = mode;
             this.inputAuthor.setVisible(mode.isEdit);
-            this.pnlApply.toggleClass('hidden', !mode.isEdit);
-            this.tblAuthor.find('.close').toggleClass('hidden', !mode.isEdit);
+            this.pnlApply.toggleClass('d-none', !mode.isEdit);
+            this.tblAuthor.find('.close').toggleClass('d-none', !mode.isEdit);
             if (!mode.isEdit) {
                 this.inputTitle._input.attr('placeholder', '');
                 this.inputSubject._input.attr('placeholder', '');

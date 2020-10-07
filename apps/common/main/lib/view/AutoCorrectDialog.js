@@ -84,8 +84,8 @@ define([ 'text!common/main/lib/template/AutoCorrectDialog.template',
                     '<div class="separator horizontal"></div>',
                     '<div class="footer center">',
                         '<button class="btn normal dlg-btn" result="cancel" style="width: 86px;">' + this.closeButtonText + '</button>',
-                        '<button class="btn normal dlg-btn primary can-apply hidden" result="ok" style="width: 86px;">' + this.okButtonText + '</button>',
-                        '<button class="btn normal dlg-btn can-apply hidden" result="cancel" style="width: 86px;">' + this.cancelButtonText + '</button>',
+                        '<button class="btn normal dlg-btn primary can-apply d-none" result="ok" style="width: 86px;">' + this.okButtonText + '</button>',
+                        '<button class="btn normal dlg-btn can-apply d-none" result="cancel" style="width: 86px;">' + this.cancelButtonText + '</button>',
                     '</div>'
                 ].join('')
             }, options || {});
@@ -767,8 +767,8 @@ define([ 'text!common/main/lib/template/AutoCorrectDialog.template',
         },
 
         updateFooterButtons: function(apply) {
-            this.applyButtons.toggleClass('hidden', !apply);
-            this.closeButtons.toggleClass('hidden', apply);
+            this.applyButtons.toggleClass('d-none', !apply);
+            this.closeButtons.toggleClass('d-none', apply);
         },
 
 

@@ -588,7 +588,7 @@ define([
             this.cmbCondition1.on('selected', _.bind(function(combo, record) {
                 var isBetween = record.value == -2 || record.value == -3;
                 this.inputValue2.setVisible(isBetween);
-                this.lblAnd.toggleClass('hidden', !isBetween);
+                this.lblAnd.toggleClass('d-none', !isBetween);
                 this.inputValue.$el.width(isBetween ? 100 : 225);
                 var me = this;
                 _.defer(function () {
@@ -707,7 +707,7 @@ define([
                     this.inputValue.setValue(null === customFilters[0].asc_getVal() ? '' : customFilters[0].asc_getVal());
                     this.inputValue.$el.width((value==-2 || value==-3) ? 100 : 225);
 
-                    this.lblAnd.toggleClass('hidden', !(value==-2 || value==-3));
+                    this.lblAnd.toggleClass('d-none', !(value==-2 || value==-3));
                     this.inputValue2.setVisible(value==-2 || value==-3);
                     this.inputValue2.setValue((customFilters.length>1) ? (null === customFilters[1].asc_getVal() ? '' : customFilters[1].asc_getVal()) : '');
                 }
@@ -1832,7 +1832,7 @@ define([
             }
             if (isPivot && pivotObj.asc_getIsPageFilter()) {
                 this.setResizable(true, [this.initConfig.minwidth - this.menuPanelWidth, this.initConfig.minheight]);
-                menuPanel.addClass('hidden');
+                menuPanel.addClass('d-none');
                 width -= this.menuPanelWidth;
                 this.menuPanelWidth = 0;
             }

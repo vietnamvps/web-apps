@@ -65,7 +65,7 @@ define([
             this.template = [
                 '<div class="box">',
                     '<div id="id-dlg-tableoptions-range" class="input-row"  style="margin-bottom: 5px;"></div>',
-                    '<div class="input-row hidden" id="id-dlg-tableoptions-title" style="margin-top: 5px;"></div>',
+                    '<div class="input-row d-none" id="id-dlg-tableoptions-title" style="margin-top: 5px;"></div>',
                     '<label class="" id="id-dlg-tableoptions-lbl" style="margin-top: 5px;">' + this.txtNote + '</label>',
                 '</div>'
             ].join('');
@@ -120,8 +120,8 @@ define([
                     me.inputRange.setValue(settings.range);
                     me.api.asc_setSelectionDialogMode(Asc.c_oAscSelectionDialogType.FormatTable, settings.range);
                 } else {
-                    me.cbTitle.$el && me.cbTitle.$el.removeClass('hidden');
-                    me.lblNote.addClass('hidden');
+                    me.cbTitle.$el && me.cbTitle.$el.removeClass('d-none');
+                    me.lblNote.addClass('d-none');
                     me.setHeight(152);
                     var options = me.api.asc_getAddFormatTableOptions();
                     me.inputRange.setValue(options.asc_getRange());

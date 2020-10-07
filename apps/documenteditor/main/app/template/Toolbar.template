@@ -77,7 +77,7 @@
                         <span class="btn-slot" id="slot-btn-mailrecepients"></span>
                     </div>
                 </div>
-                <div class="group" id="slot-field-styles"></div>
+                <div class="group" id="slot-field-styles" style="position: relative;"></div>
             </section>
             <section class="panel" data-tab="ins">
                 <div class="group">

@@ -357,7 +357,8 @@ define([
                     itemHeight: 50,
                     menuMaxHeight: 270,
                     enableKeyEvents: true,
-                    cls: 'combo-chart-style'
+                    cls: 'combo-chart-style',
+                    menuCls: 'position-top-left'
                 });
                 this.cmbChartStyle.render($('#chart-combo-style'));
                 this.cmbChartStyle.openButton.menu.cmpEl.css({

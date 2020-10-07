@@ -51,6 +51,7 @@ define([
         options : {
             id                  : null,
             cls                 : '',
+            menuCls             : '',
             style               : '',
             hint                : false,
             itemWidth           : 80,
@@ -88,6 +89,7 @@ define([
             this.rendered    = false;
             this.needFillComboView = false;
             this.minWidth = this.options.minWidth;
+            this.menuCls = this.options.menuCls;
 
             this.fieldPicker = new Common.UI.DataView({
                 cls: 'field-picker',
@@ -105,6 +107,7 @@ define([
             this.openButton = new Common.UI.Button({
                 cls: 'open-menu',
                 menu: new Common.UI.Menu({
+                    cls: this.menuCls,
                     menuAlign: 'tl-tl',
                     offset: [0, 3],
                     items: [
@@ -203,6 +206,11 @@ define([
                 me.menuPicker.el.addEventListener('contextmenu', _.bind(me.onPickerComboContextMenu, me), false);
 
                 me.onResize();
+
+                // set align element for dropdown
+                me.openButton.cmpEl.find('button[data-toggle="dropdown"]').data('reference', me.cmpEl.find('.view > .dataview'));
+                me.openButton.cmpEl.find('button[data-toggle="dropdown"]').data('boundary', $('#viewport')[0]);
+                me.openButton.cmpEl.find('button[data-toggle="dropdown"]').data('flip', false);
 
                 me.rendered = true;
 

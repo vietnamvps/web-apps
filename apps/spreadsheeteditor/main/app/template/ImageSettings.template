@@ -67,7 +67,7 @@
     </tr>
     <tr>
         <td class="padding-small" colspan=2>
-            <button type="button" class="btn btn-text-default hidden" id="image-button-edit-object" style="width:100%;"><%= scope.textEditObject %></button>
+            <button type="button" class="btn btn-text-default d-none" id="image-button-edit-object" style="width:100%;"><%= scope.textEditObject %></button>
         </td>
     </tr>
     <tr>

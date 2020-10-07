@@ -339,7 +339,7 @@ define([
             this.btnPivot.on('click', _.bind(this.onInsertPivotClick, this));
             this.lockedControls.push(this.btnPivot);
 
-            this.$el.find('.pivot-only').toggleClass('hidden', !this.mode.canFeaturePivot);
+            this.$el.find('.pivot-only').toggleClass('d-none', !this.mode.canFeaturePivot);
 
             $(this.el).on('click', '#table-advanced-link', _.bind(this.openAdvancedSettings, this));
 

@@ -1050,7 +1050,8 @@ define([
                 itemHeight: 50,
                 menuMaxHeight: 300,
                 enableKeyEvents: true,
-                cls: 'combo-textart'
+                cls: 'combo-textart',
+                menuCls: 'position-top-left'
             });
             this.cmbTransform.render($('#textart-combo-transform'));
             this.cmbTransform.openButton.menu.cmpEl.css({
@@ -1083,14 +1084,14 @@ define([
                     menuMaxHeight: 300,
                     enableKeyEvents: true,
                     showLast: false,
-                    cls: 'combo-textart'
+                    cls: 'combo-textart',
+                    menuCls: 'position-top-left'
                 });
                 this.cmbTextArt.render($('#textart-combo-template'));
                 this.cmbTextArt.openButton.menu.cmpEl.css({
                     'min-width': 178,
                     'max-width': 178
                 });
-                this.cmbTextArt.on('click', _.bind(this.onTextArtSelect, this));
                 this.cmbTextArt.openButton.menu.on('show:after', function () {
                     me.cmbTextArt.menuPicker.scroller.update({alwaysVisibleY: true});
                 });

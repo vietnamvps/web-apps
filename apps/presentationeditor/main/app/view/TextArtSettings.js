@@ -1093,7 +1093,8 @@ define([
                 itemHeight: 28,
                 menuMaxHeight: 300,
                 enableKeyEvents: true,
-                cls: 'combo-pattern'
+                cls: 'combo-pattern',
+                menuCls: 'position-top-left'
             });
             this.cmbPattern.menuPicker.itemTemplate = this.cmbPattern.fieldPicker.itemTemplate = _.template([
                     '<div class="style" id="<%= id %>">',
@@ -1357,7 +1358,8 @@ define([
                 itemHeight: 50,
                 menuMaxHeight: 300,
                 enableKeyEvents: true,
-                cls: 'combo-textart'
+                cls: 'combo-textart',
+                menuCls: 'position-top-left'
             });
             this.cmbTransform.render($('#textart-combo-transform'));
             this.cmbTransform.openButton.menu.cmpEl.css({
@@ -1493,7 +1495,8 @@ define([
                     menuMaxHeight: 300,
                     enableKeyEvents: true,
                     showLast: false,
-                    cls: 'combo-textart'
+                    cls: 'combo-textart',
+                    menuCls: 'position-top-left'
                 });
                 this.cmbTextArt.render($('#textart-combo-template'));
                 this.cmbTextArt.openButton.menu.cmpEl.css({

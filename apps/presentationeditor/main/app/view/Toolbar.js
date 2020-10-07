@@ -797,6 +797,8 @@ define([
 
                     me.listTheme = new Common.UI.ComboDataView({
                         cls: 'combo-styles',
+                        menuCls: 'position-top-right',
+                        style: 'position: relative;',
                         itemWidth: 85,
                         enableKeyEvents: true,
                         itemHeight: 38,

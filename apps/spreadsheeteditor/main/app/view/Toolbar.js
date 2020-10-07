@@ -250,7 +250,7 @@ define([
                 var formatTemplate =
                     _.template([
                         '<% _.each(items, function(item) { %>',
-                        '<li id="<%= item.id %>" data-value="<%= item.value %>"><a tabindex="-1" type="menuitem">',
+                        '<li id="<%= item.id %>" data-value="<%= item.value %>"><a class="dropdown-item" tabindex="-1" type="menuitem">',
                         '<div style="position: relative;"><div style="position: absolute; left: 0; width: 100px;"><%= scope.getDisplayValue(item) %></div>',
                         '<div style="display: inline-block; width: 100%; max-width: 300px; overflow: hidden; text-overflow: ellipsis; text-align: right; vertical-align: bottom; padding-left: 100px; color: silver;white-space: nowrap;"><%= item.exampleval ? item.exampleval : "" %></div>',
                         '</div></a></li>',
@@ -776,6 +776,8 @@ define([
 
                 me.listStyles = new Common.UI.ComboDataView({
                     cls             : 'combo-styles',
+                    style           : 'position: relative;',
+                    menuCls         : 'position-top-right',
                     enableKeyEvents : true,
                     itemWidth       : 112,
                     itemHeight      : 38,
@@ -814,12 +816,12 @@ define([
                 var formatTemplate =
                     _.template([
                         '<% _.each(items, function(item) { %>',
-                        '<li id="<%= item.id %>" data-value="<%= item.value %>"><a tabindex="-1" type="menuitem">',
+                        '<li id="<%= item.id %>" data-value="<%= item.value %>"><a class="dropdown-item" tabindex="-1" type="menuitem">',
                         '<div style="position: relative;"><div style="position: absolute; left: 0; width: 100px;"><%= scope.getDisplayValue(item) %></div>',
                         '<div style="display: inline-block; width: 100%; max-width: 300px; overflow: hidden; text-overflow: ellipsis; text-align: right; vertical-align: bottom; padding-left: 100px; color: silver;white-space: nowrap;"><%= item.exampleval ? item.exampleval : "" %></div>',
                         '</div></a></li>',
                         '<% }); %>',
-                        '<li class="divider">',
+                        '<li class="dropdown-divider">',
                         '<li id="id-toolbar-mnu-item-more-formats" data-value="-1"><a tabindex="-1" type="menuitem">' + me.textMoreFormats + '</a></li>'
                     ].join(''));
 

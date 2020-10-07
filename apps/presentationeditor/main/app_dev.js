@@ -48,6 +48,7 @@ require.config({
         jquery          : '../vendor/jquery/jquery',
         underscore      : '../vendor/underscore/underscore',
         backbone        : '../vendor/backbone/backbone',
+        popper          : '../vendor/popper/popper',
         bootstrap       : '../vendor/bootstrap/dist/js/bootstrap',
         text            : '../vendor/requirejs-text/text',
         perfectscrollbar: 'common/main/lib/mods/perfect-scrollbar',
@@ -78,7 +79,8 @@ require.config({
         },
         bootstrap: {
             deps: [
-                'jquery'
+                'jquery',
+                'popper'
             ]
         },
         perfectscrollbar: {
@@ -121,7 +123,8 @@ require([
     'locale',
     'sockjs',
     'xregexp',
-    'underscore'
+    'underscore',
+    'popper'
 ], function (Backbone, Bootstrap, Core) {
     Backbone.history.start();
 

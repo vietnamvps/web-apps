@@ -1119,6 +1119,8 @@ define([
 
                     this.listStyles = new Common.UI.ComboDataView({
                         cls: 'combo-styles',
+                        menuCls: 'position-top-right',
+                        style: 'position: relative;',
                         itemWidth: 104,
                         itemHeight: 38,
 //                hint        : this.tipParagraphStyle,

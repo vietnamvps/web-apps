@@ -245,6 +245,7 @@ define([
 
                 this.pivotStyles = new Common.UI.ComboDataView({
                     cls             : 'combo-pivot-template',
+                    menuCls         : 'position-top-left',
                     enableKeyEvents : true,
                     itemWidth       : 61,
                     itemHeight      : 49,

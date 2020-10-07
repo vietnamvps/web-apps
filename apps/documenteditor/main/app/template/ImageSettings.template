@@ -65,7 +65,7 @@
     </tr>
     <tr>
         <td class="padding-small" colspan=2>
-            <div id="image-combo-wrap" style="width: 100%;"></div>
+            <div id="image-combo-wrap" style="width: 100%; position: relative;"></div>
         </td>
     </tr>
     <tr>

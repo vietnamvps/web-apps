@@ -226,7 +226,8 @@ define([
                 menuMaxHeight: 300,
                 enableKeyEvents: true,
                 store: new Common.UI.DataViewStore(viewData),
-                cls: 'combo-chart-style'
+                cls: 'combo-chart-style',
+                menuCls: 'position-top-left'
             });
             this.cmbWrapType.menuPicker.itemTemplate = this.cmbWrapType.fieldPicker.itemTemplate = _.template([
                 '<div class="style" id="<%= id %>">',
@@ -425,7 +426,8 @@ define([
                     itemHeight: 50,
                     menuMaxHeight: 270,
                     enableKeyEvents: true,
-                    cls: 'combo-chart-style'
+                    cls: 'combo-chart-style',
+                    menuCls: 'position-top-left'
                 });
                 this.cmbChartStyle.render($('#chart-combo-style'));
                 this.cmbChartStyle.openButton.menu.cmpEl.css({

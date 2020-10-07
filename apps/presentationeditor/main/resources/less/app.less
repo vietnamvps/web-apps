@@ -8,6 +8,8 @@
 @import "../../../../common/main/resources/less/asc-mixins.less";
 
 // Bootstrap overwrite
+@import "../../../../../vendor/bootstrap/less/_functions.less";
+@import "../../../../../vendor/bootstrap/less/_variables.less";
 @import "../../../../common/main/resources/less/variables.less";
 
 //
@@ -16,27 +18,28 @@
 
 // Core variables and mixins
 //@import "../../../../vendor/bootstrap/less/variables.less";
-@import "../../../../../vendor/bootstrap/less/mixins.less";
+@import "../../../../../vendor/bootstrap/less/_mixins.less";
+@import "../../../../../vendor/bootstrap/less/_root";
 
 // Reset
-@import "../../../../../vendor/bootstrap/less/normalize.less";
+@import "../../../../../vendor/bootstrap/less/_reboot.less";
 //@import "print.less";
 
 // Core CSS
-@import "../../../../../vendor/bootstrap/less/scaffolding.less";
-@import "../../../../../vendor/bootstrap/less/type.less";
+//@import "../../../../../vendor/bootstrap/less/scaffolding.less";
+@import "../../../../../vendor/bootstrap/less/_type.less";
 //@import "code.less";
 //@import "grid.less";
 //@import "tables.less";
-@import "../../../../../vendor/bootstrap/less/forms.less";
-@import "../../../../../vendor/bootstrap/less/buttons.less";
+@import "../../../../../vendor/bootstrap/less/_forms.less";
+@import "../../../../../vendor/bootstrap/less/_buttons.less";
 
 // Components
-@import "../../../../../vendor/bootstrap/less/component-animations.less";
+@import "../../../../../vendor/bootstrap/less/_transitions.less";
 //@import "glyphicons.less";
-@import "../../../../../vendor/bootstrap/less/dropdowns.less";
-@import "../../../../../vendor/bootstrap/less/button-groups.less";
-@import "../../../../../vendor/bootstrap/less/input-groups.less";
+@import "../../../../../vendor/bootstrap/less/_dropdown.less";
+@import "../../../../../vendor/bootstrap/less/_button-group.less";
+@import "../../../../../vendor/bootstrap/less/_input-group.less";
 //@import "navs.less";
 //@import "navbar.less";
 //@import "breadcrumbs.less";
@@ -56,13 +59,13 @@
 
 // Components w/ JavaScript
 //@import "modals.less";
-@import "../../../../../vendor/bootstrap/less/tooltip.less";
+@import "../../../../../vendor/bootstrap/less/_tooltip.less";
 //@import "popovers.less";
 //@import "carousel.less";
 
 // Utility classes
-@import "../../../../../vendor/bootstrap/less/utilities.less";
-@import "../../../../../vendor/bootstrap/less/responsive-utilities.less";
+@import "../../../../../vendor/bootstrap/less/_utilities.less";
+//@import "../../../../../vendor/bootstrap/less/responsive-utilities.less";
 
 //
 // Perfect scrollbar

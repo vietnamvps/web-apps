@@ -36,7 +36,7 @@
     </tr>
     <tr>
         <td class="padding-small">
-            <div id="chart-combo-style" style=""></div>
+            <div id="chart-combo-style" style="position: relative;"></div>
         </td>
     </tr>
     <tr>

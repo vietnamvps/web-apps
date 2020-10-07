@@ -639,7 +639,8 @@ define([
                     itemHeight: 49,
                     menuMaxHeight: 235,
                     enableKeyEvents: true,
-                    cls: 'combo-slicer-style'
+                    cls: 'combo-slicer-style',
+                    menuCls: 'position-top-left'
                 });
                 this.btnSlicerStyle.render($('#slicer-btn-style'));
                 this.btnSlicerStyle.openButton.menu.cmpEl.css({

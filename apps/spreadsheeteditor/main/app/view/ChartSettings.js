@@ -980,7 +980,8 @@ define([
                     itemHeight: 50,
                     menuMaxHeight: 270,
                     enableKeyEvents: true,
-                    cls: 'combo-chart-style'
+                    cls: 'combo-chart-style',
+                    menuCls: 'position-top-left'
                 });
                 this.cmbChartStyle.render($('#chart-combo-style'));
                 this.cmbChartStyle.openButton.menu.cmpEl.css({
@@ -1032,7 +1033,8 @@ define([
                     itemHeight: 50,
                     menuMaxHeight: 272,
                     enableKeyEvents: true,
-                    cls: 'combo-spark-style'
+                    cls: 'combo-spark-style',
+                    menuCls: 'position-top-left'
                 });
                 this.cmbSparkStyle.render($('#spark-combo-style'));
                 this.cmbSparkStyle.openButton.menu.cmpEl.css({

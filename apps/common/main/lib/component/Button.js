@@ -613,13 +613,13 @@ define([
                     var tip = this.btnEl.data('bs.tooltip');
                     if (tip) {
                         disabled && tip.hide();
-                        !Common.Utils.isGecko && (tip.enabled = !disabled);
+                        !Common.Utils.isGecko && (!disabled ? tip.enable() : tip.disable());
                     }
                     if (this.btnMenuEl) {
                         tip = this.btnMenuEl.data('bs.tooltip');
                         if (tip) {
                             disabled && tip.hide();
-                            !Common.Utils.isGecko && (tip.enabled = !disabled);
+                            !Common.Utils.isGecko && (!disabled ? tip.enable() : tip.disable());
                         }
                     }
                 }
@@ -727,13 +727,13 @@ define([
                 var tip = this.btnEl.data('bs.tooltip');
                 if (tip) {
                     this.disabled && tip.hide();
-                    !Common.Utils.isGecko && (tip.enabled = !this.disabled);
+                    !Common.Utils.isGecko && (!this.disabled ? tip.enable() : tip.disable());
                 }
                 if (this.btnMenuEl) {
                     tip = this.btnMenuEl.data('bs.tooltip');
                     if (tip) {
                         this.disabled && tip.hide();
-                        !Common.Utils.isGecko && (tip.enabled = !this.disabled);
+                        !Common.Utils.isGecko && (!this.disabled ? tip.enable() : tip.disable());
                     }
                 }
             }

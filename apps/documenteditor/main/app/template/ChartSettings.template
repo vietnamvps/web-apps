@@ -24,7 +24,7 @@
     </tr>
     <tr>
         <td class="padding-small" colspan=2>
-            <div id="chart-combo-wrap" style="width: 100%;"></div>
+            <div id="chart-combo-wrap" style="width: 100%; position: relative;"></div>
         </td>
     </tr>
     <tr>
@@ -44,7 +44,7 @@
     </tr>
     <tr>
         <td class="padding-small" colspan=2>
-            <div class="" id="chart-combo-style" style="width: 100%;"></div>
+            <div class="" id="chart-combo-style" style="width: 100%; position: relative;"></div>
         </td>
     </tr>
     <tr>

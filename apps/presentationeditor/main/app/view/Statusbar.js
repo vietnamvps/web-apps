@@ -124,7 +124,7 @@ define([
                 this.btnZoomUp = new Common.UI.Button({
                     el: $('#btn-zoom-up',this.el),
                     hint: this.tipZoomIn+Common.Utils.String.platformKey('Ctrl++'),
-                    hintAnchor: 'top-right'
+                    hintAnchor: 'top'
                 });
 
                 this.cntZoom = new Common.UI.Button({

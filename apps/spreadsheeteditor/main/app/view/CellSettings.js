@@ -302,7 +302,8 @@ define([
                 itemHeight: 28,
                 menuMaxHeight: 300,
                 enableKeyEvents: true,
-                cls: 'combo-pattern'
+                cls: 'combo-pattern',
+                menuCls: 'position-top-left'
             });
             this.cmbPattern.menuPicker.itemTemplate = this.cmbPattern.fieldPicker.itemTemplate = _.template([
                 '<div class="style" id="<%= id %>">',

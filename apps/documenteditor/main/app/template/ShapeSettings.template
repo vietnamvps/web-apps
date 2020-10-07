@@ -41,7 +41,7 @@
             </div>
             <div id="shape-panel-pattern-fill" class="settings-hidden padding-small" style="width: 100%;">
                 <label class="input-label" style="margin-top: 3px;"><%= scope.strPattern %></label>
-                <div id="shape-combo-pattern" style="width: 100%; height: 42px; margin-bottom: 8px;"></div>
+                <div id="shape-combo-pattern" style="width: 100%; height: 42px; margin-bottom: 8px; position: relative;"></div>
                 <div style="width: 100%; height: 25px; margin-bottom: 8px;">
                     <label class="input-label" style="margin-top: 3px;"><%= scope.strForeground %></label>
                     <div id="shape-foreground-color-btn" style="display: inline-block; float:right;"></div>
@@ -186,7 +186,7 @@
     </tr>
     <tr class="shape-only">
         <td>
-            <div id="shape-combo-wrap" style="width: 100%;"></div>
+            <div id="shape-combo-wrap" style="width: 100%; position: relative;"></div>
         </td>
     </tr>
     <tr class="shape-only">

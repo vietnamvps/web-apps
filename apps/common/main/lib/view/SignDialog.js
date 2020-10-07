@@ -105,7 +105,7 @@ define([
                             '<td><label style="font-weight: bold;margin-bottom: 3px;">' + this.textCertificate + '</label></td>' +
                             '<td rowspan="2" style="vertical-align: top; padding-left: 30px;"><button id="id-dlg-sign-change" class="btn btn-text-default" style="">' + this.textSelect + '</button></td>',
                         '</tr>',
-                        '<tr><td><div id="id-dlg-sign-certificate" class="hidden" style="max-width: 212px;overflow: hidden;"></td></tr>',
+                        '<tr><td><div id="id-dlg-sign-certificate" class="d-none" style="max-width: 212px;overflow: hidden;"></td></tr>',
                     '</table>',
                 '</div>'
             ].join('');
@@ -318,7 +318,7 @@ define([
             var date = certificate.date,
                 arr_date = (typeof date == 'string') ? date.split(' - ') : ['', ''];
             this.cntCertificate.html(this.templateCertificate({name: certificate.name, valid: this.textValid.replace('%1', arr_date[0]).replace('%2', arr_date[1])}));
-            this.cntCertificate.toggleClass('hidden', _.isEmpty(this.certificateId) || this.certificateId<0);
+            this.cntCertificate.toggleClass('d-none', _.isEmpty(this.certificateId) || this.certificateId<0);
             this.btnChangeCertificate.setCaption((_.isEmpty(this.certificateId) || this.certificateId<0) ? this.textSelect : this.textChange);
             this.btnOk.setDisabled(_.isEmpty(this.certificateId) || this.certificateId<0);
         },

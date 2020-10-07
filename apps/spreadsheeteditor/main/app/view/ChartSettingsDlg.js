@@ -763,6 +763,7 @@ define([    'text!spreadsheeteditor/main/app/template/ChartSettingsDlg.template'
                 menuMaxHeight: 272,
                 enableKeyEvents: true,
                 cls: 'combo-spark-style',
+                menuCls: 'position-top-left',
                 minWidth: 190
             });
             this.cmbSparkStyle.render($('#spark-dlg-combo-style'));
