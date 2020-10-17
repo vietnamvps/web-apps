@@ -256,7 +256,7 @@ define([
                         '</div></a></li>',
                         '<% }); %>',
                         '<li class="dropdown-divider">',
-                        '<li id="id-toolbar-mnu-item-more-formats" data-value="-1"><a tabindex="-1" type="menuitem">' + me.textMoreFormats + '</a></li>'
+                        '<li id="id-toolbar-mnu-item-more-formats" data-value="-1"><a tabindex="-1" type="menuitem" class="dropdown-item">' + me.textMoreFormats + '</a></li>'
                     ].join(''));
 
                 me.cmbNumberFormat = new Common.UI.ComboBox({
@@ -824,7 +824,7 @@ define([
                         '</div></a></li>',
                         '<% }); %>',
                         '<li class="dropdown-divider">',
-                        '<li id="id-toolbar-mnu-item-more-formats" data-value="-1"><a tabindex="-1" type="menuitem">' + me.textMoreFormats + '</a></li>'
+                        '<li id="id-toolbar-mnu-item-more-formats" data-value="-1"><a tabindex="-1" type="menuitem" class="dropdown-item">' + me.textMoreFormats + '</a></li>'
                     ].join(''));
 
                 me.cmbNumberFormat = new Common.UI.ComboBox({
@@ -1803,7 +1803,7 @@ define([
                             iconCls     : 'menu__icon btn-border-style',
                             // template    : _.template('<a id="<%= id %>" tabindex="-1" type="menuitem"><span class="menu-item-icon" style="background-image: none; width: 11px; height: 11px; margin: 2px 7px 0 -9px;"></span><%= caption %></a>'),
                             menu        : (function(){
-                                var itemTemplate = _.template('<a id="<%= id %>" tabindex="-1" type="menuitem"><div class="border-size-item" style="background-position: 0 -<%= options.offsety %>px;"></div></a>');
+                                var itemTemplate = _.template('<a id="<%= id %>" tabindex="-1" type="menuitem" class="dropdown-item"><div class="border-size-item" style="background-position: 0 -<%= options.offsety %>px;"></div></a>');
 
                                 me.mnuBorderWidth = new Common.UI.Menu({
                                     style       : 'min-width: 100px;',
@@ -1831,7 +1831,7 @@ define([
                             id          : 'id-toolbar-mnu-item-border-color',
                             caption     : this.textBordersColor,
                             iconCls     : 'mnu-icon-item mnu-border-color',
-                            template    : _.template('<a id="<%= id %>"tabindex="-1" type="menuitem"><span class="menu-item-icon" style="background-image: none; width: 12px; height: 12px; margin: 2px 9px 0 -11px; border-style: solid; border-width: 3px; border-color: #000;"></span><%= caption %></a>'),
+                            template    : _.template('<a id="<%= id %>"tabindex="-1" type="menuitem" class="dropdown-item"><span class="menu-item-icon" style="background-image: none; width: 12px; height: 12px; margin: 2px 9px 0 -11px; border-style: solid; border-width: 3px; border-color: #000;"></span><%= caption %></a>'),
                             menu        : new Common.UI.Menu({
                                 menuAlign   : 'tl-tr',
                                 items       : [

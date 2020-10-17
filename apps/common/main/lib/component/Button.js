@@ -451,8 +451,9 @@ define([
                         }
 
                         $('button:first', el).toggleClass('active', select);
-                    } else
-                        $('[data-toggle^=dropdown]', el).toggleClass('active', select);
+                    } else {
+                        $('[data-toggle^=dropdown]:not(.dropdown-item)', el).toggleClass('active', select);
+                    }
 
                     el.toggleClass('active', select);
                 };

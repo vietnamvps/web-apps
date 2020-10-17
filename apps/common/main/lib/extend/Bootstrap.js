@@ -76,11 +76,12 @@ function patchDropDownKeyDown(e) {
     if ($this.is('.disabled, :disabled')) return;
 
     var $parent  = getParent($this);
-    var isActive = $parent.hasClass('show') || $parent.hasClass('over');
+    var $reference = $(e.currentTarget).hasClass('dropdown-item') ? $parent.parent().parent() : $parent;
+    var isActive = $reference.hasClass('open') || $reference.hasClass('show') || $reference.hasClass('over');
 
     if (!isActive || (isActive && e.keyCode == 27)) {
         if (e.which == 27) {
-            $items = $('[role=menu] li.dropdown-submenu.over:visible', $parent);
+            $items = $('[role=menu] li.dropdown-submenu.over:visible', $reference);
             if ($items.length) {
                 $items.eq($items.length-1).removeClass('over');
                 return false;
@@ -88,14 +89,15 @@ function patchDropDownKeyDown(e) {
                 $parent.removeClass('over');
                 $parent.find('> a').focus();
             } else {
-                $parent.find('[data-toggle=dropdown]').focus();
+                $reference.find('[data-toggle=dropdown]:not(.dropdown-item)').focus().click();
+                return false;
             }
         }
         return (isActive) ? $this.click() : undefined;
     }
 
 //    var $items = $('[role=menu] li:not(.divider):visible a', $parent)   - original search function
-    var $items = $('> [role=menu] > li:not(.dropdown-divider):not(.disabled):visible', $parent).find('> a');
+    var $items = $('> [role=menu] > li:not(.dropdown-divider):not(.disabled):visible', $reference).find('> a');
 
     if (!$items.length) return;
 

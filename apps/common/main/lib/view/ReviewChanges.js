@@ -243,7 +243,7 @@ define([
                     });
 
                     if (!this.appConfig.isRestrictedEdit) {// hide Display mode option for fillForms and commenting mode
-                        var menuTemplate = _.template('<a id="<%= id %>" tabindex="-1" type="menuitem"><div><%= caption %></div>' +
+                        var menuTemplate = _.template('<a id="<%= id %>" tabindex="-1" type="menuitem" class="dropdown-item"><div><%= caption %></div>' +
                             '<% if (options.description !== null) { %><label style="display: block;color: #a5a5a5;cursor: pointer;white-space: normal;"><%= options.description %></label>' +
                             '<% } %></a>');
 
@@ -351,7 +351,7 @@ define([
                 (new Promise(function (accept, reject) {
                     accept();
                 })).then(function(){
-                    var menuTemplate = _.template('<a id="<%= id %>" tabindex="-1" type="menuitem"><div><%= caption %></div>' +
+                    var menuTemplate = _.template('<a id="<%= id %>" tabindex="-1" type="menuitem" class="dropdown-item"><div><%= caption %></div>' +
                         '<% if (options.description !== null) { %><label style="display: block;color: #a5a5a5;cursor: pointer;white-space: normal;"><%= options.description %></label>' +
                         '<% } %></a>');
 
