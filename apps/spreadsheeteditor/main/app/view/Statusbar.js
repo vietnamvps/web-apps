@@ -149,6 +149,7 @@ define([
 
                 this.zoomMenu = new Common.UI.Menu({
                     style: 'margin-top:-5px;',
+                    popperOffset: '0,-2',
                     menuAlign: 'bl-tl',
                     items: [
                         { caption: "50%", value: 50 },

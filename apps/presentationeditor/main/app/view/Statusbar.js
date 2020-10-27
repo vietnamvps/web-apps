@@ -146,8 +146,9 @@ define([
                 );
 
                 this.zoomMenu = new Common.UI.Menu({
-                    style: 'margin-top:-5px;',
+                    popperOffset: '0,-2',
                     menuAlign: 'bl-tl',
+                    style: 'margin-top: -5px;margin-bottom: 6px;',
                     items: [
                         { caption: "50%", value: 50 },
                         { caption: "75%", value: 75 },
@@ -238,7 +239,8 @@ define([
                     split: true,
                     menu: new Common.UI.Menu({
                         menuAlign: 'bl-tl',
-                        style: 'margin-top:-5px;',
+                        style: 'margin-top:-5px;margin-bottom:5px;',
+                        popperOffset: '0,-2',
                         items: [
                             {caption: this.textShowBegin, value: 0},
                             {caption: this.textShowCurrent, value: 1},
@@ -250,7 +252,8 @@ define([
                 var panelLang = $('.cnt-lang',this.el);
                 this.langMenu = new Common.UI.MenuSimple({
                     cls: 'lang-menu',
-                    style: 'margin-top:-5px;',
+                    popperOffset: '0,-2',
+                    style: 'margin-top: -5px;margin-bottom: 6px;',
                     restoreHeight: 285,
                     itemTemplate: _.template([
                         '<a id="<%= id %>" tabindex="-1" type="menuitem" style="padding-left: 28px !important;" langval="<%= value.value %>" class="<% if (checked) { %> checked <% } %>">',

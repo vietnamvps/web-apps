@@ -167,6 +167,7 @@ define([
                 this.rendered       = false;
                 this.items          = [];
                 this.offset         = [0, 0];
+                this.popperOffset   = this.options.popperOffset || '';
                 this.menuAlign      = this.options.menuAlign;
                 this.menuAlignEl    = this.options.menuAlignEl;
                 this.scrollAlwaysVisible = this.options.scrollAlwaysVisible;
@@ -260,6 +261,9 @@ define([
                     this.parentEl.on('hide.bs.dropdown',    _.bind(me.onBeforeHideMenu, me));
                     this.parentEl.on('hidden.bs.dropdown',  _.bind(me.onAfterHideMenu, me));
                     this.parentEl.on('keydown.after.bs.dropdown', _.bind(me.onAfterKeydownMenu, me));
+
+                    this.parentEl.find('[data-toggle="dropdown"]').data('boundary', $('#viewport')[0]);
+                    this.popperOffset && this.parentEl.find('[data-toggle="dropdown"]').data('offset', this.popperOffset);
 
                     menuRoot.hover(
                         function(e) { me.isOver = true;},
@@ -654,6 +658,7 @@ define([
             this.rendered       = false;
             this.items          = this.options.items || [];
             this.offset         = [0, 0];
+            this.popperOffset   = this.options.popperOffset || '';
             this.menuAlign      = this.options.menuAlign;
             this.menuAlignEl    = this.options.menuAlignEl;
             this.scrollAlwaysVisible = this.options.scrollAlwaysVisible;
@@ -723,6 +728,9 @@ define([
                 this.parentEl.on('hide.bs.dropdown',    _.bind(me.onBeforeHideMenu, me));
                 this.parentEl.on('hidden.bs.dropdown',  _.bind(me.onAfterHideMenu, me));
                 this.parentEl.on('keydown.after.bs.dropdown', _.bind(me.onAfterKeydownMenu, me));
+
+                this.parentEl.find('[data-toggle="dropdown"]').data('boundary', $('#viewport')[0]);
+                this.popperOffset && this.parentEl.find('[data-toggle="dropdown"]').data('offset', this.popperOffset);
 
                 menuRoot.hover(
                     function(e) { me.isOver = true;},

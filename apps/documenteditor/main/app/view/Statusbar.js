@@ -230,8 +230,9 @@ define([
 
                 this.langMenu = new Common.UI.MenuSimple({
                     cls: 'lang-menu',
-                    style: 'margin-top:-5px;',
                     restoreHeight: 285,
+                    popperOffset: '0,-2',
+                    style: 'margin-top: -5px;',
                     itemTemplate: _.template([
                         '<a id="<%= id %>" class="dropdown-item" tabindex="-1" type="menuitem" style="padding-left: 28px !important;" langval="<%= value.value %>" class="<% if (checked) { %> checked <% } %>">',
                             '<i class="icon <% if (spellcheck) { %> toolbar__icon btn-ic-docspell spellcheck-lang <% } %>"></i>',
@@ -243,8 +244,9 @@ define([
                 });
 
                 this.zoomMenu = new Common.UI.Menu({
-                    style: 'margin-top:-5px;',
                     menuAlign: 'bl-tl',
+                    popperOffset: '0,-2',
+                    style: 'margin-top: -5px;',
                     items: [
                         { caption: "50%", value: 50 },
                         { caption: "75%", value: 75 },
