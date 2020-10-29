@@ -649,7 +649,7 @@ define([
                 //left = tab.position().left;
                 //right = left + tab.width();
 
-                return !(left < leftbound) && !(right - rightbound > 0.5);
+                return !(leftbound - left > 0.5) && !(right - rightbound > 0.5);
             }
 
             return false;

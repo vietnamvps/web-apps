@@ -138,7 +138,7 @@
 
     #status-sheets-bar-box {
         position: absolute;
-        overflow: hidden;
+        //overflow: hidden;
         height: 32px;
         left: 112px;
         right: 160px;
@@ -156,6 +156,10 @@
         .nav-tabs {
             height: 100%;
             display: flex;
+
+            &.nav {
+                flex-wrap: nowrap;
+            }
 
             > li {
                 background-color: @gray-light;

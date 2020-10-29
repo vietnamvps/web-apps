@@ -290,10 +290,12 @@ define([
 
             hide: function() {
                 if (this.rendered && this.parentEl) {
-                    if ( this.parentEl.hasClass('show') )
-                        this.cmpEl.dropdown('toggle');
-                    else if (this.parentEl.hasClass('over'))
+                    if ( this.parentEl.hasClass('show') ){
+                        this.parentEl.removeClass('show');
+                        this.parentEl.find('.dropdown-menu').removeClass('show');
+                    } else if (this.parentEl.hasClass('over')) {
                         this.parentEl.removeClass('over');
+                    }
                 }
             },
 

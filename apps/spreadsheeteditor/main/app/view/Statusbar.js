@@ -624,7 +624,7 @@ define([
                     !this.mode.isDisconnected ) {
                     if (tab && tab.sheetindex >= 0) {
                         var rect = tab.$el.get(0).getBoundingClientRect(),
-                            childPos = tab.$el.offset(),
+                            tabPos = tab.$el.position(),
                             parentPos = tab.$el.parent().offset();
 
                         if (!tab.isActive()) this.tabbar.setActive(tab);
@@ -671,6 +671,11 @@ define([
                         })();
 
                         this.tabMenu.hide();
+                        this.tabMenu.cmpEl.dropdown('dispose').dropdown({
+                            boundary: $('#viewport')[0],
+                            reference: this.tabMenu.$el,
+                            offset: tabPos.left + ',-5'
+                        });
                         this.tabMenu.show();
                         var menu = this.tabMenu;
                         _.defer(function(){
