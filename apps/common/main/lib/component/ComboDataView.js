@@ -61,7 +61,8 @@ define([
             beforeOpenHandler   : null,
             additionalMenuItems  : null,
             showLast: true,
-            minWidth: -1
+            minWidth: -1,
+            displayMenu: 'static'
         },
 
         template: _.template([
@@ -90,6 +91,7 @@ define([
             this.needFillComboView = false;
             this.minWidth = this.options.minWidth;
             this.menuCls = this.options.menuCls;
+            this.displayMenu = this.options.displayMenu;
 
             this.fieldPicker = new Common.UI.DataView({
                 cls: 'field-picker',
@@ -107,6 +109,7 @@ define([
             this.openButton = new Common.UI.Button({
                 cls: 'open-menu',
                 menu: new Common.UI.Menu({
+                    display: this.displayMenu,
                     cls: this.menuCls,
                     menuAlign: 'tl-tl',
                     offset: [0, 3],

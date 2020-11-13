@@ -102,6 +102,10 @@ define([
 
                         menu.render(menuContainer);
                         menu.cmpEl.attr({tabindex: "-1"});
+
+                        //position without popper
+                        menu.cmpEl.data('display', 'static');
+                        menu.cmpEl.css({'position': 'fixed'});
                     }
 
                     menuContainer.css({

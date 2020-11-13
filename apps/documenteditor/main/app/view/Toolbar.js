@@ -539,7 +539,7 @@ define([
                         iconCls: 'toolbar__icon btn-insertshape',
                         caption: me.capBtnInsShape,
                         enableToggle: true,
-                        menu: new Common.UI.Menu({cls: 'menu-shapes'})
+                        menu: new Common.UI.Menu({cls: 'menu-shapes', display: 'dynamic'})
                     });
                     this.paragraphControls.push(this.btnInsertShape);
 
@@ -549,7 +549,7 @@ define([
                         iconCls: 'toolbar__icon btn-insertequation',
                         caption: me.capBtnInsEquation,
                         split: true,
-                        menu: new Common.UI.Menu({cls: 'menu-shapes'})
+                        menu: new Common.UI.Menu({cls: 'menu-shapes', display: 'dynamic'})
                     });
                     this.paragraphControls.push(this.btnInsertEquation);
 
@@ -1167,7 +1167,6 @@ define([
 
                     this.listStyles = new Common.UI.ComboDataView({
                         cls: 'combo-styles',
-                        menuCls: 'position-top-right',
                         style: 'position: relative;',
                         itemWidth: 104,
                         itemHeight: 38,

@@ -1843,6 +1843,7 @@ define([
                 var menuItem = new Common.UI.MenuItem({
                     caption: equationGroup.get('groupName'),
                     menu: new Common.UI.Menu({
+                        display: 'dynamic',
                         menuAlign: 'tl-tr',
                         items: [
                             { template: _.template('<div id="id-toolbar-menu-equationgroup' + i +

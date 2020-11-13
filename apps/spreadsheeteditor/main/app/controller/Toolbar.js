@@ -2766,6 +2766,7 @@ define([
                 var menuItem = new Common.UI.MenuItem({
                     caption: shapeGroup.get('groupName'),
                     menu: new Common.UI.Menu({
+                        display: 'dynamic',
                         menuAlign: 'tl-tr',
                         items: [
                             { template: _.template('<div id="id-toolbar-menu-shapegroup' + i + '" class="menu-shape" style="width: ' + (shapeGroup.get('groupWidth') - 8) + 'px; margin-left: 5px;"></div>') }
@@ -2823,6 +2824,7 @@ define([
                 var menuItem = new Common.UI.MenuItem({
                     caption: equationGroup.get('groupName'),
                     menu: new Common.UI.Menu({
+                        display: 'dynamic',
                         menuAlign: 'tl-tr',
                         items: [
                             { template: _.template('<div id="id-toolbar-menu-equationgroup' + i +

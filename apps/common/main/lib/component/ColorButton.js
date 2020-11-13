@@ -48,7 +48,7 @@ define([
 
         template: _.template([
             '<div class="btn-group" id="<%= id %>">',
-                '<button type="button" class="btn btn-color dropdown-toggle <%= cls %>" data-toggle="dropdown" style="<%= style %>">',
+                '<button type="button" class="btn btn-color dropdown-toggle <%= cls %>" data-toggle="dropdown" data-display="static" style="<%= style %>">',
                     '<span>&nbsp;</span>',
                     '<span class="inner-box-caret"><i class="caret img-commonctrl"></i></span>',
                 '</button>',

@@ -548,7 +548,7 @@ define([
                         caption: me.capInsertEquation,
                         lock: [_set.slideDeleted, _set.lostConnect, _set.noSlides, _set.disableOnStart],
                         split: true,
-                        menu: new Common.UI.Menu({cls: 'menu-shapes'})
+                        menu: new Common.UI.Menu({cls: 'menu-shapes', display: 'dynamic'})
                     });
                     me.slideOnlyControls.push(this.btnInsertEquation);
 
@@ -797,7 +797,6 @@ define([
 
                     me.listTheme = new Common.UI.ComboDataView({
                         cls: 'combo-styles',
-                        menuCls: 'position-top-right',
                         style: 'position: relative;',
                         itemWidth: 85,
                         enableKeyEvents: true,
@@ -1042,6 +1041,7 @@ define([
                     btn.updateHint(me.tipInsertShape);
                     btn.setMenu(
                         new Common.UI.Menu({
+                            display: 'dynamic',
                             cls: 'menu-shapes'
                         }).on('hide:after', function (e) {
                             me.fireEvent('insert:shape', ['menu:hide']);
@@ -1486,6 +1486,7 @@ define([
                     var menuitem = new Common.UI.MenuItem({
                         caption: group.get('groupName'),
                         menu: new Common.UI.Menu({
+                            display: 'dynamic',
                             menuAlign: 'tl-tr',
                             items: [
                                 {template: _.template('<div class="shapegroup-' + i + '" class="menu-shape" style="width: ' + (group.get('groupWidth') - 8) + 'px; margin-left: 5px;"></div>')}

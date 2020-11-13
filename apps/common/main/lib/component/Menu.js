@@ -148,9 +148,11 @@ define([
                 menuAlign   : 'tl-bl',
                 menuAlignEl : null,
                 offset      : [0, 0],
+                popperOffset: '',
                 cyclic      : true,
                 search      : false,
-                scrollAlwaysVisible: true
+                scrollAlwaysVisible: true,
+                display     : 'static' // 'dynamic' - position with popper.js
             },
 
             template: _.template([
@@ -167,11 +169,13 @@ define([
                 this.rendered       = false;
                 this.items          = [];
                 this.offset         = [0, 0];
-                this.popperOffset   = this.options.popperOffset || '';
+                this.popperOffset   = this.options.popperOffset;
                 this.menuAlign      = this.options.menuAlign;
                 this.menuAlignEl    = this.options.menuAlignEl;
                 this.scrollAlwaysVisible = this.options.scrollAlwaysVisible;
                 this.search = this.options.search;
+
+                this.display = this.options.display;
 
                 if (this.options.restoreHeight) {
                     this.options.restoreHeight = (typeof (this.options.restoreHeight) == "number") ? this.options.restoreHeight : (this.options.maxHeight ? this.options.maxHeight : 100000);
@@ -269,6 +273,12 @@ define([
                         function(e) { me.isOver = true;},
                         function(e) { me.isOver = false; }
                     );
+
+                    this.parentEl.find('[data-toggle="dropdown"]').data('display', this.display);
+                    if (this.display === 'static') {
+                        menuRoot.css({'position': 'fixed'});
+                        menuRoot.addClass('static');
+                    }
                 }
 
                 this.rendered = true;
@@ -544,14 +554,6 @@ define([
                 var left = offset.left - posMenu[m[1]][0] + posParent[m[2]][0] + this.offset[0];
                 var top  = offset.top  - posMenu[m[1]][1] + posParent[m[2]][1] + this.offset[1];
 
-                if (menuParent.is('li.dropdown-submenu')) {
-                    if (left + menuW > docW) {
-                        menuParent.addClass('dropleft');
-                    } else {
-                        menuParent.addClass('dropright');
-                    }
-                }
-
                 if (this.options.restoreHeight) {
                     if (typeof (this.options.restoreHeight) == "number") {
                         if (top + menuH > docH) {
@@ -563,42 +565,83 @@ define([
                                 alwaysVisibleY: this.scrollAlwaysVisible
                             }));
                             this.wheelSpeed = undefined;
-                        } else if ( top + menuH < docH && menuRoot.height() < this.options.restoreHeight) {
+                        } else if (top + menuH < docH && menuRoot.height() < this.options.restoreHeight) {
                             menuRoot.css('max-height', (Math.min(docH - top, this.options.restoreHeight)) + 'px');
                             this.wheelSpeed = undefined;
                         }
                     }
-                } else {
-                    var cg = Common.Utils.croppedGeometry();
-                    docH = cg.height - 10;
-
-                    var newTop = top;
-
-                    if (top + menuH > docH + cg.top) {
-                        if (fixedAlign && typeof fixedAlign == 'string') { // how to align if menu height > window height
-                            m = fixedAlign.match(/^([a-z]+)-([a-z]+)/);
-                            newTop  = offset.top  - posMenu[m[1]][1] + posParent[m[2]][1] + this.offset[1] + (fixedOffset || 0);
-                        } else
-                            newTop = docH - menuH;
-                    }
-
-
-                    if (newTop < cg.top)
-                        newTop = cg.top;
-
-                    var margin = newTop - top;
-                    if (Math.abs(margin) > 1) {
-                        menuRoot.css({'margin-top': margin});
-                    }
                 }
 
+                if (this.display === 'static') {
+                    if (left + menuW > docW)
+                        if (menuParent.is('li.dropdown-submenu')) {
+                            left = offset.left - menuW + 2;
+                        } else {
+                            left = docW - menuW;
+                        }
+                    if (left < 0)
+                        left = 0;
+
+                    if (!this.options.restoreHeight) {
+                        var cg = Common.Utils.croppedGeometry();
+                        docH = cg.height - 10;
+                        if (top + menuH > docH + cg.top) {
+                            if (fixedAlign && typeof fixedAlign == 'string') { // how to align if menu height > window height
+                                m = fixedAlign.match(/^([a-z]+)-([a-z]+)/);
+                                top  = offset.top  - posMenu[m[1]][1] + posParent[m[2]][1] + this.offset[1] + (fixedOffset || 0);
+                            } else
+                                top = docH - menuH;
+                        }
+                        if (top < cg.top)
+                            top = cg.top;
+                    }
+                    if (!this.options.additionalAlign) {
+                        var _css = {left: Math.ceil(left), top: Math.ceil(top)};
+                        if (!(menuH < docH)) _css['margin-top'] = 0;
+
+                        menuRoot.css(_css);
+                    }
+                } else {
+                    if (menuParent.is('li.dropdown-submenu')) {
+                        menuParent.removeClass('dropleft dropright');
+                        if (left + menuW > docW) {
+                            menuParent.addClass('dropleft');
+                        } else {
+                            menuParent.addClass('dropright');
+                        }
+                    }
+                    if (typeof (this.options.restoreHeight) !== "number") {
+                        var cg = Common.Utils.croppedGeometry();
+                        docH = cg.height - 10;
+                        var newTop = top;
+                        if (!this.options.restoreHeight) {
+                            if (top + menuH > docH + cg.top) {
+                                newTop = docH - menuH;
+                            }
+                            if (newTop < cg.top)
+                                newTop = cg.top;
+                            var margin = newTop - top;
+                            if (Math.abs(margin) > 1) {
+                                menuRoot.css({'margin-top': margin});
+                            }
+                        }
+                        if (newTop + menuH > docH) {
+                            menuRoot.css('max-height', (docH - newTop) + 'px');
+                            if (!this.options.restoreHeight) {
+                                (!this.scroller) && (this.scroller = new Common.UI.Scroller({
+                                    el: this.$el.find('.dropdown-menu'),
+                                    suppressScrollX: true,
+                                    alwaysVisibleY: true
+                                }));
+                                console.log(this.$el.find('.dropdown-menu'));
+                            }
+                        } else if (top + menuH - docH < 0.5 && menuRoot.height() < this.options.maxHeight) {
+                            menuRoot.css('max-height', (Math.min(docH - top, this.options.maxHeight)) + 'px');
+                        }
+                    }
+                }
                 if (this.options.additionalAlign) {
                     this.options.additionalAlign.call(this, menuRoot, left, top);
-                } else {
-                    /*var _css = {top: Math.ceil(newTop)};
-                    if (!(menuH < docH)) _css['margin-top'] = 0;
-
-                    menuRoot.css(_css);*/
                 }
             },
 
@@ -861,7 +904,7 @@ define([
         onBeforeShowMenu: function(e) {
             Common.NotificationCenter.trigger('menu:show');
             this.trigger('show:before', this, e);
-            //this.alignPosition();
+            this.alignPosition();
         },
 
         onAfterShowMenu: function(e) {
@@ -1012,6 +1055,7 @@ define([
             var top  = offset.top  - posMenu[m[1]][1] + posParent[m[2]][1] + this.offset[1];
 
             if (menuParent.is('li.dropdown-submenu')) {
+                menuParent.removeClass('dropleft dropright');
                 if (left + menuW > docW) {
                     menuParent.addClass('dropleft');
                 } else {

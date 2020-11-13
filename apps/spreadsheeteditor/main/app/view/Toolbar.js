@@ -704,7 +704,7 @@ define([
                     enableToggle: true,
                     caption     : me.capInsertShape,
                     lock        : [_set.editCell, _set.lostConnect, _set.coAuth],
-                    menu        : new Common.UI.Menu({cls: 'menu-shapes'})
+                    menu        : new Common.UI.Menu({cls: 'menu-shapes', display: 'dynamic'})
                 });
 
                 me.btnInsertText = new Common.UI.Button({
@@ -737,7 +737,7 @@ define([
                     caption     : me.capInsertEquation,
                     split       : true,
                     lock        : [_set.editCell, _set.lostConnect, _set.coAuth],
-                    menu        : new Common.UI.Menu({cls: 'menu-shapes'})
+                    menu        : new Common.UI.Menu({cls: 'menu-shapes', display: 'dynamic'})
                 });
 
                 me.btnInsertSymbol = new Common.UI.Button({
@@ -779,7 +779,6 @@ define([
                 me.listStyles = new Common.UI.ComboDataView({
                     cls             : 'combo-styles',
                     style           : 'position: relative;',
-                    menuCls         : 'position-top-right',
                     enableKeyEvents : true,
                     itemWidth       : 112,
                     itemHeight      : 38,

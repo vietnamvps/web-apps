@@ -293,6 +293,7 @@ define([
                 });
 
                 var menuHiddenItems = new Common.UI.Menu({
+                    display: 'dynamic',
                     maxHeight: 260,
                     menuAlign: 'tl-tr'
                 }).on('show:after', function () {
@@ -303,6 +304,7 @@ define([
                 });
 
                 var menuColorItems = new Common.UI.Menu({
+                    display: 'dynamic',
                     menuAlign: 'tl-tr',
                     cls: 'color-tab',
                     items: [
@@ -320,6 +322,7 @@ define([
 
                 me.mnuTabColor = dummyCmp();
                 this.tabMenu = new Common.UI.Menu({
+                    display: 'dynamic',
                     menuAlign: 'bl-tl',
                     items: [
                         {caption: this.itemInsert,  value: 'ins'},
