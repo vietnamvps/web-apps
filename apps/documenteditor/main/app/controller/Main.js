@@ -1401,7 +1401,7 @@ define([
             onError: function(id, level, errData) {
                 if (id == Asc.c_oAscError.ID.LoadingScriptError) {
                     this.showTips([this.scriptLoadError]);
-                    this.tooltip && this.tooltip.getBSTip().$tip.css('z-index', 10000);
+                    this.tooltip && $(this.tooltip.getBSTip().getTipElement()).css('z-index', 10000);
                     return;
                 }
 

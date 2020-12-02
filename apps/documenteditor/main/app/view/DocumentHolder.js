@@ -534,8 +534,8 @@ define([
                         }
 
                         if ( recalc ) {
-                            screenTip.tipHeight = screenTip.toolTip.getBSTip().$tip.height();
-                            screenTip.tipWidth = screenTip.toolTip.getBSTip().$tip.width();
+                            screenTip.tipHeight = $(screenTip.toolTip.getBSTip().getTipElement()).height();
+                            screenTip.tipWidth = $(screenTip.toolTip.getBSTip().getTipElement()).width();
                         }
 
                         recalc = false;
@@ -548,7 +548,7 @@ define([
                         } else
                             showPoint[1] -= screenTip.tipHeight;
 
-                        screenTip.toolTip.getBSTip().$tip.css({top: showPoint[1] + 'px', left: showPoint[0] + 'px'});
+                        $(screenTip.toolTip.getBSTip().getTipElement()).css({top: showPoint[1] + 'px', left: showPoint[0] + 'px'});
                     }
                     /** coauthoring begin **/
                     else if (moveData.get_Type()==2 && me.mode.isEdit) { // 2 - locked object

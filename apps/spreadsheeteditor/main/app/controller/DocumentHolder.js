@@ -1115,12 +1115,12 @@ define([
                         showPoint = [data.asc_getX(), data.asc_getY()];
                         showPoint[0] += (pos[0] + 6);
                         showPoint[1] += (pos[1] - 20);
-                        showPoint[1] -= hyperlinkTip.ref.getBSTip().$tip.height();
-                        var tipwidth = hyperlinkTip.ref.getBSTip().$tip.width();
+                        showPoint[1] -= $(hyperlinkTip.ref.getBSTip().getTipElement()).height();
+                        var tipwidth = $(hyperlinkTip.ref.getBSTip().getTipElement()).width();
                         if (showPoint[0] + tipwidth > me.tooltips.coauth.bodyWidth )
                             showPoint[0] = me.tooltips.coauth.bodyWidth - tipwidth;
 
-                        hyperlinkTip.ref.getBSTip().$tip.css({
+                        $(hyperlinkTip.ref.getBSTip().getTipElement()).css({
                             top : showPoint[1] + 'px',
                             left: showPoint[0] + 'px'
                         });
@@ -1159,11 +1159,11 @@ define([
                         showPoint[0] += (pos[0] + 6);
                         showPoint[1] += (pos[1] - 20 - row_columnTip.ttHeight);
 
-                        var tipwidth = row_columnTip.ref.getBSTip().$tip.width();
+                        var tipwidth = $(row_columnTip.ref.getBSTip().getTipElement()).width();
                         if (showPoint[0] + tipwidth > me.tooltips.coauth.bodyWidth )
                             showPoint[0] = me.tooltips.coauth.bodyWidth - tipwidth - 20;
 
-                        row_columnTip.ref.getBSTip().$tip.css({
+                        $(row_columnTip.ref.getBSTip().getTipElement()).css({
                             top : showPoint[1] + 'px',
                             left: showPoint[0] + 'px'
                         });
@@ -1284,17 +1284,17 @@ define([
 
                         showPoint = [data.asc_getX() + pos[0] - 10, data.asc_getY() + pos[1] + 20];
 
-                        var tipheight = filterTip.ref.getBSTip().$tip.width();
+                        var tipheight = $(filterTip.ref.getBSTip().getTipElement()).width();
                         if (showPoint[1] + filterTip.ttHeight > me.tooltips.coauth.bodyHeight ) {
                             showPoint[1] = me.tooltips.coauth.bodyHeight - filterTip.ttHeight - 5;
                             showPoint[0] += 20;
                         }
 
-                        var tipwidth = filterTip.ref.getBSTip().$tip.width();
+                        var tipwidth = $(filterTip.ref.getBSTip().getTipElement()).width();
                         if (showPoint[0] + tipwidth > me.tooltips.coauth.bodyWidth )
                             showPoint[0] = me.tooltips.coauth.bodyWidth - tipwidth - 20;
 
-                        filterTip.ref.getBSTip().$tip.css({
+                        $(filterTip.ref.getBSTip().getTipElement()).css({
                             top : showPoint[1] + 'px',
                             left: showPoint[0] + 'px'
                         });
@@ -1332,11 +1332,11 @@ define([
                         showPoint[0] += (pos[0] + 6);
                         showPoint[1] += (pos[1] - 20 - slicerTip.ttHeight);
 
-                        var tipwidth = slicerTip.ref.getBSTip().$tip.width();
+                        var tipwidth = $(slicerTip.ref.getBSTip().getTipElement()).width();
                         if (showPoint[0] + tipwidth > me.tooltips.coauth.bodyWidth )
                             showPoint[0] = me.tooltips.coauth.bodyWidth - tipwidth - 20;
 
-                        slicerTip.ref.getBSTip().$tip.css({
+                        $(slicerTip.ref.getBSTip().getTipElement()).css({
                             top : showPoint[1] + 'px',
                             left: showPoint[0] + 'px'
                         });
@@ -2388,12 +2388,12 @@ define([
                         this.documentHolder.cmpEl.offset().top  - $(window).scrollTop()
                     ],
                     coord  = this.api.asc_getActiveCellCoord(),
-                    showPoint = [coord.asc_getX() + pos[0] - 3, coord.asc_getY() + pos[1] - functip.ref.getBSTip().$tip.height() - 5];
-                var tipwidth = functip.ref.getBSTip().$tip.width();
+                    showPoint = [coord.asc_getX() + pos[0] - 3, coord.asc_getY() + pos[1] - $(functip.ref.getBSTip().getTipElement()).height() - 5];
+                var tipwidth = $(functip.ref.getBSTip().getTipElement()).width();
                 if (showPoint[0] + tipwidth > this.tooltips.coauth.bodyWidth )
                     showPoint[0] = this.tooltips.coauth.bodyWidth - tipwidth;
 
-                functip.ref.getBSTip().$tip.css({
+                $(functip.ref.getBSTip().getTipElement()).css({
                     top : showPoint[1] + 'px',
                     left: showPoint[0] + 'px'
                 });
@@ -2445,12 +2445,12 @@ define([
                         this.documentHolder.cmpEl.offset().top  - $(window).scrollTop()
                     ],
                     coord  = this.api.asc_getActiveCellCoord(),
-                    showPoint = [coord.asc_getX() + pos[0] - 3, coord.asc_getY() + pos[1] - inputtip.ref.getBSTip().$tip.height() - 5];
-                var tipwidth = inputtip.ref.getBSTip().$tip.width();
+                    showPoint = [coord.asc_getX() + pos[0] - 3, coord.asc_getY() + pos[1] - $(inputtip.ref.getBSTip().getTipElement()).height() - 5];
+                var tipwidth = $(inputtip.ref.getBSTip().getTipElement()).width();
                 if (showPoint[0] + tipwidth > this.tooltips.coauth.bodyWidth )
                     showPoint[0] = this.tooltips.coauth.bodyWidth - tipwidth;
 
-                inputtip.ref.getBSTip().$tip.css({
+                $(inputtip.ref.getBSTip().getTipElement()).css({
                     top : showPoint[1] + 'px',
                     left: showPoint[0] + 'px',
                     'z-index': 900
