@@ -1020,7 +1020,7 @@ define([
         setOffset: function(offsetX, offsetY) {
             this.offset[0] = _.isUndefined(offsetX) ? this.offset[0] : offsetX;
             this.offset[1] = _.isUndefined(offsetY) ? this.offset[1] : offsetY;
-            //this.alignPosition();
+            this.display === 'static' && this.alignPosition();
         },
 
         getOffset: function() {

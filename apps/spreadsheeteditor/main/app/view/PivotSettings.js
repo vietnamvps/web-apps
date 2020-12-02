@@ -590,6 +590,8 @@ define([
                     }
 
                     menu.menuAlignEl = currentTarget;
+                    menu.cmpEl.css({'position': 'fixed'});
+                    menu.cmpEl.data('display', 'static');
                     menu.setOffset(-20, -currentTarget.height()/2 - 3);
                     menu.show();
                     _.delay(function() {
@@ -765,6 +767,8 @@ define([
                 }
 
                 menu.menuAlignEl = currentTarget;
+                menu.cmpEl.css({'position': 'fixed'});
+                menu.cmpEl.data('display', 'static');
                 menu.setOffset(-20, -currentTarget.height()/2 - 3);
                 menu.show();
                 _.delay(function() {
