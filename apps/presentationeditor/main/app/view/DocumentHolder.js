@@ -98,6 +98,12 @@ define([
                         //position without popper
                         menu.cmpEl.data('display', 'static');
                         menu.cmpEl.css({'position': 'fixed'});
+
+                        menu.cmpEl.on('click.bs.dropdown', function (event) {
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                            Common.UI.Menu.Manager.hideAll();
+                        });
                     }
 
                     menuContainer.css({

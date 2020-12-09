@@ -96,7 +96,7 @@ define([
                     if (!menu.rendered) {
                         // Prepare menu container
                         if (menuContainer.length < 1) {
-                            menuContainer = $(Common.Utils.String.format('<div id="menu-container-{0}" style="position: absolute; z-index: 10000;"><div class="dropdown-toggle" data-toggle="dropdown"></div></div>', menu.id));
+                            menuContainer = $(Common.Utils.String.format('<div id="menu-container-{0}" class="dropdown" style="position: absolute; z-index: 10000;"><a class="dropdown-toggle d-none" data-toggle="dropdown" href="#" role="button"></a></div>', menu.id));
                             $(me.el).append(menuContainer);
                         }
 
@@ -106,6 +106,12 @@ define([
                         //position without popper
                         menu.cmpEl.data('display', 'static');
                         menu.cmpEl.css({'position': 'fixed'});
+
+                        menu.cmpEl.on('click.bs.dropdown', function (event) {
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                            Common.UI.Menu.Manager.hideAll();
+                        });
                     }
 
                     menuContainer.css({
@@ -2869,7 +2875,7 @@ define([
             });
 
             var langTemplate = _.template([
-                '<a id="<%= id %>" tabindex="-1" type="menuitem" style="padding-left: 28px !important;" langval="<%= value %>" class="<% if (checked) { %> checked <% } %>">',
+                '<a id="<%= id %>" class="dropdown-item" tabindex="-1" type="menuitem" style="padding-left: 28px !important;" langval="<%= value %>" class="<% if (checked) { %> checked <% } %>">',
                 '<i class="icon <% if (spellcheck) { %> toolbar__icon btn-ic-docspell spellcheck-lang <% } %>"></i>',
                 '<%= caption %>',
                 '</a>'

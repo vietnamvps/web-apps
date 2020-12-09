@@ -690,7 +690,7 @@ define([
 
             this.id             = this.options.id || Common.UI.getId();
             this.itemTemplate   = this.options.itemTemplate || _.template([
-                                                                '<a id="<%= id %>" <% if(typeof style !== "undefined") { %> style="<%= style %>" <% } %>',
+                                                                '<a id="<%= id %>" class="dropdown-item" <% if(typeof style !== "undefined") { %> style="<%= style %>" <% } %>',
                                                                     '<% if(typeof canFocused !== "undefined") { %> tabindex="-1" type="menuitem" <% } %>',
                                                                     '<% if(typeof stopPropagation !== "undefined") { %> data-stopPropagation="true" <% } %>',
                                                                     'class="<% if (checked) { %> checked <% } %>" >',
