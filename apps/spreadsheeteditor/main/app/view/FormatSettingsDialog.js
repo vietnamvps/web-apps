@@ -103,7 +103,7 @@ define([
                                 '<label id="format-settings-label-example" style="vertical-align: middle; max-width: 220px; overflow: hidden; text-overflow: ellipsis;">100</label>',
                             '</td>',
                         '</tr>',
-                        '<tr>',
+                        '<tr class="format-no-code">',
                             '<td class="padding-small">',
                             '</td>',
                         '</tr>',
@@ -139,7 +139,8 @@ define([
                         '<tr class="format-code">',
                             '<td colspan="1" class="padding-large">',
                                 '<label class="header">', me.textFormat,'</label>',
-                                '<div id="format-settings-combo-code" class="input-group-nr" style="width:264px;"></div>',
+                                '<div id="format-settings-txt-code" class="input-group-nr" style="height:22px;width:264px;margin-bottom: 8px;"></div>',
+                                '<div id="format-settings-list-code" style="width:264px; height: 116px;"></div>',
                             '</td>',
                         '</tr>',
                     '</table>',
@@ -171,7 +172,8 @@ define([
                 cls: 'input-group-nr',
                 menuStyle: 'min-width: 264px;',
                 editable: false,
-                data: this.numFormatData
+                data: this.numFormatData,
+                takeFocusOnClose: true
             });
             this.cmbFormat.setValue(this.FormatType);
             this.cmbFormat.on('selected', _.bind(this.onFormatSelect, this));
@@ -182,7 +184,8 @@ define([
                 menuStyle: 'min-width: 264px;max-height:235px;',
                 editable: false,
                 data: [],
-                scrollAlwaysVisible: true
+                scrollAlwaysVisible: true,
+                takeFocusOnClose: true
             });
             this.cmbNegative.on('selected', _.bind(this.onNegativeSelect, this));
 
@@ -210,7 +213,8 @@ define([
                 menuStyle: 'min-width: 264px;max-height:235px;',
                 editable: false,
                 data: [],
-                scrollAlwaysVisible: true
+                scrollAlwaysVisible: true,
+                takeFocusOnClose: true
             });
             this.cmbSymbols.on('selected', _.bind(this.onSymbolsSelect, this));
 
@@ -220,19 +224,30 @@ define([
                 menuStyle: 'min-width: 264px;max-height:235px;',
                 editable: false,
                 data: [],
-                scrollAlwaysVisible: true
+                scrollAlwaysVisible: true,
+                takeFocusOnClose: true
             });
             this.cmbType.on('selected', _.bind(this.onTypeSelect, this));
 
-            this.cmbCode = new Common.UI.ComboBox({
-                el: $('#format-settings-combo-code'),
-                cls: 'input-group-nr',
-                menuStyle: 'min-width: 310px;max-height:235px;',
-                editable: false,
-                data: [],
-                scrollAlwaysVisible: true
+            this.codesList = new Common.UI.ListView({
+                el: $('#format-settings-list-code'),
+                store: new Common.UI.DataViewStore(),
+                tabindex: 1,
+                itemTemplate: _.template('<div id="<%= id %>" class="list-item" style="pointer-events:none;overflow: hidden; text-overflow: ellipsis;"><%= value %></div>')
             });
-            this.cmbCode.on('selected', _.bind(this.onCodeSelect, this));
+            this.codesList.on('item:select', _.bind(this.onCodeSelect, this));
+            this.codesList.on('entervalue', _.bind(this.onPrimary, this));
+
+            this.inputCustomFormat = new Common.UI.InputField({
+                el               : $('#format-settings-txt-code'),
+                allowBlank       : true,
+                validateOnChange : true,
+                validation       : function () { return true; }
+            }).on ('changing', function (input, value) {
+                me.codesList.deselectAll();
+                me.Format = me.api.asc_convertNumFormatLocal2NumFormat(value);
+                me.lblExample.text(me.api.asc_getLocaleExample(me.Format));
+            });
 
             this._decimalPanel      = this.$window.find('.format-decimal');
             this._negativePanel     = this.$window.find('.format-negative');
@@ -240,10 +255,19 @@ define([
             this._typePanel         = this.$window.find('.format-type');
             this._symbolsPanel      = this.$window.find('.format-symbols');
             this._codePanel         = this.$window.find('.format-code');
+            this._nocodePanel       = this.$window.find('.format-no-code');
 
             this.lblExample         = this.$window.find('#format-settings-label-example');
 
             this.afterRender();
+        },
+
+        getFocusedComponents: function() {
+            return [this.cmbFormat, this.spnDecimal, this.cmbSymbols, this.cmbNegative, this.cmbType, this.inputCustomFormat, {cmp: this.codesList, selector: '.listview'}];
+        },
+
+        getDefaultFocusableComponent: function () {
+            return this.cmbFormat;
         },
 
         afterRender: function() {
@@ -393,9 +417,12 @@ define([
             this.lblExample.text(this.api.asc_getLocaleExample(this.Format));
         },
 
-        onCodeSelect: function(combo, record){
-            this.Format = record.value;
+        onCodeSelect: function(listView, itemView, record){
+            if (!record) return;
+
+            this.Format = record.get('format');
             this.lblExample.text(this.api.asc_getLocaleExample(this.Format));
+            this.inputCustomFormat.setValue(record.get('value'));
         },
 
         onFormatSelect: function(combo, record, e, initFormatInfo) {
@@ -475,25 +502,39 @@ define([
                     data = [],
                     isCustom = (this.CustomFormat) ? true : false;
                 formatsarr.forEach(function(item) {
-                    data.push({value: item, displayValue: item});
+                    var rec = new Common.UI.DataViewModel();
+                    rec.set({
+                        value: me.api.asc_convertNumFormat2NumFormatLocal(item),
+                        format: item
+                    });
+                    data.push(rec);
                     if (me.CustomFormat == item)
                         isCustom = false;
                 });
                 if (isCustom) {
-                    data.push({value: this.CustomFormat, displayValue: this.CustomFormat});
+                    var rec = new Common.UI.DataViewModel();
+                    rec.set({
+                        value: me.api.asc_convertNumFormat2NumFormatLocal(this.CustomFormat),
+                        format: this.CustomFormat
+                    });
+                    data.push(rec);
                 }
-                this.cmbCode.setData(data);
-                this.cmbCode.setValue(this.Format);
+                this.codesList.store.reset(data, {silent: false});
+                var rec = this.codesList.store.findWhere({value: this.Format});
+                rec && this.codesList.selectRecord(rec);
+                rec && this.codesList.scrollToRecord(rec);
+                this.inputCustomFormat.setValue(me.api.asc_convertNumFormat2NumFormatLocal(this.Format));
             }
 
             this.lblExample.text(this.api.asc_getLocaleExample(this.Format));
 
             this._decimalPanel.toggleClass('d-none', !hasDecimal);
-            this._negativePanel.css('visibility', hasNegative ? '' : 'hidden');
+            this._negativePanel.toggleClass('d-none', !hasNegative);
             this._separatorPanel.toggleClass('d-none', !hasSeparator);
             this._typePanel.toggleClass('d-none', !hasType);
             this._symbolsPanel.toggleClass('d-none', !hasSymbols);
             this._codePanel.toggleClass('d-none', !hasCode);
+            this._nocodePanel.toggleClass('d-none', hasCode);
             this._state = { hasDecimal: hasDecimal, hasNegative: hasNegative, hasSeparator: hasSeparator, hasType: hasType, hasSymbols: hasSymbols, hasCode: hasCode};
         },
 

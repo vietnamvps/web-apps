@@ -102,7 +102,9 @@ define([
                 '</span>'
             ].join('')),
             data: this.options.languages,
-            search: true
+            takeFocusOnClose: true,
+            search: true,
+            scrollAlwaysVisible: true
         });
 
         if (this.cmbLanguage.scroller) this.cmbLanguage.scroller.update({alwaysVisibleY: true});
@@ -110,6 +112,11 @@ define([
         var langname = Common.util.LanguageInfo.getLocalLanguageName(this.options.current);
         this.cmbLanguage.setValue(langname[0], langname[1]);
         this.onLangSelect(this.cmbLanguage, this.cmbLanguage.getSelectedRecord());
+
+        var me = this;
+        setTimeout(function(){
+            me.cmbLanguage.focus();
+        }, 100);
     },
 
     close: function(suppressevent) {

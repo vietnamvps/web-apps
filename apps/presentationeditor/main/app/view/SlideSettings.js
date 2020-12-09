@@ -80,7 +80,7 @@ define([
             this._locked = {
                 background: false,
                 effects: false,
-                timing: false,
+                transition: false,
                 header: false
             };
             this._stateDisabled = {};
@@ -261,7 +261,7 @@ define([
                 disabled: true
             });
             this.btnApplyToAll.on('click', _.bind(function(btn){
-                if (this.api) this.api.SlideTimingApplyToAll();
+                if (this.api) this.api.SlideTransitionApplyToAll();
                 this.fireEvent('editcomplete', this);
             }, this));
 
@@ -496,7 +496,7 @@ define([
                     this.btnDirection.setIconCls('item-gradient ' + record.get('iconcls'));
                 else
                     this.btnDirection.setIconCls('');
-                this.numGradientAngle.setValue(this.GradLinearDirectionType);
+                this.numGradientAngle.setValue(this.GradLinearDirectionType, true);
                 this.numGradientAngle.setDisabled(this._locked.background);
             } else if (this.GradFillType == Asc.c_oAscFillGradType.GRAD_PATH) {
                 this.mnuDirectionPicker.store.reset(this._viewDataRadial);
@@ -507,7 +507,7 @@ define([
                     this.btnDirection.setIconCls('item-gradient ' + this._viewDataRadial[this.GradRadialDirectionIdx].iconcls);
                 else
                     this.btnDirection.setIconCls('');
-                this.numGradientAngle.setValue(0);
+                this.numGradientAngle.setValue(0, true);
                 this.numGradientAngle.setDisabled(true);
             }
 
@@ -549,7 +549,7 @@ define([
             (this.GradFillType == Asc.c_oAscFillGradType.GRAD_LINEAR) ? this.GradLinearDirectionType = rawData.type : this.GradRadialDirectionIdx = 0;
             if (this.api) {
                 if (this.GradFillType == Asc.c_oAscFillGradType.GRAD_LINEAR) {
-                    this.numGradientAngle.setValue(rawData.type);
+                    this.numGradientAngle.setValue(rawData.type, true);
 
                     var props = new Asc.CAscSlideProps();
                     var fill = new Asc.asc_CShapeFill();
@@ -1075,10 +1075,10 @@ define([
             this.Effect = type;
             if (this.api && !this._noApply) {
                 var props = new Asc.CAscSlideProps();
-                var timing = new Asc.CAscSlideTiming();
-                timing.put_TransitionType(type);
-                timing.put_TransitionOption(this.EffectType);
-                props.put_timing(timing);
+                var transition = new Asc.CAscSlideTransition();
+                transition.put_TransitionType(type);
+                transition.put_TransitionOption(this.EffectType);
+                props.put_transition(transition);
                 this.api.SetSlideProps(props);
             }
             this.fireEvent('editcomplete', this);
@@ -1088,10 +1088,10 @@ define([
             this.EffectType = record.value;
             if (this.api && !this._noApply) {
                 var props = new Asc.CAscSlideProps();
-                var timing = new Asc.CAscSlideTiming();
-                timing.put_TransitionType(this.Effect);
-                timing.put_TransitionOption(this.EffectType);
-                props.put_timing(timing);
+                var transition = new Asc.CAscSlideTransition();
+                transition.put_TransitionType(this.Effect);
+                transition.put_TransitionOption(this.EffectType);
+                props.put_transition(transition);
                 this.api.SetSlideProps(props);
             }
             this.fireEvent('editcomplete', this);
@@ -1100,9 +1100,9 @@ define([
         onDurationChange: function(field, newValue, oldValue, eOpts){
             if (this.api && !this._noApply)   {
                 var props = new Asc.CAscSlideProps();
-                var timing = new Asc.CAscSlideTiming();
-                timing.put_TransitionDuration(field.getNumberValue()*1000);
-                props.put_timing(timing);
+                var transition = new Asc.CAscSlideTransition();
+                transition.put_TransitionDuration(field.getNumberValue()*1000);
+                props.put_transition(transition);
                 this.api.SetSlideProps(props);
             }
         },
@@ -1110,9 +1110,9 @@ define([
         onDelayChange: function(field, newValue, oldValue, eOpts){
             if (this.api && !this._noApply)   {
                 var props = new Asc.CAscSlideProps();
-                var timing = new Asc.CAscSlideTiming();
-                timing.put_SlideAdvanceDuration(field.getNumberValue()*1000);
-                props.put_timing(timing);
+                var transition = new Asc.CAscSlideTransition();
+                transition.put_SlideAdvanceDuration(field.getNumberValue()*1000);
+                props.put_transition(transition);
                 this.api.SetSlideProps(props);
             }
         },
@@ -1120,9 +1120,9 @@ define([
         onStartOnClickChange: function(field, newValue, oldValue, eOpts){
             if (this.api && !this._noApply)   {
                 var props = new Asc.CAscSlideProps();
-                var timing = new Asc.CAscSlideTiming();
-                timing.put_SlideAdvanceOnMouseClick(field.getValue()=='checked');
-                props.put_timing(timing);
+                var transition = new Asc.CAscSlideTransition();
+                transition.put_SlideAdvanceOnMouseClick(field.getValue()=='checked');
+                props.put_transition(transition);
                 this.api.SetSlideProps(props);
             }
             this.fireEvent('editcomplete', this);
@@ -1132,9 +1132,9 @@ define([
             this.numDelay.setDisabled(field.getValue()!=='checked');
             if (this.api && !this._noApply)   {
                 var props = new Asc.CAscSlideProps();
-                var timing = new Asc.CAscSlideTiming();
-                timing.put_SlideAdvanceAfter(field.getValue()=='checked');
-                props.put_timing(timing);
+                var transition = new Asc.CAscSlideTransition();
+                transition.put_SlideAdvanceAfter(field.getValue()=='checked');
+                props.put_transition(transition);
                 this.api.SetSlideProps(props);
             }
             this.fireEvent('editcomplete', this);
@@ -1197,7 +1197,7 @@ define([
         ChangeSettings: function(props) {
             if (this._initSettings)
                 this.createDelayedElements();
-            this.SetSlideDisabled(this._locked.background, this._locked.effects, this._locked.timing, this._locked.header);
+            this.SetSlideDisabled(this._locked.background, this._locked.effects, this._locked.transition, this._locked.header);
 
             if (props)
             {
@@ -1304,10 +1304,10 @@ define([
                                 this.btnDirection.setIconCls('item-gradient ' + record.get('iconcls'));
                             else
                                 this.btnDirection.setIconCls('');
-                            this.numGradientAngle.setValue(value);
+                            this.numGradientAngle.setValue(value, true);
                         }
                     } else
-                        this.numGradientAngle.setValue(0);
+                        this.numGradientAngle.setValue(0, true);
 
                     var me = this;
                     var colors = fill.get_colors(),
@@ -1383,9 +1383,9 @@ define([
                     this._state.SlideColor = this.SlideColor.Color;
                 }
 
-                var timing = props.get_timing();
-                if (timing) {
-                    var value = timing.get_TransitionType();
+                var transition = props.get_transition();
+                if (transition) {
+                    var value = transition.get_TransitionType();
                     var found = false;
                     if (this._state.Effect !== value) {
                         var item = this.cmbEffectName.store.findWhere({value: value});
@@ -1400,7 +1400,7 @@ define([
                         this._state.Effect = value;
                     }
 
-                    value = timing.get_TransitionOption();
+                    value = transition.get_TransitionOption();
                     if (this._state.EffectType !== value || found) {
                         found = false;
                         item = this.cmbEffectType.store.findWhere({value: value});
@@ -1413,7 +1413,7 @@ define([
                         this._state.EffectType = value;
                     }
 
-                    value = timing.get_TransitionDuration();
+                    value = transition.get_TransitionDuration();
                     if ( Math.abs(this._state.Duration-value)>0.001 ||
                         (this._state.Duration===null || value===null)&&(this._state.Duration!==value) ||
                         (this._state.Duration===undefined || value===undefined)&&(this._state.Duration!==value) ) {
@@ -1421,7 +1421,7 @@ define([
                         this._state.Duration=value;
                     }
 
-                    value = timing.get_SlideAdvanceDuration();
+                    value = transition.get_SlideAdvanceDuration();
                     if ( Math.abs(this._state.Delay-value)>0.001 ||
                         (this._state.Delay===null || value===null)&&(this._state.Delay!==value) ||
                         (this._state.Delay===undefined || value===undefined)&&(this._state.Delay!==value) ) {
@@ -1429,12 +1429,12 @@ define([
                         this._state.Delay=value;
                     }
 
-                    value = timing.get_SlideAdvanceOnMouseClick();
+                    value = transition.get_SlideAdvanceOnMouseClick();
                     if ( this._state.OnMouseClick!==value ) {
                         this.chStartOnClick.setValue((value !== null && value !== undefined) ? value : 'indeterminate', true);
                         this._state.OnMouseClick=value;
                     }
-                    value = timing.get_SlideAdvanceAfter();
+                    value = transition.get_SlideAdvanceAfter();
                     if ( this._state.AdvanceAfter!==value ) {
                         this.chDelay.setValue((value !== null && value !== undefined) ? value : 'indeterminate', true);
                         this.numDelay.setDisabled(this.chDelay.getValue()!=='checked');
@@ -1528,15 +1528,15 @@ define([
             }
         },
 
-        setLocked: function (background, effects, timing, header) {
+        setLocked: function (background, effects, transition, header) {
             this._locked = {
-                background: background, effects: effects, timing: timing, header: header
+                background: background, effects: effects, transition: transition, header: header
             };
         },
 
-        SetSlideDisabled: function(background, effects, timing, header) {
+        SetSlideDisabled: function(background, effects, transition, header) {
             this._locked = {
-                background: background, effects: effects, timing: timing, header: header
+                background: background, effects: effects, transition: transition, header: header
             };
             if (this._initSettings) return;
             
@@ -1556,12 +1556,12 @@ define([
                 this.btnPreview.setDisabled(length<1 || effects);
                 this._stateDisabled.effects = effects;
             }
-            if (timing !== this._stateDisabled.timing) {
-                this.chStartOnClick.setDisabled(timing);
-                this.chDelay.setDisabled(timing);
-                this.numDelay.setDisabled(timing || this.chDelay.getValue()!=='checked');
-                this.btnApplyToAll.setDisabled(timing);
-                this._stateDisabled.timing = timing;
+            if (transition !== this._stateDisabled.transition) {
+                this.chStartOnClick.setDisabled(transition);
+                this.chDelay.setDisabled(transition);
+                this.numDelay.setDisabled(transition || this.chDelay.getValue()!=='checked');
+                this.btnApplyToAll.setDisabled(transition);
+                this._stateDisabled.transition = transition;
             }
             if (header !== this._stateDisabled.header) {
                 this.chSlideNum.setDisabled(header);
@@ -1628,7 +1628,7 @@ define([
         },
 
         onGradientAngleChange: function(field, newValue, oldValue, eOpts) {
-            if (this.api) {
+            if (this.api && !this._noApply) {
                 var props = new Asc.CAscSlideProps();
                 var fill = new Asc.asc_CShapeFill();
                 fill.put_type(Asc.c_oAscFill.FILL_TYPE_GRAD);

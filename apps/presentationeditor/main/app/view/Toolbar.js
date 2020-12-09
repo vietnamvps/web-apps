@@ -261,6 +261,22 @@ define([
                     });
                     me.paragraphControls.push(me.cmbFontSize);
 
+                    me.btnIncFontSize = new Common.UI.Button({
+                        id: 'id-toolbar-btn-incfont',
+                        cls: 'btn-toolbar',
+                        iconCls: 'toolbar__icon btn-incfont',
+                        lock: [_set.slideDeleted, _set.paragraphLock, _set.lostConnect, _set.noSlides, _set.noTextSelected, _set.shapeLock]
+                    });
+                    me.paragraphControls.push(me.btnIncFontSize);
+
+                    me.btnDecFontSize = new Common.UI.Button({
+                        id: 'id-toolbar-btn-decfont',
+                        cls: 'btn-toolbar',
+                        iconCls: 'toolbar__icon btn-decfont',
+                        lock: [_set.slideDeleted, _set.paragraphLock, _set.lostConnect, _set.noSlides, _set.noTextSelected, _set.shapeLock]
+                    });
+                    me.paragraphControls.push(me.btnDecFontSize);
+
                     me.btnBold = new Common.UI.Button({
                         id: 'id-toolbar-btn-bold',
                         cls: 'btn-toolbar',
@@ -354,7 +370,7 @@ define([
                         id: 'id-toolbar-btn-markers',
                         cls: 'btn-toolbar',
                         iconCls: 'toolbar__icon btn-setmarkers',
-                        lock: [_set.slideDeleted, _set.paragraphLock, _set.lostConnect, _set.noSlides, _set.noTextSelected],
+                        lock: [_set.slideDeleted, _set.paragraphLock, _set.lostConnect, _set.noSlides, _set.noParagraphSelected],
                         enableToggle: true,
                         toggleGroup: 'markersGroup',
                         split: true,
@@ -366,7 +382,7 @@ define([
                         id: 'id-toolbar-btn-numbering',
                         cls: 'btn-toolbar',
                         iconCls: 'toolbar__icon btn-numbering',
-                        lock: [_set.slideDeleted, _set.paragraphLock, _set.lostConnect, _set.noSlides, _set.noTextSelected],
+                        lock: [_set.slideDeleted, _set.paragraphLock, _set.lostConnect, _set.noSlides, _set.noParagraphSelected],
                         enableToggle: true,
                         toggleGroup: 'markersGroup',
                         split: true,
@@ -394,7 +410,7 @@ define([
                         cls: 'btn-toolbar',
                         iconCls: 'toolbar__icon btn-align-left',
                         icls: 'btn-align-left',
-                        lock: [_set.slideDeleted, _set.paragraphLock, _set.lostConnect, _set.noSlides, _set.noTextSelected],
+                        lock: [_set.slideDeleted, _set.paragraphLock, _set.lostConnect, _set.noSlides, _set.noParagraphSelected],
                         menu: new Common.UI.Menu({
                             items: [
                                 {
@@ -442,7 +458,7 @@ define([
                     me.btnVerticalAlign = new Common.UI.Button({
                         id: 'id-toolbar-btn-valign',
                         cls: 'btn-toolbar',
-                        lock: [_set.slideDeleted, _set.paragraphLock, _set.lostConnect, _set.noSlides, _set.noTextSelected, _set.noObjectSelected],
+                        lock: [_set.slideDeleted, _set.paragraphLock, _set.lostConnect, _set.noSlides, _set.noParagraphSelected, _set.noObjectSelected],
                         iconCls: 'toolbar__icon btn-align-middle',
                         icls: 'btn-align-middle',
                         menu: new Common.UI.Menu({
@@ -500,7 +516,7 @@ define([
                         id: 'id-toolbar-btn-linespace',
                         cls: 'btn-toolbar',
                         iconCls: 'toolbar__icon btn-linespace',
-                        lock: [_set.slideDeleted, _set.paragraphLock, _set.lostConnect, _set.noSlides, _set.noTextSelected],
+                        lock: [_set.slideDeleted, _set.paragraphLock, _set.lostConnect, _set.noSlides, _set.noParagraphSelected],
                         menu: new Common.UI.Menu({
                             style: 'min-width: 60px;',
                             items: [
@@ -851,7 +867,7 @@ define([
                     ].join(''));
 
                     this.lockControls = [this.btnChangeSlide, this.btnSave,
-                        this.btnCopy, this.btnPaste, this.btnUndo, this.btnRedo, this.cmbFontName, this.cmbFontSize,
+                        this.btnCopy, this.btnPaste, this.btnUndo, this.btnRedo, this.cmbFontName, this.cmbFontSize, this.btnIncFontSize, this.btnDecFontSize,
                         this.btnBold, this.btnItalic, this.btnUnderline, this.btnStrikeout, this.btnSuperscript,
                         this.btnSubscript, this.btnFontColor, this.btnClearStyle, this.btnCopyStyle, this.btnMarkers,
                         this.btnNumbers, this.btnDecLeftOffset, this.btnIncLeftOffset, this.btnLineSpace, this.btnHorizontalAlign,
@@ -961,6 +977,8 @@ define([
                 _injectComponent('#slot-btn-strikeout', this.btnStrikeout);
                 _injectComponent('#slot-btn-superscript', this.btnSuperscript);
                 _injectComponent('#slot-btn-subscript', this.btnSubscript);
+                _injectComponent('#slot-btn-incfont', this.btnIncFontSize);
+                _injectComponent('#slot-btn-decfont', this.btnDecFontSize);
                 _injectComponent('#slot-btn-fontcolor', this.btnFontColor);
                 _injectComponent('#slot-btn-clearstyle', this.btnClearStyle);
                 _injectComponent('#slot-btn-copystyle', this.btnCopyStyle);
@@ -1074,6 +1092,8 @@ define([
                 this.btnRedo.updateHint(this.tipRedo + Common.Utils.String.platformKey('Ctrl+Y'));
                 this.btnCopy.updateHint(this.tipCopy + Common.Utils.String.platformKey('Ctrl+C'));
                 this.btnPaste.updateHint(this.tipPaste + Common.Utils.String.platformKey('Ctrl+V'));
+                this.btnIncFontSize.updateHint(this.tipIncFont + Common.Utils.String.platformKey('Ctrl+]'));
+                this.btnDecFontSize.updateHint(this.tipDecFont + Common.Utils.String.platformKey('Ctrl+['));
                 this.btnBold.updateHint(this.textBold + Common.Utils.String.platformKey('Ctrl+B'));
                 this.btnItalic.updateHint(this.textItalic + Common.Utils.String.platformKey('Ctrl+I'));
                 this.btnUnderline.updateHint(this.textUnderline + Common.Utils.String.platformKey('Ctrl+U'));
@@ -1685,7 +1705,9 @@ define([
             capInsertAudio: 'Audio',
             capInsertVideo: 'Video',
             tipInsertAudio: 'Insert audio',
-            tipInsertVideo: 'Insert video'
+            tipInsertVideo: 'Insert video',
+            tipIncFont: 'Increment font size',
+            tipDecFont: 'Decrement font size'
         }
     }()), PE.Views.Toolbar || {}));
 });

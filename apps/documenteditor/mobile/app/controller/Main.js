@@ -542,7 +542,8 @@ define([
                 me.hidePreloader();
                 me.onLongActionEnd(Asc.c_oAscAsyncActionType['BlockInteraction'], LoadingDocument);
 
-                me.api.asc_SetTrackRevisions(me.appOptions.isReviewOnly || Common.localStorage.getBool("de-mobile-track-changes-" + (me.appOptions.fileKey || '')));
+                var trackChanges = typeof (me.appOptions.customization) == 'object' ? me.appOptions.customization.trackChanges : undefined;
+                me.api.asc_SetTrackRevisions(me.appOptions.isReviewOnly || trackChanges===true || (trackChanges!==false) && Common.localStorage.getBool("de-mobile-track-changes-" + (me.appOptions.fileKey || '')));
 
                 /** coauthoring begin **/
                 this.isLiveCommenting = Common.localStorage.getBool("de-mobile-settings-livecomment", true);
@@ -553,12 +554,6 @@ define([
                 value = Common.localStorage.getItem("de-settings-zoom");
                 var zf = (value!==null) ? parseInt(value) : (this.appOptions.customization && this.appOptions.customization.zoom ? parseInt(this.appOptions.customization.zoom) : 100);
                 (zf == -1) ? this.api.zoomFitToPage() : ((zf == -2) ? this.api.zoomFitToWidth() : this.api.zoom(zf>0 ? zf : 100));
-
-                value = Common.localStorage.getItem("de-show-hiddenchars");
-                me.api.put_ShowParaMarks((value!==null) ? eval(value) : false);
-
-                value = Common.localStorage.getItem("de-show-tableline");
-                me.api.put_ShowTableEmptyLine((value!==null) ? eval(value) : true);
 
                 value = Common.localStorage.getBool("de-mobile-spellcheck", !(this.appOptions.customization && this.appOptions.customization.spellcheck===false));
                 Common.Utils.InternalSettings.set("de-mobile-spellcheck", value);
@@ -574,10 +569,10 @@ define([
                 me.api.SetTextBoxInputMode(Common.localStorage.getBool("de-settings-inputmode"));
 
                 value = Common.localStorage.getItem("de-mobile-no-characters");
-                me.api.put_ShowParaMarks((value!==null) ? eval(value) : false);
+                me.api.put_ShowParaMarks(value==='true');
 
                 value = Common.localStorage.getItem("de-mobile-hidden-borders");
-                me.api.put_ShowTableEmptyLine((value!==null) ? eval(value) : true);
+                me.api.put_ShowTableEmptyLine(value===null || value==='true');
 
                 /** coauthoring begin **/
                 if (me.appOptions.isEdit && me.appOptions.canLicense && !me.appOptions.isOffline && me.appOptions.canCoAuthoring) {
@@ -638,9 +633,9 @@ define([
                 $(document).on('contextmenu', _.bind(me.onContextMenu, me));
 
                 if (!me.appOptions.canReview) {
-                    var canViewReview = me.appOptions.isEdit || me.api.asc_HaveRevisionsChanges(true);
-                    DE.getController('Common.Controllers.Collaboration').setCanViewReview(canViewReview);
-                    if (canViewReview) {
+                    me.appOptions.canViewReview = me.appOptions.isEdit || me.api.asc_HaveRevisionsChanges(true);
+                    DE.getController('Common.Controllers.Collaboration').setCanViewReview(me.appOptions.canViewReview);
+                    if (me.appOptions.canViewReview) {
                         var viewReviewMode = Common.localStorage.getItem("de-view-review-mode");
                         if (viewReviewMode===null)
                             viewReviewMode = me.appOptions.customization && /^(original|final|markup)$/i.test(me.appOptions.customization.reviewDisplay) ? me.appOptions.customization.reviewDisplay.toLocaleLowerCase() : 'original';
@@ -648,6 +643,7 @@ define([
                         DE.getController('Common.Controllers.Collaboration').turnDisplayMode(viewReviewMode);
                     }
                 }
+                DE.getController('Toolbar').displayCollaboration();
 
                 Common.Gateway.documentReady();
 
@@ -657,7 +653,8 @@ define([
             onLicenseChanged: function(params) {
                 var licType = params.asc_getLicenseType();
                 if (licType !== undefined && this.appOptions.canEdit && this.editorConfig.mode !== 'view' &&
-                    (licType===Asc.c_oLicenseResult.Connections || licType===Asc.c_oLicenseResult.UsersCount || licType===Asc.c_oLicenseResult.ConnectionsOS || licType===Asc.c_oLicenseResult.UsersCountOS))
+                    (licType===Asc.c_oLicenseResult.Connections || licType===Asc.c_oLicenseResult.UsersCount || licType===Asc.c_oLicenseResult.ConnectionsOS || licType===Asc.c_oLicenseResult.UsersCountOS
+                    || licType===Asc.c_oLicenseResult.SuccessLimit && (this.appOptions.trialMode & Asc.c_oLicenseMode.Limited) !== 0))
                     this._state.licenseType = licType;
 
                 if (this._isDocReady && this._state.licenseType)
@@ -685,7 +682,10 @@ define([
                 if (this._state.licenseType) {
                     var license = this._state.licenseType,
                         buttons = [{text: 'OK'}];
-                    if (license===Asc.c_oLicenseResult.Connections || license===Asc.c_oLicenseResult.UsersCount) {
+                    if ((this.appOptions.trialMode & Asc.c_oLicenseMode.Limited) !== 0 &&
+                        (license===Asc.c_oLicenseResult.SuccessLimit || license===Asc.c_oLicenseResult.ExpiredLimited || this.appOptions.permissionsLicense===Asc.c_oLicenseResult.SuccessLimit)) {
+                        license = (license===Asc.c_oLicenseResult.ExpiredLimited) ? this.warnLicenseLimitedNoAccess : this.warnLicenseLimitedRenewed;
+                    } else if (license===Asc.c_oLicenseResult.Connections || license===Asc.c_oLicenseResult.UsersCount) {
                         license = (license===Asc.c_oLicenseResult.Connections) ? this.warnLicenseExceeded : this.warnLicenseUsersExceeded;
                     } else {
                         license = (license===Asc.c_oLicenseResult.ConnectionsOS) ? this.warnNoLicense : this.warnNoLicenseUsers;
@@ -703,9 +703,13 @@ define([
                                         }
                                     }];
                     }
-                    DE.getController('Toolbar').activateViewControls();
-                    DE.getController('Toolbar').deactivateEditControls();
-                    Common.NotificationCenter.trigger('api:disconnect');
+                    if (this._state.licenseType===Asc.c_oLicenseResult.SuccessLimit) {
+                        DE.getController('Toolbar').activateControls();
+                    } else {
+                        DE.getController('Toolbar').activateViewControls();
+                        DE.getController('Toolbar').deactivateEditControls();
+                        Common.NotificationCenter.trigger('api:disconnect');
+                    }
 
                     var value = Common.localStorage.getItem("de-license-warning");
                     value = (value!==null) ? parseInt(value) : 0;
@@ -751,7 +755,6 @@ define([
             onEditorPermissions: function(params) {
                 var me = this,
                     licType = params.asc_getLicenseType();
-
                 if (Asc.c_oLicenseResult.Expired === licType ||
                     Asc.c_oLicenseResult.Error === licType ||
                     Asc.c_oLicenseResult.ExpiredTrial === licType) {
@@ -761,9 +764,12 @@ define([
                     });
                     return;
                 }
+                if (Asc.c_oLicenseResult.ExpiredLimited === licType)
+                    me._state.licenseType = licType;
 
                 if ( me.onServerVersion(params.asc_getBuildVersion()) ) return;
 
+                me.appOptions.permissionsLicense = licType;
                 me.permissions.review         = (me.permissions.review === undefined) ? (me.permissions.edit !== false) : me.permissions.review;
                 me.appOptions.canAnalytics    = params.asc_getIsAnalyticsEnable();
                 me.appOptions.canLicense      = (licType === Asc.c_oLicenseResult.Success || licType === Asc.c_oLicenseResult.SuccessLimit);
@@ -792,8 +798,11 @@ define([
                 me.appOptions.canEditStyles   = me.appOptions.canLicense && me.appOptions.canEdit;
                 me.appOptions.canPrint        = (me.permissions.print !== false);
                 me.appOptions.fileKey = me.document.key;
-                me.appOptions.canFillForms   = ((me.permissions.fillForms===undefined) ? me.appOptions.isEdit : me.permissions.fillForms) && (me.editorConfig.mode !== 'view');
-                me.appOptions.isRestrictedEdit = !me.appOptions.isEdit && me.appOptions.canFillForms;
+                me.appOptions.canFillForms   = me.appOptions.canLicense && ((me.permissions.fillForms===undefined) ? me.appOptions.isEdit : me.permissions.fillForms) && (me.editorConfig.mode !== 'view');
+                me.appOptions.isRestrictedEdit = !me.appOptions.isEdit && (me.appOptions.canComments || me.appOptions.canFillForms);
+                if (me.appOptions.isRestrictedEdit && me.appOptions.canComments && me.appOptions.canFillForms) // must be one restricted mode, priority for filling forms
+                    me.appOptions.canComments = false;
+                me.appOptions.trialMode      = params.asc_getLicenseMode();
 
                 var type = /^(?:(pdf|djvu|xps))$/.exec(me.document.fileType);
                 me.appOptions.canDownloadOrigin = me.permissions.download !== false && (type && typeof type[1] === 'string');
@@ -814,6 +823,7 @@ define([
                 me.applyModeEditorElements();
 
                 me.api.asc_setViewMode(!me.appOptions.isEdit && !me.appOptions.isRestrictedEdit);
+                me.appOptions.isRestrictedEdit && this.appOptions.canComments && me.api.asc_setRestriction(Asc.c_oAscRestrictionType.OnlyComments);
                 me.appOptions.isRestrictedEdit && me.appOptions.canFillForms && me.api.asc_setRestriction(Asc.c_oAscRestrictionType.OnlyForms);
                 me.api.asc_LoadDocument();
                 me.api.Resize();
@@ -876,10 +886,6 @@ define([
                     window.onbeforeunload = _.bind(me.onBeforeUnload, me);
                     window.onunload = _.bind(me.onUnload, me);
                 }
-            },
-
-            returnUserCount: function() {
-                return this._state.usersCount;
             },
 
             onExternalMessage: function(msg) {
@@ -1587,7 +1593,9 @@ define([
             textNo: 'No',
             errorSessionAbsolute: 'The document editing session has expired. Please reload the page.',
             errorSessionIdle: 'The document has not been edited for quite a long time. Please reload the page.',
-            errorSessionToken: 'The connection to the server has been interrupted. Please reload the page.'
+            errorSessionToken: 'The connection to the server has been interrupted. Please reload the page.',
+            warnLicenseLimitedRenewed: 'License needs to be renewed.<br>You have a limited access to document editing functionality.<br>Please contact your administrator to get full access',
+            warnLicenseLimitedNoAccess: 'License expired.<br>You have no access to document editing functionality.<br>Please contact your administrator.'
         }
     })(), DE.Controllers.Main || {}))
 });

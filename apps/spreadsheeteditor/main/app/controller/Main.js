@@ -165,6 +165,8 @@ define([
                 // Initialize api
                 this.api = this.getApplication().getController('Viewport').getApi();
 
+                Common.UI.FocusManager.init();
+                
                 var value = Common.localStorage.getBool("sse-settings-cachemode", true);
                 Common.Utils.InternalSettings.set("sse-settings-cachemode", value);
                 this.api.asc_setDefaultBlitMode(!!value);
@@ -866,6 +868,8 @@ define([
                 } else {
                     documentHolderView.createDelayedElementsViewer();
                     Common.NotificationCenter.trigger('document:ready', 'main');
+                    if (me.editorConfig.mode !== 'view') // if want to open editor, but viewer is loaded
+                        me.applyLicense();
                 }
                 // TODO bug 43960
                 if (!me.appOptions.isEditMailMerge && !me.appOptions.isEditDiagram) {
@@ -909,7 +913,8 @@ define([
 
                 var licType = params.asc_getLicenseType();
                 if (licType !== undefined && this.appOptions.canEdit && this.editorConfig.mode !== 'view' &&
-                    (licType===Asc.c_oLicenseResult.Connections || licType===Asc.c_oLicenseResult.UsersCount || licType===Asc.c_oLicenseResult.ConnectionsOS || licType===Asc.c_oLicenseResult.UsersCountOS))
+                    (licType===Asc.c_oLicenseResult.Connections || licType===Asc.c_oLicenseResult.UsersCount || licType===Asc.c_oLicenseResult.ConnectionsOS || licType===Asc.c_oLicenseResult.UsersCountOS
+                    || licType===Asc.c_oLicenseResult.SuccessLimit && (this.appOptions.trialMode & Asc.c_oLicenseMode.Limited) !== 0))
                     this._state.licenseType = licType;
 
                 if (this._isDocReady)
@@ -921,7 +926,11 @@ define([
                     var license = this._state.licenseType,
                         buttons = ['ok'],
                         primary = 'ok';
-                    if (license===Asc.c_oLicenseResult.Connections || license===Asc.c_oLicenseResult.UsersCount) {
+                    if ((this.appOptions.trialMode & Asc.c_oLicenseMode.Limited) !== 0 &&
+                        (license===Asc.c_oLicenseResult.SuccessLimit || license===Asc.c_oLicenseResult.ExpiredLimited || this.appOptions.permissionsLicense===Asc.c_oLicenseResult.SuccessLimit)) {
+                        (license===Asc.c_oLicenseResult.ExpiredLimited) && this.getApplication().getController('LeftMenu').leftMenu.setLimitMode();// show limited hint
+                        license = (license===Asc.c_oLicenseResult.ExpiredLimited) ? this.warnLicenseLimitedNoAccess : this.warnLicenseLimitedRenewed;
+                    } else if (license===Asc.c_oLicenseResult.Connections || license===Asc.c_oLicenseResult.UsersCount) {
                         license = (license===Asc.c_oLicenseResult.Connections) ? this.warnLicenseExceeded : this.warnLicenseUsersExceeded;
                     } else {
                         license = (license===Asc.c_oLicenseResult.ConnectionsOS) ? this.warnNoLicense : this.warnNoLicenseUsers;
@@ -929,15 +938,17 @@ define([
                         primary = 'buynow';
                     }
 
-                    this.disableEditing(true);
-                    Common.NotificationCenter.trigger('api:disconnect');
+                    if (this._state.licenseType!==Asc.c_oLicenseResult.SuccessLimit && this.appOptions.isEdit) {
+                        this.disableEditing(true);
+                        Common.NotificationCenter.trigger('api:disconnect');
+                    }
 
                     var value = Common.localStorage.getItem("sse-license-warning");
                     value = (value!==null) ? parseInt(value) : 0;
                     var now = (new Date).getTime();
                     if (now - value > 86400000) {
                         Common.UI.info({
-                            width: 500,
+                            maxwidth: 500,
                             title: this.textNoLicenseTitle,
                             msg  : license,
                             buttons: buttons,
@@ -983,7 +994,6 @@ define([
 
             onEditorPermissions: function(params) {
                 var licType = params ? params.asc_getLicenseType() : Asc.c_oLicenseResult.Error;
-
                 if ( params && !(this.appOptions.isEditDiagram || this.appOptions.isEditMailMerge)) {
                     if (Asc.c_oLicenseResult.Expired === licType || Asc.c_oLicenseResult.Error === licType || Asc.c_oLicenseResult.ExpiredTrial === licType) {
                         Common.UI.warning({
@@ -994,12 +1004,15 @@ define([
                         });
                         return;
                     }
+                    if (Asc.c_oLicenseResult.ExpiredLimited === licType)
+                        this._state.licenseType = licType;
 
                     if ( this.onServerVersion(params.asc_getBuildVersion()) ) return;
 
                     if (params.asc_getRights() !== Asc.c_oRights.Edit)
                         this.permissions.edit = false;
 
+                    this.appOptions.permissionsLicense = licType;
                     this.appOptions.canAutosave = true;
                     this.appOptions.canAnalytics = params.asc_getIsAnalyticsEnable();
 
@@ -1015,7 +1028,9 @@ define([
                     this.appOptions.canViewComments = this.appOptions.canComments || !((typeof (this.editorConfig.customization) == 'object') && this.editorConfig.customization.comments===false);
                     this.appOptions.canChat        = this.appOptions.canLicense && !this.appOptions.isOffline && !((typeof (this.editorConfig.customization) == 'object') && this.editorConfig.customization.chat===false);
                     this.appOptions.canRename      = this.editorConfig.canRename;
+                    this.appOptions.buildVersion   = params.asc_getBuildVersion();
                     this.appOptions.trialMode      = params.asc_getLicenseMode();
+                    this.appOptions.isBeta         = params.asc_getIsBeta();
                     this.appOptions.canModifyFilter = (this.permissions.modifyFilter!==false);
                     this.appOptions.canBranding  = params.asc_getCustomization();
                     if (this.appOptions.canBranding)
@@ -1230,7 +1245,7 @@ define([
                         break;
 
                     case Asc.c_oAscError.ID.ConvertationSaveError:
-                        config.msg = this.saveErrorText;
+                        config.msg = (this.appOptions.isDesktopApp && this.appOptions.isOffline) ? this.saveErrorTextDesktop : this.saveErrorText;
                         break;
 
                     case Asc.c_oAscError.ID.DownloadError:
@@ -1536,6 +1551,10 @@ define([
 
                     case  Asc.c_oAscError.ID.LockedEditView:
                         config.msg = this.errorEditView;
+                        break;
+
+                    case  Asc.c_oAscError.ID.ChangeFilteredRangeError:
+                        config.msg = this.errorChangeFilteredRange;
                         break;
 
                     default:
@@ -2671,7 +2690,11 @@ define([
             errorFrmlMaxLength: 'You cannot add this formula as its length exceeded the allowed number of characters.<br>Please edit it and try again.',
             errorFrmlMaxReference: 'You cannot enter this formula because it has too many values,<br>cell references, and/or names.',
             errorMoveSlicerError: 'Table slicers cannot be copied from one workbook to another.<br>Try again by selecting the entire table and the slicers.',
-            errorEditView: 'The existing sheet view cannot be edited and the new ones cannot be created at the moment as some of them are being edited.'
+            errorEditView: 'The existing sheet view cannot be edited and the new ones cannot be created at the moment as some of them are being edited.',
+            errorChangeFilteredRange: 'This will change a filtered range on your worksheet.<br>To complete this task, please remove AutoFilters.',
+            warnLicenseLimitedRenewed: 'License needs to be renewed.<br>You have a limited access to document editing functionality.<br>Please contact your administrator to get full access',
+            warnLicenseLimitedNoAccess: 'License expired.<br>You have no access to document editing functionality.<br>Please contact your administrator.',
+            saveErrorTextDesktop: 'This file cannot be saved or created.<br>Possible reasons are: <br>1. The file is read-only. <br>2. The file is being edited by other users. <br>3. The disk is full or corrupted.'
         }
     })(), SSE.Controllers.Main || {}))
 });

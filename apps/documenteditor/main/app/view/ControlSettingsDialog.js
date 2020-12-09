@@ -120,6 +120,7 @@ define([ 'text!documenteditor/main/app/template/ControlSettingsDialog.template',
                 cls: 'input-group-nr',
                 menuStyle: 'min-width: 120px;',
                 editable: false,
+                takeFocusOnClose: true,
                 data: [
                     { displayValue: this.textBox,   value: Asc.c_oAscSdtAppearance.Frame },
                     { displayValue: this.textNone,  value: Asc.c_oAscSdtAppearance.Hidden }
@@ -168,7 +169,8 @@ define([ 'text!documenteditor/main/app/template/ControlSettingsDialog.template',
                     '<div style="width:90px;display: inline-block;vertical-align: middle; overflow: hidden; text-overflow: ellipsis;white-space: pre;margin-right: 5px;"><%= name %></div>',
                     '<div style="width:90px;display: inline-block;vertical-align: middle; overflow: hidden; text-overflow: ellipsis;white-space: pre;"><%= value %></div>',
                     '</div>'
-                ].join(''))
+                ].join('')),
+                tabindex: 1
             });
             this.list.on('item:select', _.bind(this.onSelectItem, this));
 
@@ -212,7 +214,10 @@ define([ 'text!documenteditor/main/app/template/ControlSettingsDialog.template',
                 menuStyle   : 'min-width: 100%; max-height: 185px;',
                 cls         : 'input-group-nr',
                 editable    : false,
-                data        : data
+                takeFocusOnClose: true,
+                data        : data,
+                search: true,
+                scrollAlwaysVisible: true
             });
             this.cmbLang.setValue(0x0409);
             this.cmbLang.on('selected',function(combo, record) {
@@ -222,7 +227,8 @@ define([ 'text!documenteditor/main/app/template/ControlSettingsDialog.template',
             this.listFormats = new Common.UI.ListView({
                 el: $('#control-settings-format'),
                 store: new Common.UI.DataViewStore(),
-                scrollAlwaysVisible: true
+                scrollAlwaysVisible: true,
+                tabindex: 1
             });
             this.listFormats.on('item:select', _.bind(this.onSelectFormat, this));
 
@@ -307,7 +313,8 @@ define([ 'text!documenteditor/main/app/template/ControlSettingsDialog.template',
                 step: .1,
                 width: 80,
                 defaultUnit : "cm",
-                value: '3 cm',
+                value: 'Auto',
+                allowAuto: true,
                 maxValue: 55.88,
                 minValue: 0.1
             });
@@ -344,6 +351,28 @@ define([ 'text!documenteditor/main/app/template/ControlSettingsDialog.template',
             }, this));
 
             this.afterRender();
+        },
+
+        getFocusedComponents: function() {
+            return [
+                this.txtName, this.txtTag, this.txtPlaceholder, this.cmbShow, // 0 tab
+                {cmp: this.list, selector: '.listview'}, // 2 tab
+                this.txtDate, {cmp: this.listFormats, selector: '.listview'}, this.cmbLang // 3 tab
+            ];
+        },
+
+        onCategoryClick: function(btn, index) {
+            Common.Views.AdvancedSettingsWindow.prototype.onCategoryClick.call(this, btn, index);
+
+            var me = this;
+            setTimeout(function(){
+                if (index==0) {
+                    me.txtName.focus();
+                } else if (index==2) {
+                    me.list.focus();
+                } else if (index==3)
+                    me.txtDate.focus();
+            }, 100);
         },
 
         onColorsSelect: function(btn, color) {
@@ -522,7 +551,11 @@ define([ 'text!documenteditor/main/app/template/ControlSettingsDialog.template',
                     this.spnMaxChars.setValue(val && val>=0 ? val : 10);
 
                     val = formTextPr.get_Width();
-                    this.spnWidth.setValue(val ? val : '', true);
+                    this.spnWidth.setValue(val!==0 && val!==undefined ? Common.Utils.Metric.fnRecalcFromMM(val * 25.4 / 20 / 72.0) : -1, true);
+                }
+
+                if ((type == Asc.c_oAscContentControlSpecificType.CheckBox || type == Asc.c_oAscContentControlSpecificType.Picture) && !formPr )  {// standart checkbox or picture
+                    this.txtPlaceholder.cmpEl && this.txtPlaceholder.cmpEl.closest('tr').hide();
                 }
             }
         },
@@ -531,7 +564,7 @@ define([ 'text!documenteditor/main/app/template/ControlSettingsDialog.template',
             var props   = new AscCommon.CContentControlPr();
             props.put_Alias(this.txtName.getValue());
             props.put_Tag(this.txtTag.getValue());
-            props.put_PlaceholderText(this.txtPlaceholder.getValue());
+            props.put_PlaceholderText(this.txtPlaceholder.getValue() || '    ');
             props.put_Appearance(this.cmbShow.getValue());
 
             if (this.isSystemColor) {
@@ -607,8 +640,12 @@ define([ 'text!documenteditor/main/app/template/ControlSettingsDialog.template',
 
             if (this.btnsCategory[5].isVisible()) {
                 var formTextPr = new AscCommon.CSdtTextFormPr();
-                if (this.spnWidth.getValue())
-                    formTextPr.put_Width(this.spnWidth.getNumberValue());
+                if (this.spnWidth.getValue()) {
+                    var value = this.spnWidth.getNumberValue();
+                    formTextPr.put_Width(value<=0 ? 0 : parseInt(Common.Utils.Metric.fnRecalcToMM(value) * 72 * 20 / 25.4));
+                } else
+                    formTextPr.put_Width(0);
+
                 if (this.placeholder && this.placeholder.changed) {
                     formTextPr.put_PlaceHolderSymbol(this.placeholder.code);
                     formTextPr.put_PlaceHolderFont(this.placeholder.font);
@@ -618,7 +655,7 @@ define([ 'text!documenteditor/main/app/template/ControlSettingsDialog.template',
                 var checked = (this.chMaxChars.getValue()=='checked' || this.chComb.getValue()=='checked');
                 formTextPr.put_MaxCharacters(checked);
                 if (checked)
-                    formTextPr.put_MaxCharacters(this.spnMaxChars.getNumberValue() || 12);
+                    formTextPr.put_MaxCharacters(this.spnMaxChars.getNumberValue() || 10);
 
                 props.put_TextFormPr(formTextPr);
             }
@@ -679,7 +716,7 @@ define([ 'text!documenteditor/main/app/template/ControlSettingsDialog.template',
                                 me.disableListButtons();
                             }
                         }
-                        me.list.cmpEl.find('.listview').focus();
+                        me.list.focus();
                     }
                 });
             win.show();
@@ -699,7 +736,7 @@ define([ 'text!documenteditor/main/app/template/ControlSettingsDialog.template',
                                 });
                             }
                         }
-                        me.list.cmpEl.find('.listview').focus();
+                        me.list.focus();
                     }
                 });
             rec && win.show();
@@ -719,7 +756,7 @@ define([ 'text!documenteditor/main/app/template/ControlSettingsDialog.template',
                 }
             }
             this.disableListButtons();
-            this.list.cmpEl.find('.listview').focus();
+            this.list.focus();
         },
 
         onMoveItem: function(up) {
@@ -732,7 +769,7 @@ define([ 'text!documenteditor/main/app/template/ControlSettingsDialog.template',
                 this.list.selectRecord(rec);
                 this.list.scrollToRecord(rec);
             }
-            this.list.cmpEl.find('.listview').focus();
+            this.list.focus();
         },
 
         updateFormats: function(lang) {

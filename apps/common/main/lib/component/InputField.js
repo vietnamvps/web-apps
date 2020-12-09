@@ -246,6 +246,10 @@ define([
 
                 if (e.keyCode === Common.UI.Keys.RETURN)
                     this._doChange(e);
+                if (e.keyCode == Common.UI.Keys.ESC)
+                    this.setValue(this.value);
+                if (e.keyCode==Common.UI.Keys.RETURN || e.keyCode==Common.UI.Keys.ESC)
+                    this.trigger('inputleave', this);
             },
 
             onKeyUp: function(e) {
@@ -300,7 +304,7 @@ define([
             },
 
             focus: function() {
-                this._input.focus();
+                this._input && this._input.focus();
             },
 
             checkValidate: function() {

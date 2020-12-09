@@ -817,7 +817,7 @@ define([
         },
 
         onBtnClick: function(event) {
-            this._handleInput(event.currentTarget.attributes['result'].value);
+            this._handleInput(event.currentTarget.attributes['result'].value, true);
         },
 
         onPrimary: function(event) {
@@ -825,7 +825,11 @@ define([
             return false;
         },
 
-        _handleInput: function(state) {
+        _handleInput: function(state, fromButton) {
+            if(!fromButton && document.activeElement && document.activeElement.localName == 'textarea' && /area_id/.test(document.activeElement.id)){
+                return;
+            }
+
             var special = this.btnSpecial.isActive();
             var settings = special ? this.getSpecialSymbol() : this.getPasteSymbol(this.$window.find('.cell-selected').attr('id'));
             if (this.options.handler) {
@@ -1482,7 +1486,7 @@ define([
             this.specialPanel.toggleClass('d-none', !special);
             var me = this;
             _.delay(function(){
-                special ? me.specialList.cmpEl.find('.listview').focus() : me.previewPanel.focus();
+                special ? me.specialList.focus() : me.previewPanel.focus();
             },50);
 
         },

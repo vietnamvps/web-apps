@@ -266,6 +266,8 @@ define([
             toolbar.btnRedo.on('disabled',                              _.bind(this.onBtnChangeState, this, 'redo:disabled'));
             toolbar.btnCopy.on('click',                                 _.bind(this.onCopyPaste, this, true));
             toolbar.btnPaste.on('click',                                _.bind(this.onCopyPaste, this, false));
+            toolbar.btnIncFontSize.on('click',                          _.bind(this.onIncrease, this));
+            toolbar.btnDecFontSize.on('click',                          _.bind(this.onDecrease, this));
             toolbar.btnBold.on('click',                                 _.bind(this.onBold, this));
             toolbar.btnItalic.on('click',                               _.bind(this.onItalic, this));
             toolbar.btnUnderline.on('click',                            _.bind(this.onUnderline, this));
@@ -686,8 +688,12 @@ define([
                     shape_locked = pr.get_Locked();
                     no_object = false;
                     if (type == Asc.c_oAscTypeSelectElement.Table ||
-                        type == Asc.c_oAscTypeSelectElement.Shape && !pr.get_FromImage() && !pr.get_FromChart()) {
+                        type == Asc.c_oAscTypeSelectElement.Shape && !pr.get_FromImage()) {
                         no_text = false;
+                    }
+                    if (type == Asc.c_oAscTypeSelectElement.Table ||
+                        type == Asc.c_oAscTypeSelectElement.Shape && !pr.get_FromImage() && !pr.get_FromChart()) {
+                        no_paragraph = false;
                     }
                     in_chart = type == Asc.c_oAscTypeSelectElement.Chart;
                 } else if (type === Asc.c_oAscTypeSelectElement.Math) {
@@ -700,16 +706,17 @@ define([
                 this._state.in_chart = in_chart;
             }
 
-            if (paragraph_locked!==undefined && this._state.prcontrolsdisable !== paragraph_locked) {
+            if (this._state.prcontrolsdisable !== paragraph_locked) {
                 if (this._state.activated) this._state.prcontrolsdisable = paragraph_locked;
-                this.toolbar.lockToolbar(PE.enumLock.paragraphLock, paragraph_locked, {array: me.toolbar.paragraphControls.concat(me.toolbar.btnInsDateTime, me.toolbar.btnInsSlideNum)});
+                if (paragraph_locked!==undefined)
+                    this.toolbar.lockToolbar(PE.enumLock.paragraphLock, paragraph_locked, {array: me.toolbar.paragraphControls});
+                this.toolbar.lockToolbar(PE.enumLock.paragraphLock, paragraph_locked===true, {array: [me.toolbar.btnInsDateTime, me.toolbar.btnInsSlideNum]});
             }
 
             if (this._state.no_paragraph !== no_paragraph) {
                 if (this._state.activated) this._state.no_paragraph = no_paragraph;
                 this.toolbar.lockToolbar(PE.enumLock.noParagraphSelected, no_paragraph, {array: me.toolbar.paragraphControls});
                 this.toolbar.lockToolbar(PE.enumLock.noParagraphSelected, no_paragraph, {array: [me.toolbar.btnCopyStyle]});
-                this.toolbar.lockToolbar(PE.enumLock.paragraphLock, !no_paragraph && this._state.prcontrolsdisable, {array: [me.toolbar.btnInsDateTime, me.toolbar.btnInsSlideNum]});
             }
 
             if (this._state.no_text !== no_text) {
@@ -885,9 +892,9 @@ define([
                         for (var i=0; i<selectedElements.length; i++) {
                             if (Asc.c_oAscTypeSelectElement.Slide == selectedElements[i].get_ObjectType()) {
                                 var elValue = selectedElements[i].get_ObjectValue(),
-                                    timing = elValue.get_timing();
-                                if (timing)
-                                    loop = timing.get_ShowLoop();
+                                    transition = elValue.get_transition();
+                                if (transition)
+                                    loop = transition.get_ShowLoop();
                             }
                         }
                     }
@@ -897,9 +904,9 @@ define([
                             loop = dlg.getSettings();
                             if (me.api) {
                                 var props = new Asc.CAscSlideProps();
-                                var timing = new Asc.CAscSlideTiming();
-                                timing.put_ShowLoop(loop);
-                                props.put_timing(timing);
+                                var transition = new Asc.CAscSlideTransition();
+                                transition.put_ShowLoop(loop);
+                                props.put_transition(transition);
                                 me.api.SetSlideProps(props);
                             }
                         }
@@ -985,6 +992,22 @@ define([
                     Common.component.Analytics.trackEvent('ToolBar', 'Copy Warning');
             }
             Common.NotificationCenter.trigger('edit:complete', me.toolbar);
+        },
+
+        onIncrease: function(e) {
+            if (this.api)
+                this.api.FontSizeIn();
+
+            Common.NotificationCenter.trigger('edit:complete', this.toolbar);
+            Common.component.Analytics.trackEvent('ToolBar', 'Font Size');
+        },
+
+        onDecrease: function(e) {
+            if (this.api)
+                this.api.FontSizeOut();
+
+            Common.NotificationCenter.trigger('edit:complete', this.toolbar);
+            Common.component.Analytics.trackEvent('ToolBar', 'Font Size');
         },
 
         onBold: function(btn, e) {

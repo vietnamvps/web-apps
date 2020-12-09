@@ -45,6 +45,7 @@ define([
     'common/main/lib/view/ImageFromUrlDialog',
     'common/main/lib/view/SelectFileDlg',
     'common/main/lib/view/SymbolTableDialog',
+    'common/main/lib/view/OptionsDialog',
     'common/main/lib/util/define',
     'spreadsheeteditor/main/app/view/Toolbar',
     'spreadsheeteditor/main/app/collection/TableTemplates',
@@ -60,7 +61,6 @@ define([
     'spreadsheeteditor/main/app/view/PrintTitlesDialog',
     'spreadsheeteditor/main/app/view/ScaleDialog',
     'spreadsheeteditor/main/app/view/SlicerAddDialog',
-    'spreadsheeteditor/main/app/view/CellsAddDialog',
     'spreadsheeteditor/main/app/view/AdvancedSeparatorDialog'
 ], function () { 'use strict';
 
@@ -274,6 +274,7 @@ define([
                 if (toolbar.cmbNumberFormat.cmpEl)
                     toolbar.cmbNumberFormat.cmpEl.on('click', '#id-toolbar-mnu-item-more-formats a', _.bind(this.onNumberFormatSelect, this));
                 toolbar.btnEditChart.on('click',                            _.bind(this.onEditChart, this));
+                toolbar.btnEditChartData.on('click',                        _.bind(this.onEditChartData, this));
             } else
             if ( me.appConfig.isEditMailMerge ) {
                 toolbar.btnUndo.on('click',                                 _.bind(this.onUndo, this));
@@ -950,6 +951,7 @@ define([
                             {
                                 chartSettings: props,
                                 imageSettings: imageSettings,
+                                isDiagramMode: me.toolbar.mode.isEditDiagram,
                                 isChart: true,
                                 api: me.api,
                                 handler: function(result, value) {
@@ -964,6 +966,35 @@ define([
                                 }
                             })).show();
                     }
+                }
+            }
+        },
+
+        onEditChartData: function(btn) {
+            if (!this.editMode) return;
+
+            var me = this;
+            var props;
+            if (me.api){
+                props = me.api.asc_getChartObject();
+                if (props) {
+                    me._isEditRanges = true;
+                    props.startEdit();
+                    var win = new SSE.Views.ChartDataDialog({
+                        chartSettings: props,
+                        api: me.api,
+                        handler: function(result, value) {
+                            if (result == 'ok') {
+                                props.endEdit();
+                                me._isEditRanges = false;
+                            }
+                            Common.NotificationCenter.trigger('edit:complete', me);
+                        }
+                    }).on('close', function() {
+                        me._isEditRanges && props.cancelEdit();
+                        me._isEditRanges = false;
+                    });
+                    win.show();
                 }
             }
         },
@@ -1571,7 +1602,7 @@ define([
                                     arr = [];
                                 for (var i=0; i<4; i++)
                                     arr.push({caption: items[i].caption, value: items[i].value, disabled: items[i].isDisabled()});
-                                (new SSE.Views.CellsAddDialog({
+                                (new Common.Views.OptionsDialog({
                                     title: me.txtInsertCells,
                                     items: arr,
                                     handler: function (dlg, result) {
@@ -1598,7 +1629,7 @@ define([
                                     arr = [];
                                 for (var i=0; i<4; i++)
                                     arr.push({caption: items[i].caption, value: items[i].value, disabled: items[i].isDisabled()});
-                                (new SSE.Views.CellsAddDialog({
+                                (new Common.Views.OptionsDialog({
                                     title: me.txtDeleteCells,
                                     items: arr,
                                     handler: function (dlg, result) {
@@ -1817,7 +1848,7 @@ define([
             var toolbar = this.toolbar;
             if (toolbar.mode.isEditDiagram || toolbar.mode.isEditMailMerge) {
                 is_cell_edited = (state == Asc.c_oAscCellEditorState.editStart);
-                toolbar.lockToolbar(SSE.enumLock.editCell, state == Asc.c_oAscCellEditorState.editStart, {array: [toolbar.btnDecDecimal,toolbar.btnIncDecimal,toolbar.cmbNumberFormat]});
+                toolbar.lockToolbar(SSE.enumLock.editCell, state == Asc.c_oAscCellEditorState.editStart, {array: [toolbar.btnDecDecimal,toolbar.btnIncDecimal,toolbar.cmbNumberFormat, toolbar.btnEditChartData]});
             } else
             if (state == Asc.c_oAscCellEditorState.editStart || state == Asc.c_oAscCellEditorState.editEnd) {
                 toolbar.lockToolbar(SSE.enumLock.editCell, state == Asc.c_oAscCellEditorState.editStart, {
@@ -2379,7 +2410,7 @@ define([
                 }
                 need_disable =  this._state.controlsdisabled.filters || (val===null);
                 toolbar.lockToolbar(SSE.enumLock.ruleFilter, need_disable,
-                            { array: toolbar.btnsSetAutofilter.concat(toolbar.btnCustomSort, toolbar.btnTableTemplate, toolbar.btnInsertTable, toolbar.btnRemoveDuplicates) });
+                            { array: toolbar.btnsSetAutofilter.concat(toolbar.btnCustomSort, toolbar.btnTableTemplate, toolbar.btnInsertTable, toolbar.btnRemoveDuplicates, toolbar.btnDataValidation) });
 
                 toolbar.lockToolbar(SSE.enumLock.tableHasSlicer, filterInfo && filterInfo.asc_getIsSlicerAdded(), { array: toolbar.btnsSetAutofilter });
 
@@ -2415,12 +2446,12 @@ define([
 
                 this._state.inpivot = !!info.asc_getPivotTableInfo();
                 toolbar.lockToolbar(SSE.enumLock.editPivot, this._state.inpivot, { array: toolbar.btnsSetAutofilter.concat(toolbar.btnCustomSort,
-                                                                                          toolbar.btnMerge, toolbar.btnInsertHyperlink, toolbar.btnInsertTable, toolbar.btnRemoveDuplicates)});
-                toolbar.lockToolbar(SSE.enumLock.noSlicerSource, !(formatTableInfo), { array: [toolbar.btnInsertSlicer]});
+                                                                                          toolbar.btnMerge, toolbar.btnInsertHyperlink, toolbar.btnInsertTable, toolbar.btnRemoveDuplicates, toolbar.btnDataValidation)});
+                toolbar.lockToolbar(SSE.enumLock.noSlicerSource, !(this._state.inpivot || formatTableInfo), { array: [toolbar.btnInsertSlicer]});
 
                 need_disable = !this.appConfig.canModifyFilter;
                 toolbar.lockToolbar(SSE.enumLock.cantModifyFilter, need_disable, { array: toolbar.btnsSetAutofilter.concat(toolbar.btnsSortDown, toolbar.btnsSortUp, toolbar.btnCustomSort, toolbar.btnTableTemplate,
-                                                                                          toolbar.btnClearStyle.menu.items[0], toolbar.btnClearStyle.menu.items[2], toolbar.btnInsertTable, toolbar.btnRemoveDuplicates)});
+                                                                                          toolbar.btnClearStyle.menu.items[0], toolbar.btnClearStyle.menu.items[2], toolbar.btnInsertTable, toolbar.btnRemoveDuplicates, toolbar.btnDataValidation)});
 
             }
 
@@ -2555,6 +2586,10 @@ define([
                 coauth_disable = false;
 
             if ( _disableEditOptions(selectionType, coauth_disable) ) return;
+
+            var need_disable = (selectionType === Asc.c_oAscSelectionType.RangeCells || selectionType === Asc.c_oAscSelectionType.RangeCol ||
+                                selectionType === Asc.c_oAscSelectionType.RangeRow || selectionType === Asc.c_oAscSelectionType.RangeMax);
+            this.toolbar.lockToolbar( SSE.enumLock.selRange, need_disable, {array:[this.toolbar.btnEditChartData]} );
 
             if (selectionType == Asc.c_oAscSelectionType.RangeChart || selectionType == Asc.c_oAscSelectionType.RangeChartText)
                 return;
@@ -3307,6 +3342,7 @@ define([
                     me.toolbar.btnsClearAutofilter = datatab.getButtons('clear-filter');
                     me.toolbar.btnCustomSort = datatab.getButtons('sort-custom');
                     me.toolbar.btnRemoveDuplicates = datatab.getButtons('rem-duplicates');
+                    me.toolbar.btnDataValidation = datatab.getButtons('data-validation');
 
                     var formulatab = me.getApplication().getController('FormulaDialog');
                     formulatab.setConfig({toolbar: me});
