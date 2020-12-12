@@ -35,13 +35,16 @@
         border-bottom-color: @body-bg;
     }
 }
-
+.tooltip {
+    z-index: 1000;
+}
 .tooltip-inner {
     font-size: 11px;
     background-color: @body-bg;
     color: @gray-deep;
     padding: 5px 12px;
     border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
     .box-shadow(0 6px 12px rgba(0, 0, 0, 0.175));
     background-clip: padding-box;
 

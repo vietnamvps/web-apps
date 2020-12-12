@@ -112,6 +112,21 @@ define([
                     '<div class="tooltip" role="tooltip"><div class="tooltip-inner"></div></div>';
             }
             this.config = this._getConfig(config);
+            this.config.popperConfig = {
+                modifiers: {
+                    flip: {
+                        enabled: config.flip ? config.flip.enabled : true,
+                        behavior: this.config.fallbackPlacement,
+                        boundariesElement: $('#viewport')[0]
+                    },
+                    arrow: {
+                        enabled: !!config.arrow
+                    },
+                    offset: {
+                        offset: config.offset ? config.offset : 0
+                    }
+                }
+            };
             this.tip = null;
 
             this._setListeners();
@@ -300,36 +315,6 @@ define([
                 }
             }, context.config.delay.show);
         },
-
-        _getPopperConfig: function (attachment) {
-            var me = this;
-            var config = {
-                placement: attachment,
-                modifiers: {
-                    offset: this._getOffset(),
-                    flip: {
-                        behavior: this.config.fallbackPlacement
-                    },
-                    preventOverflow: {
-                        boundariesElement: this.config.boundary
-                    }
-                },
-                onCreate: function onCreate(data) {
-                    if (data.originalPlacement !== data.placement) {
-                        me._handlePopperPlacementChange(data);
-                    }
-                },
-                onUpdate: function onUpdate(data) {
-                    return me._handlePopperPlacementChange(data);
-                }
-            };
-            if (this.config.arrow) {
-                config.modifiers.arrow = {
-                    element: '.arrow'
-                };
-            }
-            return config;
-        }
 
         /*_getOffset: function (placement, pos, actualWidth, actualHeight) {
             var out = _superclass.prototype.getCalculatedOffset.apply(this, arguments);

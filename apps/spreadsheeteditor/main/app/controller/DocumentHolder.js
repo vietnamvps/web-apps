@@ -2274,7 +2274,7 @@ define([
                 if (!menu.rendered) {
                     // Prepare menu container
                     if (menuContainer.length < 1) {
-                        menuContainer = $(Common.Utils.String.format('<div id="menu-formula-selection" style="position: absolute; z-index: 10000;" class="no-stop-propagate"><div class="dropdown-toggle" data-toggle="dropdown"></div></div>'));
+                        menuContainer = $(Common.Utils.String.format('<div id="menu-formula-selection" style="position: absolute; z-index: 10000;" class="no-stop-propagate dropdown"><a href="#" class="dropdown-toggle d-none" data-toggle="dropdown"></a></div>'));
                         documentHolderView.cmpEl.append(menuContainer);
                     }
 
@@ -2285,7 +2285,7 @@ define([
                         var li;
                         if (arguments.length>1 && arguments[1] instanceof KeyboardEvent) // when typing in cell editor
                             e = arguments[1];
-                        if (menuContainer.hasClass('open')) {
+                        if (menuContainer.hasClass('show')) {
                             if (e.keyCode == Common.UI.Keys.TAB || e.keyCode == Common.UI.Keys.RETURN && !e.ctrlKey && !e.altKey)
                                 li = menuContainer.find('a.focus').closest('li');
                             else if (e.keyCode == Common.UI.Keys.UP || e.keyCode == Common.UI.Keys.DOWN) {
@@ -2321,6 +2321,8 @@ define([
 
                     menu.render(menuContainer);
                     menu.cmpEl.attr({tabindex: "-1"});
+                    menu.cmpEl.data('display', 'static');
+                    menu.cmpEl.css('position', 'fixed');
                 }
 
                 var coord  = me.api.asc_getActiveCellCoord(),

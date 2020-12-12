@@ -109,7 +109,7 @@ define([
                 Common.UI.Keys.TAB === e.keyCode || Common.UI.Keys.RETURN === e.keyCode || Common.UI.Keys.ESC === e.keyCode ||
                 Common.UI.Keys.LEFT === e.keyCode || Common.UI.Keys.RIGHT === e.keyCode) {
                 var menu = $('#menu-formula-selection'); // for formula menu
-                if (menu.hasClass('open'))
+                if (menu.hasClass('show'))
                     menu.find('.dropdown-menu').trigger('keydown', e);
             } 
         },
