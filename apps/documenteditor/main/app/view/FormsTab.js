@@ -208,7 +208,7 @@ define([
                                 }),
                                 {caption: '--'},
                                 {template: _.template('<div id="id-toolbar-menu-form-color" style="width: 169px; height: 220px; margin: 10px;"></div>')},
-                                {template: _.template('<a id="id-toolbar-menu-new-form-color" style="padding-left:12px;">' + me.textNewColor + '</a>')}
+                                {template: _.template('<a id="id-toolbar-menu-new-form-color" class="dropdown-item" style="padding-left:12px;">' + me.textNewColor + '</a>')}
                             ]
                         }));
                         me.mnuFormsColorPicker = new Common.UI.ThemeColorPalette({

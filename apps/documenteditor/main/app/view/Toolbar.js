@@ -667,7 +667,7 @@ define([
                                             }),
                                             {caption: '--'},
                                             {template: _.template('<div id="id-toolbar-menu-controls-color" style="width: 169px; height: 220px; margin: 10px;"></div>')},
-                                            {template: _.template('<a id="id-toolbar-menu-new-control-color" style="padding-left:12px;">' + this.textNewColor + '</a>')}
+                                            {template: _.template('<a id="id-toolbar-menu-new-control-color" class="dropdown-item" style="padding-left:12px;">' + this.textNewColor + '</a>')}
                                         ]
                                     })
                                 }

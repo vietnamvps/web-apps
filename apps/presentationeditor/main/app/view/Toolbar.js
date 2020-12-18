@@ -343,7 +343,7 @@ define([
                             cls: 'shifted-left',
                             items: [
                                 {template: _.template('<div id="id-toolbar-menu-fontcolor" style="width: 169px; height: 220px; margin: 10px;"></div>')},
-                                {template: _.template('<a id="id-toolbar-menu-new-fontcolor" style="padding-left:12px;">' + me.textNewColor + '</a>')}
+                                {template: _.template('<a id="id-toolbar-menu-new-fontcolor" class="dropdown-item" style="padding-left:12px;">' + me.textNewColor + '</a>')}
                             ]
                         })
                     });

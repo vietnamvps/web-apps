@@ -309,7 +309,7 @@ define([
                     cls: 'color-tab',
                     items: [
                         { template: _.template('<div id="id-tab-menu-color" style="width: 169px; height: 220px; margin: 10px;"></div>') },
-                        { template: _.template('<a id="id-tab-menu-new-color" style="padding-left:12px;">' + me.textNewColor + '</a>') }
+                        { template: _.template('<a id="id-tab-menu-new-color" class="dropdown-item" style="padding-left:12px;">' + me.textNewColor + '</a>') }
                     ]
                 });
 
