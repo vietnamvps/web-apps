@@ -131,7 +131,7 @@
 
         updateTitle: function() {
             var tip = this.getBSTip();
-            tip.$tip.find('.tooltip-inner')[tip.options.html ? 'html' : 'text'](tip.options.title);
+            $(tip.getTipElement()).find('.tooltip-inner')[tip.config.html ? 'html' : 'text'](tip.config.title);
         },
 
         getBSTip: function() {
