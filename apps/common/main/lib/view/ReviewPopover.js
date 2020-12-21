@@ -261,12 +261,12 @@ define([
                             btns = $(view.el).find('.btn-resolve');
                         btns.tooltip({title: me.textResolve, placement: 'cursor'});
                         btns.each(function (idx, item) {
-                            arr.push($(item).data('bs.tooltip').tip());
+                            arr.push($($(item).data('bs.tooltip').getTipElement()));
                         });
                         btns = $(view.el).find('.btn-resolve-check');
                         btns.tooltip({title: me.textOpenAgain, placement: 'cursor'});
                         btns.each(function (idx, item) {
-                            arr.push($(item).data('bs.tooltip').tip());
+                            arr.push($($(item).data('bs.tooltip').getTipElement()));
                         });
                         view.tipsArray = arr;
                         this.autoHeightTextBox();
@@ -539,7 +539,7 @@ define([
                             btns = $(view.el).find('.btn-goto');
                         btns.tooltip({title: me.textFollowMove, placement: 'cursor'});
                         btns.each(function (idx, item) {
-                            arr.push($(item).data('bs.tooltip').tip());
+                            arr.push($($(item).data('bs.tooltip').getTipElement()));
                         });
                         view.tipsArray = arr;
                     };
