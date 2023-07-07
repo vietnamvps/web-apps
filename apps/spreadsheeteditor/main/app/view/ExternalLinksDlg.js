@@ -51,7 +51,7 @@ define([
         options: {
             alias: 'ExternalLinksDlg',
             contentWidth: 500,
-            height: 294,
+            height: 318,
             buttons: null
         },
 
@@ -65,11 +65,16 @@ define([
                             '<div class="settings-panel active">',
                                 '<table cols="1" style="width: 100%;">',
                                     '<tr>',
-                                        '<td class="padding-large">',
+                                        '<td class="padding-small">',
                                             '<div id="external-links-btn-update" class="float-left margin-right-5"></div>',
                                             '<div id="external-links-btn-change" class="float-left margin-right-5"></div>',
                                             '<div id="external-links-btn-open" class="float-left margin-right-5"></div>',
                                             '<div id="external-links-btn-delete" class="float-left"></div>',
+                                        '</td>',
+                                    '</tr>',
+                                    '<tr>',
+                                        '<td class="padding-large">',
+                                            '<div id="external-links-auto-update"></div>',
                                         '</td>',
                                     '</tr>',
                                     '<tr>',
@@ -187,6 +192,14 @@ define([
             });
             this.btnChange.on('click', _.bind(this.onChange, this));
 
+            this.chUpdate = new Common.UI.CheckBox({
+                el: $('#external-links-auto-update'),
+                labelText: this.textAutoUpdate
+            });
+            this.chUpdate.on('change', _.bind(function(field, newValue, oldValue, eOpts){
+                this.api && this.api.asc_setExternalReferenceAutoUpdate(field.getValue()==='checked');
+            }, this));
+
             this.afterRender();
         },
 
@@ -197,7 +210,7 @@ define([
         },
 
         getFocusedComponents: function() {
-            return [ this.btnUpdate, this.btnChange, this.btnOpen, this.btnDelete, this.linksList ];
+            return [ this.btnUpdate, this.btnChange, this.btnOpen, this.btnDelete, this.chUpdate, this.linksList ];
         },
 
         close: function () {
@@ -212,6 +225,7 @@ define([
 
         _setDefaults: function (props) {
             this.refreshList();
+            this.api && this.api.asc_getExternalReferenceAutoUpdate && this.chUpdate.setValue(!!this.api.asc_getExternalReferenceAutoUpdate());
         },
 
         refreshList: function() {
@@ -421,7 +435,8 @@ define([
         textStatus: 'Status',
         textOk: 'OK',
         textUnknown: 'Unknown',
-        textUpdating: 'Updating...'
+        textUpdating: 'Updating...',
+        textAutoUpdate: 'Update automatically'
 
     }, SSE.Views.ExternalLinksDlg || {}));
 });
