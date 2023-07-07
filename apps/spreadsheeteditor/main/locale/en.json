@@ -2449,6 +2449,7 @@
   "SSE.Views.ExternalLinksDlg.txtTitle": "External links",
   "SSE.Views.ExternalLinksDlg.textOpen": "Open source",
   "SSE.Views.ExternalLinksDlg.textChange": "Change source",
+  "SSE.Views.ExternalLinksDlg.textAutoUpdate": "Update automatically",
   "SSE.Views.FieldSettingsDialog.strLayout": "Layout",
   "SSE.Views.FieldSettingsDialog.strSubtotals": "Subtotals",
   "SSE.Views.FieldSettingsDialog.textReport": "Report form",
