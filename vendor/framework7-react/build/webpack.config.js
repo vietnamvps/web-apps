@@ -37,7 +37,8 @@ const config = {
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
     alias: {
-      '@': resolvePath(`../../apps/${editor}/mobile/src`),
+      '@': resolvePath(`../../apps/${editor}/mobile/`),
+      '@common': resolvePath(`../../apps/common/mobile/`),
     },
     modules: [path.resolve(__dirname, '..', 'node_modules'), 'node_modules'],
   },
@@ -143,6 +144,10 @@ const config = {
             }
           },
         ],
+      },
+      {
+        test: /\.svg$/,
+        use: ['@svgr/webpack'],
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
