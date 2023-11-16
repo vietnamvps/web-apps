@@ -149,6 +149,20 @@ const config = {
         test: /\.svg$/,
         use: ['@svgr/webpack'],
       },
+      // {
+      //   test: /\.svg$/,
+      //   include: path.resolve(__dirname, '/apps/common/mobile/resources/icons'),
+      //   use: [
+      //     {
+      //       loader: 'svg-sprite-loader',
+      //       options: {
+      //         extract: true,
+      //         publicPath: `/apps/${editor}/mobile/resources/icons`,
+      //       }
+      //     },
+      //     'svgo-loader'
+      //   ]
+      // },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
@@ -262,7 +276,7 @@ const config = {
                             resource.request = `../../../../../../web-apps-mobile/${targetPatch}/patch.jsx` : resource
         //resource => fs.existsSync(`${addonPath}/patch.jsx`) ?
                         //resource.request = `../../../${addonPath}/patch.jsx` : resource
-    ),
+    )
   ],
 };
 
