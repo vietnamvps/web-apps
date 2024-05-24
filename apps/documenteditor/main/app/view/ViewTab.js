@@ -132,7 +132,7 @@ define([
                     me.fireEvent('rightmenu:hide', [me.chRightMenu, state === 'checked']);
                 }, me));
                 me.btnDarkDocument.on('click', _.bind(function () {
-                    me.fireEvent('darkmode:change');
+                    me.fireEvent('darkmode:change', [me.btnDarkDocument.pressed]);
                 }, me));
                 me.cmbsZoom.forEach(function (cmb) {
                     cmb.on('combo:focusin', _.bind(me.onComboOpen, this, false));

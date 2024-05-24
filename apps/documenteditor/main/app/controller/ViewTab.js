@@ -297,8 +297,8 @@ define([
             Common.NotificationCenter.trigger('edit:complete', this.view);
         },
 
-        onChangeDarkMode: function () {
-            Common.UI.Themes.toggleContentTheme();
+        onChangeDarkMode: function (isdarkmode) {
+            Common.UI.Themes.setContentTheme(isdarkmode?'dark':'light');
         },
 
         onContentThemeChangedToDark: function (isdark) {
