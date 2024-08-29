@@ -38,6 +38,12 @@ const config = {
     extensions: ['.js', '.jsx', '.json'],
     alias: {
       '@': resolvePath(`../../apps/${editor}/mobile/src`),
+      '@icons': resolvePath(`../../apps/${editor}/mobile/resources/icons/common`),
+      '@ios-icons': resolvePath(`../../apps/${editor}/mobile/resources/icons/ios`),
+      '@android-icons': resolvePath(`../../apps/${editor}/mobile/resources/icons/android`),
+      '@common-icons': resolvePath('../../apps/common/mobile/resources/icons/common'),
+      '@common-ios-icons': resolvePath('../../apps/common/mobile/resources/icons/ios'),
+      '@common-android-icons': resolvePath('../../apps/common/mobile/resources/icons/android'),
     },
     modules: [path.resolve(__dirname, '..', 'node_modules'), 'node_modules'],
   },
@@ -60,7 +66,9 @@ const config = {
     rules: [
       {
         test: /\.svg$/,
-        use: "svg-sprite-loader"
+        use: {
+          loader: "svg-sprite-loader",
+        }
       },
       {
         test: /\.(mjs|js|jsx)$/,
