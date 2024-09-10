@@ -2111,6 +2111,7 @@
   "PE.Views.FileMenuPanels.Settings.textFill": "Fill",
   "PE.Views.FileMenuPanels.Settings.textLine": "Line",
   "PE.Views.FileMenuPanels.Settings.txtAppearance": "Appearance",
+  "PE.Views.FileMenuPanels.Settings.txtAllowSelect": "Allow to select text & objects",
   "PE.Views.FileMenuPanels.ViewSaveAs.textDownloadAs": "Download as",
   "PE.Views.FileMenuPanels.ViewSaveCopy.textSaveCopyAs": "Save Copy As",
   "PE.Views.GridSettings.textCm": "cm",

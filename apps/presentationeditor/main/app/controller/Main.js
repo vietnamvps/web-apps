@@ -945,6 +945,10 @@ define([
                 value = Common.localStorage.getBool('pe-hidden-notes', this.appOptions.customization && this.appOptions.customization.hideNotes===true);
                 me.api.asc_ShowNotes(!value);
 
+                value = Common.localStorage.getBool('pe-settings-allow-select', this.appOptions.customization && this.appOptions.customization.selectObjects!==false);
+                Common.Utils.InternalSettings.set("pe-settings-allow-select", value);
+                // me.api.asc_AllowSelectObjects(value);
+
                 function checkWarns() {
                     if (!Common.Controllers.Desktop.isActive()) {
                         var tips = [];

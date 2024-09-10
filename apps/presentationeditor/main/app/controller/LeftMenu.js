@@ -420,6 +420,10 @@ define([
             Common.Utils.InternalSettings.set("app-settings-screen-reader", value);
             this.api.setSpeechEnabled(value);
 
+            value = Common.localStorage.getBool("pe-settings-allow-select");
+            Common.Utils.InternalSettings.set("pe-settings-allow-select", value);
+            // this.api.asc_AllowSelectObjects(value);
+
             /* update zoom */
             var newZoomValue = Common.localStorage.getItem("pe-settings-zoom");
             var oldZoomValue = Common.Utils.InternalSettings.get("pe-settings-zoom");
