@@ -8,7 +8,7 @@
         &.icon-logo {
             width: 100px;
             height: 14px;
-            background: ~"url(@{common-image-path}/header/logo-android.svg) no-repeat center";
+            background: ~"url(@{common-image-path}/header/logo-android.svg)" no-repeat center;
         }
         // &.icon-prev {
         //     width: 20px;
@@ -85,7 +85,9 @@
         }
     }
 
-    .icon-svg.icon-svg-format {
+    .icon-svg {
+        fill: @brandColor;
+
         &.toolbar-icon {
             fill: @toolbar-icons;
         }
@@ -101,5 +103,17 @@
         &.text-normal {
             fill: @text-normal;
         }
+
+        &__mask {
+            background-color: @text-normal;
+        }
+
+        &__white {
+            fill: @fill-white;
+        }
+    }
+
+    .subnavbar .icon-svg {
+        fill: @toolbar-icons;
     }
 }

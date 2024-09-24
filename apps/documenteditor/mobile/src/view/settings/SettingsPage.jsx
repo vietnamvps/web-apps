@@ -1,10 +1,35 @@
-import React, { Fragment, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Page, Navbar, NavRight, Link, Icon, ListItem, List, Toggle } from 'framework7-react';
 import { Device } from "../../../../../common/mobile/utils/device";
 import { observer, inject } from "mobx-react";
 import { useTranslation } from 'react-i18next';
 import { SettingsContext } from '../../controller/settings/Settings';
 import { MainContext } from '../../page/main';
+import SvgIcon from '../../../../../common/mobile/lib/component/SvgIcon'
+import IconAddFavorites from '@icons/icon-add-favorites.svg';
+import IconRemoveFavorites from '@icons/icon-remove-favorites.svg';
+import IconSaveForm from '@icons/icon-save-form.svg';
+import IconClearFields from '@icons/icon-clear-fields.svg';
+import IconSearch from '@common-icons/icon-search.svg';
+import IconProtection from '@icons/icon-protection.svg';
+import IconVersionHistory from '@common-icons/icon-version-history.svg';
+import IconNavigation from '@icons/icon-navigation.svg';
+import IconCollaboration from '@common-icons/icon-collaboration.svg';
+import IconMobileView from '@icons/icon-mobile-view.svg';
+import IconSpellcheckForIos from '@ios-icons/icon-spellcheck.svg';
+import IconSpellcheckForAndroid from '@android-icons/icon-spellcheck.svg';
+import IconDocSetupForIos from '@ios-icons/icon-doc-setup.svg';
+import IconDocSetupForAndroid from '@android-icons/icon-doc-setup.svg';
+import IconDownloadForIos from '@ios-icons/icon-download.svg';
+import IconDownloadForAndroid from '@android-icons/icon-download.svg';
+import IconAppSettings from '@icons/icon-app-settings.svg';
+import IconExport from '@common-icons/icon-export.svg';
+import IconPrint from '@icons/icon-print.svg';
+import IconInfo from '@common-icons/icon-info.svg';
+import IconHelp from '@common-icons/icon-help.svg';
+import IconAbout from '@common-icons/icon-about.svg';
+import IconFeedbackForIos from '@common-ios-icons/icon-feedback.svg';
+import IconFeedbackForAndroid from '@common-android-icons/icon-feedback.svg';
 
 const SettingsPage = inject("storeAppOptions", "storeReview", "storeDocumentInfo")(observer(props => {
     const { t } = useTranslation();
@@ -79,31 +104,35 @@ const SettingsPage = inject("storeAppOptions", "storeReview", "storeDocumentInfo
                 {isEditableForms ? [
                     (isFavorite !== undefined && isFavorite !== null ?
                         <ListItem key='add-to-favorites-link' title={isFavorite ? t('Settings.textRemoveFromFavorites') : t('Settings.textAddToFavorites')} link='#' className='no-indicator' onClick={settingsContext.toggleFavorite}>
-                            <Icon slot="media" icon={isFavorite ? "icon-remove-favorites" : "icon-add-favorites"}></Icon>
+                            {isFavorite ?
+                                <SvgIcon slot="media" symbolId={IconRemoveFavorites.id} className={'icon icon-svg'} />
+                            :
+                                <SvgIcon slot="media" symbolId={IconAddFavorites.id} className={'icon icon-svg'} />
+                            }
                         </ListItem>
                     : ''),
                     (canFillForms && canSubmitForms ?   
                         <ListItem key='submit-form-link' title={t('Settings.textSubmit')} link='#' className='no-indicator' onClick={settingsContext.submitForm}>
-                            <Icon slot="media" icon="icon-save-form"></Icon>
+                            <SvgIcon slot="media" symbolId={IconSaveForm.id} className={'icon icon-svg'} />
                         </ListItem> 
                     : ''),
                     (_canDownload && canFillForms && !canSubmitForms ? 
                         <ListItem key='save-form-link' title={t('Settings.textSave')} link='#' className='no-indicator' onClick={settingsContext.saveAsPdf}>
-                            <Icon slot="media" icon="icon-save-form"></Icon>
+                            <SvgIcon slot="media" symbolId={IconSaveForm.id} className={'icon icon-svg'} />
                         </ListItem>
                     : ''),
                     <ListItem key='clear-all-fields-link' title={t('Settings.textClearAllFields')} link='#' className='no-indicator' onClick={settingsContext.clearAllFields}>
-                        <Icon slot="media" icon="icon-clear-fields"></Icon>
+                        <SvgIcon slot="media" symbolId={IconClearFields.id} className={'icon icon-svg'} />
                     </ListItem>
                 ] : null}
                 {(Device.phone || isEditableForms) &&
                     <ListItem title={!_isEdit || isViewer ? _t.textFind : _t.textFindAndReplace} link='#' searchbarEnable='.searchbar' onClick={settingsContext.closeModal} className='no-indicator'>
-                        <Icon slot="media" icon="icon-search"></Icon>
+                        <SvgIcon slot="media" symbolId={IconSearch.id} className={'icon icon-svg'} />
                     </ListItem>
                 }
                 {(_isEdit && canProtect) &&
                     <ListItem title={t('Settings.textProtection')} link="/protection">
-                        <Icon slot="media" icon="icon-protection" />
+                        <SvgIcon slot="media" symbolId={IconProtection.id} className={'icon icon-svg'} />
                     </ListItem>
                 }
                 {_isEdit && !isHistoryDisabled && canUseHistory &&
@@ -112,7 +141,7 @@ const SettingsPage = inject("storeAppOptions", "storeReview", "storeDocumentInfo
                             onOpenOptions('history');
                         }
                     }}>
-                        <Icon slot="media" icon="icon-version-history"></Icon>
+                        <SvgIcon slot="media" symbolId={IconVersionHistory.id} className={'icon icon-svg'} />
                     </ListItem>
                 }
                 {!isEditableForms ? 
@@ -121,24 +150,27 @@ const SettingsPage = inject("storeAppOptions", "storeReview", "storeDocumentInfo
                             onOpenOptions('navigation');
                         } 
                     }}>
-                        <Icon slot="media" icon="icon-navigation"></Icon>
+                        <SvgIcon slot="media" symbolId={IconNavigation.id} className={'icon icon-svg'} />
                     </ListItem>
                 : null}
                 {window.matchMedia("(max-width: 359px)").matches ?
                     <ListItem title={_t.textCollaboration} link="#" onClick={() => {
                         onOpenOptions('coauth');
                     }} className='no-indicator'>
-                        <Icon slot="media" icon="icon-collaboration"></Icon>
+                        <SvgIcon slot="media" symbolId={IconCollaboration.id} className={'icon icon-svg '} />
                     </ListItem>
                 : null}
                 {Device.sailfish && _isEdit &&
                     <ListItem title={_t.textSpellcheck} onClick={() => settingsContext.onOrthographyCheck()} className='no-indicator' link="#">
-                        <Icon slot="media" icon="icon-spellcheck"></Icon>
+                        {Device.ios ? 
+                            <SvgIcon slot="media" symbolId={IconSpellcheckForIos.id} className={'icon icon-svg'} /> :
+                            <SvgIcon slot="media" symbolId={IconSpellcheckForAndroid.id} className={'icon icon-svg'} />
+                        }
                     </ListItem>
                 }
                 {((!isViewer && Device.phone) || isEditableForms) &&
                     <ListItem title={t('Settings.textMobileView')}>
-                        <Icon slot="media" icon="icon-mobile-view"></Icon>
+                        <SvgIcon slot="media" symbolId={IconMobileView.id} className={'icon icon-svg'} />
                         <Toggle checked={isMobileView} onToggleChange={() => {
                             onOpenOptions('snackbar');
                             settingsContext.onChangeMobileView();
@@ -147,45 +179,59 @@ const SettingsPage = inject("storeAppOptions", "storeReview", "storeDocumentInfo
                 }
                 {(_isEdit && !isViewer) &&
                     <ListItem title={_t.textDocumentSettings} disabled={displayMode !== 'markup'} link='/document-settings/'>
-                        <Icon slot="media" icon="icon-doc-setup"></Icon>
+                        {Device.ios ? 
+                            <SvgIcon slot="media" symbolId={IconDocSetupForIos.id} className={'icon icon-svg'} /> :
+                            <SvgIcon slot="media" symbolId={IconDocSetupForAndroid.id} className={'icon icon-svg'} />
+                        }
                     </ListItem>
                 }
                 <ListItem title={_t.textApplicationSettings} link="/application-settings/">
-                    <Icon slot="media" icon="icon-app-settings"></Icon>
+                    <SvgIcon slot="media" symbolId={IconAppSettings.id} className={'icon icon-svg'} />
                 </ListItem>
                 {_canDownload &&
                     <ListItem title={isEditableForms ? t('Settings.textExport') : _t.textDownload} link="/download/">
-                        <Icon slot="media" icon={isEditableForms ? "icon-export" : "icon-download"}></Icon>
+                        {isEditableForms ?
+                            <SvgIcon slot="media" symbolId={IconExport.id} className={'icon icon-svg'} /> :
+                            Device.ios ?
+                                <SvgIcon slot="media" symbolId={IconDownloadForIos.id} className={'icon icon-svg'} /> :
+                                <SvgIcon slot="media" symbolId={IconDownloadForAndroid.id} className={'icon icon-svg'} />
+                        }
                     </ListItem>
                 }
                 {_canDownloadOrigin &&
                     <ListItem title={_t.textDownload} link="#" onClick={settingsContext.onDownloadOrigin} className='no-indicator'>
-                        <Icon slot="media" icon="icon-download"></Icon>
+                        {Device.ios ?
+                            <SvgIcon slot="media" symbolId={IconDownloadForIos.id} className={'icon icon-svg'} /> :
+                            <SvgIcon slot="media" symbolId={IconDownloadForAndroid.id} className={'icon icon-svg'} />
+                        }
                     </ListItem>
                 }
                 {_canPrint &&
                     <ListItem title={_t.textPrint} onClick={settingsContext.onPrint} link='#' className='no-indicator'>
-                        <Icon slot="media" icon="icon-print"></Icon>
+                        <SvgIcon slot="media" symbolId={IconPrint.id} className={'icon icon-svg'} />
                     </ListItem>
                 }
                 {!(!_canDisplayInfo && isBranding) &&
                     <ListItem title={_t.textDocumentInfo} link="/document-info/">
-                        <Icon slot="media" icon="icon-info"></Icon>
+                        <SvgIcon slot="media" symbolId={IconInfo.id} className={'icon icon-svg'} />
                     </ListItem>
                 }
                 {_canHelp &&
                     <ListItem title={_t.textHelp} link="#" className='no-indicator' onClick={settingsContext.showHelp}>
-                        <Icon slot="media" icon="icon-help"></Icon>
+                        <SvgIcon slot="media" symbolId={IconHelp.id} className={'icon icon-svg'} />
                     </ListItem>
                 }
                 {_canAbout &&
                     <ListItem title={_t.textAbout} link="/about/">
-                        <Icon slot="media" icon="icon-about"></Icon>
+                        <SvgIcon slot="media" symbolId={IconAbout.id} className={'icon icon-svg'} />
                     </ListItem>
                 }
                 {_canFeedback &&
                     <ListItem title={t('Settings.textFeedback')} link="#" className='no-indicator' onClick={settingsContext.showFeedback}>
-                        <Icon slot="media" icon="icon-feedback"></Icon>
+                        {Device.ios ? 
+                            <SvgIcon slot="media" symbolId={IconFeedbackForIos.id} className={'icon icon-svg'} /> :
+                            <SvgIcon slot="media" symbolId={IconFeedbackForAndroid.id} className={'icon icon-svg'} />
+                        }
                     </ListItem>
                 }
                 {canCloseEditor &&
