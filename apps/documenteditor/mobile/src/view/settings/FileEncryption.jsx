@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { observer, inject } from "mobx-react";
 import { Device } from '../../../../../common/mobile/utils/device';
-import { Page, Navbar, List, ListItem, BlockTitle, Toggle, NavRight, f7, Link, ListInput, Icon, Block } from "framework7-react";
+import { Page, Navbar, List, ListItem, BlockTitle, Toggle, NavRight, f7, Link, Block } from "framework7-react";
 import { useTranslation } from "react-i18next";
 import PasswordField from '../../components/PasswordField/PasswordField';
+import SvgIcon from '../../../../../common/mobile/lib/component/SvgIcon';
+import IconCheck from '@android-icons/icon-check.svg';
 
 const EncryptionView = inject("storeAppOptions")(observer(props => {
     const { t } = useTranslation();
@@ -42,7 +44,9 @@ const EncryptionView = inject("storeAppOptions")(observer(props => {
             <Navbar title={t('Settings.textEncryptFile')} backLink={_t.textBack}>
                 <NavRight>
                     <Link text={isIos && t('Settings.textSave')} className={isDisabledEncryption && 'disabled'} onClick={changeHanlder}>
-                        {Device.android && <Icon icon='icon-check'/>}
+                        {Device.android && 
+                            <SvgIcon symbolId={IconCheck.id} className='icon icon-svg' />
+                        }
                     </Link>
                 </NavRight>
             </Navbar>

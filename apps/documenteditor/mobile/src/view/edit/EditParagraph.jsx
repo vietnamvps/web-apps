@@ -1,9 +1,15 @@
 import React, {Fragment, useState} from 'react';
 import {observer, inject} from "mobx-react";
-import {f7, List, ListItem, Icon, Button, Page, Navbar, NavRight, Segmented, BlockTitle, Toggle, Link, NavLeft, NavTitle, ListInput} from 'framework7-react';
+import {f7, List, ListItem, Icon, Button, Page, Navbar, NavRight, Segmented, BlockTitle, Toggle, Link, ListInput} from 'framework7-react';
 import { useTranslation } from 'react-i18next';
 import {Device} from '../../../../../common/mobile/utils/device';
 import { ThemeColorPalette, CustomColorPicker } from '../../../../../common/mobile/lib/component/ThemeColorPalette.jsx';
+import SvgIcon from '../../../../../common/mobile/lib/component/SvgIcon.jsx';
+import IconCreateStyle from '@android-icons/icon-create-style.svg';
+import IconRemoveStyle from '@common-icons/icon-remove-style.svg';
+import IconExpandDownAndroid from '@common-android-icons/icon-expand-down.svg';
+import IconExpandDownIos from '@common-ios-icons/icon-expand-down.svg';
+import IconExpandUp from '@common-icons/icon-expand-up.svg';
 
 const PageAdvancedSettings = props => {
     const isAndroid = Device.android;
@@ -42,7 +48,10 @@ const PageAdvancedSettings = props => {
                 {Device.phone &&
                     <NavRight>
                         <Link sheetClose='#edit-sheet'>
-                            <Icon icon='icon-expand-down'/>
+                            {Device.ios ? 
+                                <SvgIcon symbolId={IconExpandDownIos.id} className={'icon icon-svg'} /> :
+                                <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                            }
                         </Link>
                     </NavRight>
                 }
@@ -54,11 +63,15 @@ const PageAdvancedSettings = props => {
                     <div slot='after'>
                         <Segmented>
                             <Button outline className='decrement item-link' onClick={() => {props.onDistanceBefore(spaceBefore, true)}}>
-                                {isAndroid ? <Icon icon="icon-expand-down"></Icon> : ' - '}
+                                {isAndroid ? 
+                                    <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                                : ' - '}
                             </Button>
                             {isAndroid && <label>{displayBefore}</label>}
                             <Button outline className='increment item-link' onClick={() => {props.onDistanceBefore(spaceBefore, false)}}>
-                                {isAndroid ? <Icon icon="icon-expand-up"></Icon> : ' + '}
+                                {isAndroid ? 
+                                    <SvgIcon symbolId={IconExpandUp.id} className={'icon icon-svg'} />
+                                : ' + '}
                             </Button>
                         </Segmented>
                     </div>
@@ -68,11 +81,15 @@ const PageAdvancedSettings = props => {
                     <div slot='after'>
                         <Segmented>
                             <Button outline className='decrement item-link' onClick={() => {props.onDistanceAfter(spaceAfter, true)}}>
-                                {isAndroid ? <Icon icon="icon-expand-down"></Icon> : ' - '}
+                                {isAndroid ? 
+                                    <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                                : ' - '}
                             </Button>
                             {isAndroid && <label>{displayAfter}</label>}
                             <Button outline className='increment item-link' onClick={() => {props.onDistanceAfter(spaceAfter, false)}}>
-                                {isAndroid ? <Icon icon="icon-expand-up"></Icon> : ' + '}
+                                {isAndroid ? 
+                                    <SvgIcon symbolId={IconExpandUp.id} className={'icon icon-svg'} />
+                                : ' + '}
                             </Button>
                         </Segmented>
                     </div>
@@ -82,11 +99,15 @@ const PageAdvancedSettings = props => {
                     <div slot='after'>
                         <Segmented>
                             <Button outline className='decrement item-link' onClick={() => {props.onSpinFirstLine(paragraphObj, true)}}>
-                                {isAndroid ? <Icon icon="icon-expand-down"></Icon> : ' - '}
+                                {isAndroid ? 
+                                    <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                                : ' - '}
                             </Button>
                             {isAndroid && <label>{firstLine + ' ' + metricText}</label>}
                             <Button outline className='increment item-link' onClick={() => {props.onSpinFirstLine(paragraphObj, false)}}>
-                                {isAndroid ? <Icon icon="icon-expand-up"></Icon> : ' + '}
+                                {isAndroid ? 
+                                    <SvgIcon symbolId={IconExpandUp.id} className={'icon icon-svg'} />
+                                : ' + '}
                             </Button>
                         </Segmented>
                     </div>
@@ -134,7 +155,10 @@ const PageCustomBackColor = props => {
                 {Device.phone &&
                     <NavRight>
                         <Link sheetClose='#edit-sheet'>
-                            <Icon icon='icon-expand-down'/>
+                            {Device.ios ? 
+                                <SvgIcon symbolId={IconExpandDownIos.id} className={'icon icon-svg'} /> :
+                                <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                            }
                         </Link>
                     </NavRight>
                 }
@@ -170,7 +194,10 @@ const PageBackgroundColor = props => {
                 {Device.phone &&
                     <NavRight>
                         <Link sheetClose='#edit-sheet'>
-                            <Icon icon='icon-expand-down'/>
+                            {Device.ios ? 
+                                <SvgIcon symbolId={IconExpandDownIos.id} className={'icon icon-svg'} /> :
+                                <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                            }
                         </Link>
                     </NavRight>
                 }
@@ -252,7 +279,10 @@ const EditParagraphStyle = props => {
                 {Device.phone &&
                     <NavRight>
                         <Link sheetClose='#edit-sheet'>
-                            <Icon icon='icon-expand-down'/>
+                            {Device.ios ? 
+                                <SvgIcon symbolId={IconExpandDownIos.id} className={'icon icon-svg'} /> :
+                                <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                            }
                         </Link>
                     </NavRight>
                 }
@@ -261,7 +291,9 @@ const EditParagraphStyle = props => {
                 <ListItem className="create-style-link" title={t('Edit.textCreateTextStyle')} href="/create-text-style/" routeProps={{
                     onSaveStyle: props.onSaveStyle
                 }}>
-                    {Device.android && <Icon slot="media" icon="icon-create-style"></Icon>}
+                    {Device.android && 
+                        <SvgIcon symbolId={IconCreateStyle.id} className={'icon icon-svg'} />
+                    }
                 </ListItem>
             </List>
             <List>
@@ -286,7 +318,7 @@ const EditParagraphStyle = props => {
                                     await storeParagraphSettings.changeParaStyleName('Normal');
                                     await props.onStyleMenuDelete(style.name);
                                 }}>
-                                    <Icon icon="icon-remove-style" />
+                                    <SvgIcon symbolId={IconRemoveStyle.id} className={'icon icon-svg'} />
                                 </Link>
                             </div>
                         )}
