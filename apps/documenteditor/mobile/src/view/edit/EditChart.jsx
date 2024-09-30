@@ -22,14 +22,14 @@ import IconBlockAlignCenterIos from '@ios-icons/icon-block-align-center.svg';
 import IconBlockAlignCenterAndroid from '@android-icons/icon-block-align-center.svg';
 import IconBlockAlignRightIos from '@ios-icons/icon-block-align-right.svg';
 import IconBlockAlignRightAndroid from '@android-icons/icon-block-align-right.svg';
-import IconMoveForegroundIos from '@ios-icons/icon-move-foreground.svg';
-import IconMoveForegroundAndroid from '@android-icons/icon-move-foreground.svg';
-import IconMoveBackgroundIos from '@ios-icons/icon-move-background.svg';
-import IconMoveBackgroundAndroid from '@android-icons/icon-move-background.svg';
-import IconMoveForwardIos from '@ios-icons/icon-move-forward.svg';
-import IconMoveForwardAndroid from '@android-icons/icon-move-forward.svg';
-import IconMoveBackwardIos from '@ios-icons/icon-move-backward.svg';
-import IconMoveBackwardAndroid from '@android-icons/icon-move-backward.svg';
+import IconMoveForegroundIos from '@common-ios-icons/icon-move-foreground.svg';
+import IconMoveForegroundAndroid from '@common-android-icons/icon-move-foreground.svg';
+import IconMoveBackgroundIos from '@common-ios-icons/icon-move-background.svg';
+import IconMoveBackgroundAndroid from '@common-android-icons/icon-move-background.svg';
+import IconMoveForwardIos from '@common-ios-icons/icon-move-forward.svg';
+import IconMoveForwardAndroid from '@common-android-icons/icon-move-forward.svg';
+import IconMoveBackwardIos from '@common-ios-icons/icon-move-backward.svg';
+import IconMoveBackwardAndroid from '@common-android-icons/icon-move-backward.svg';
 
 const PageCustomFillColor = props => {
     const { t } = useTranslation();
