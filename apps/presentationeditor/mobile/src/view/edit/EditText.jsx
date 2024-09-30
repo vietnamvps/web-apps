@@ -1,12 +1,45 @@
 import React, {Fragment, useState, useEffect} from 'react';
 import {observer, inject} from "mobx-react";
-import {f7, View, List, ListItem, ListButton, ListInput, Icon,  Button, Page, Navbar, Segmented, BlockTitle, NavRight, Link} from 'framework7-react';
+import {f7, View, List, ListItem, ListButton, ListInput,  Button, Page, Navbar, Segmented, BlockTitle, NavRight, Link} from 'framework7-react';
 import { useTranslation } from 'react-i18next';
 import {Device} from '../../../../../common/mobile/utils/device';
 import { ThemeColorPalette, CustomColorPicker } from '../../../../../common/mobile/lib/component/ThemeColorPalette.jsx';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { LocalStorage } from '../../../../../common/mobile/utils/LocalStorage.mjs';
 import HighlightColorPalette from '../../../../../common/mobile/lib/component/HighlightColorPalette.jsx';
+import SvgIcon from '../../../../../common/mobile/lib/component/SvgIcon.jsx';
+import IconTextAdditionalIos from '@common-ios-icons/icon-text-additional.svg';
+import IconTextAlignCenterIos from '@common-ios-icons/icon-text-align-center.svg';
+import IconTextAlignCenterAndroid from '@common-android-icons/icon-text-align-center.svg';
+import IconTextAlignJustIos from '@common-ios-icons/icon-text-align-just.svg';
+import IconTextAlignJustAndroid from '@common-android-icons/icon-text-align-just.svg';
+import IconTextAlignLeftIos from '@common-ios-icons/icon-text-align-left.svg';
+import IconTextAlignLeftAndroid from '@common-android-icons/icon-text-align-left.svg';
+import IconTextAlignRightIos from '@common-ios-icons/icon-text-align-right.svg';
+import IconTextAlignRightAndroid from '@common-android-icons/icon-text-align-right.svg';
+import IconTextValignBottomIos from '@ios-icons/icon-text-valign-bottom.svg';
+import IconTextValignBottomAndroid from '@android-icons/icon-text-valign-bottom.svg';
+import IconTextValignMiddleIos from '@ios-icons/icon-text-valign-middle.svg';
+import IconTextValignMiddleAndroid from '@android-icons/icon-text-valign-middle.svg';
+import IconTextValignTopIos from '@ios-icons/icon-text-valign-top.svg';
+import IconTextValignTopAndroid from '@android-icons/icon-text-valign-top.svg';
+import IconDeIndentIos from '@common-ios-icons/icon-de-indent.svg';
+import IconDeIndentAndroid from '@common-android-icons/icon-de-indent.svg';
+import IconInIndentIos from '@common-ios-icons/icon-in-indent.svg';
+import IconInIndentAndroid from '@common-android-icons/icon-in-indent.svg';
+import IconTextOrientationAnglecount from '@common-icons/icon-text-orientation-anglecount.svg';
+import IconTextOrientationHorizontal from '@common-icons/icon-text-orientation-horizontal.svg';
+import IconTextOrientationRotateup from '@common-icons/icon-text-orientation-rotateup.svg';
+import IconTextOrientationRotatedown from '@common-icons/icon-text-orientation-rotatedown.svg';
+import IconBulletsIos from '@common-ios-icons/icon-bullets.svg';
+import IconExpandUp from '@common-icons/icon-expand-up.svg';
+import IconImageLibraryIos from '@common-ios-icons/icon-image-library.svg';
+import IconImageLibraryAndroid from '@common-android-icons/icon-image-library.svg';
+import IconLinkIos from '@common-ios-icons/icon-link.svg';
+import IconLinkAndroid from '@common-android-icons/icon-link.svg';
+import IconTextColor from '@common-ios-icons/icon-text-color.svg';
+import IconTextSelection from '@common-ios-icons/icon-text-selection.svg';
+import IconLineSpacingIos from '@common-ios-icons/icon-linespacing.svg';
 
 const EditText = props => {
     const isAndroid = Device.android;
@@ -80,7 +113,7 @@ const EditText = props => {
                     onTextColor: props.onTextColor
                 }}>
                     {!isAndroid ?
-                        <Icon slot="media" icon="icon-text-color">{fontColorPreview}</Icon> :
+                        <SvgIcon symbolId={IconTextColor.id} className='icon icon-svg'></SvgIcon> :
                         fontColorPreview
                     }
                 </ListItem>
@@ -88,7 +121,8 @@ const EditText = props => {
                     onHighlightColor: props.onHighlightColor
                 }}>
                     {!isAndroid ?
-                        <Icon slot="media" icon="icon-text-selection">{highlightColorPreview}</Icon> : highlightColorPreview
+                        <SvgIcon symbolId={IconTextSelection.id} className='icon icon-svg' /> :
+                        highlightColorPreview
                     }
                 </ListItem>
                 <ListItem title={_t.textAdditionalFormatting} link="/edit-text-add-formatting/" routeProps={{
@@ -97,7 +131,9 @@ const EditText = props => {
                     onAdditionalScript: props.onAdditionalScript,
                     changeLetterSpacing: props.changeLetterSpacing
                 }}>
-                    {!isAndroid && <Icon slot="media" icon="icon-text-additional"></Icon>}
+                    {!isAndroid && 
+                        <SvgIcon symbolId={IconTextAdditionalIos.id} className='icon icon-svg' />
+                    }
                 </ListItem>
             </List>
             {paragraphObj || storeFocusObjects.settings.includes('text') ? (
@@ -106,39 +142,66 @@ const EditText = props => {
                         <ListItem className='buttons'>
                             <div className="row">
                                 <a className={'button' + (paragraphAlign === 'left' ? ' active' : '')} onClick={() => {props.onParagraphAlign('left')}}>
-                                    <Icon slot="media" icon="icon-text-align-left"></Icon>
+                                    {Device.ios ? 
+                                        <SvgIcon symbolId={IconTextAlignLeftIos.id} className='icon icon-svg' /> :
+                                        <SvgIcon symbolId={IconTextAlignLeftAndroid.id} className='icon icon-svg' />
+                                    }
                                 </a>
                                 <a className={'button' + (paragraphAlign === 'center' ? ' active' : '')} onClick={() => {props.onParagraphAlign('center')}}>
-                                    <Icon slot="media" icon="icon-text-align-center"></Icon>
+                                    {Device.ios ?
+                                        <SvgIcon symbolId={IconTextAlignCenterIos.id} className='icon icon-svg' /> :
+                                        <SvgIcon symbolId={IconTextAlignCenterAndroid.id} className='icon icon-svg' />
+                                    }
                                 </a>
                                 <a className={'button' + (paragraphAlign === 'right' ? ' active' : '')} onClick={() => {props.onParagraphAlign('right')}}>
-                                    <Icon slot="media" icon="icon-text-align-right"></Icon>
+                                    {Device.ios ?
+                                        <SvgIcon symbolId={IconTextAlignRightIos.id} className='icon icon-svg' /> :
+                                        <SvgIcon symbolId={IconTextAlignRightAndroid.id} className='icon icon-svg' />
+                                    }
                                 </a>
                                 <a className={'button' + (paragraphAlign === 'just' ? ' active' : '')} onClick={() => {props.onParagraphAlign('just')}}>
-                                    <Icon slot="media" icon="icon-text-align-just"></Icon>
+                                    {Device.ios ? 
+                                        <SvgIcon symbolId={IconTextAlignJustIos.id} className='icon icon-svg' /> :
+                                        <SvgIcon symbolId={IconTextAlignJustAndroid.id} className='icon icon-svg' />
+                                    }
                                 </a>
                             </div>
                         </ListItem>
                         <ListItem className='buttons'>
                             <div className="row">
                                 <a className={'button' + (paragraphValign === 'top' ? ' active' : '')} onClick={() => {props.onParagraphValign('top')}}>
-                                    <Icon slot="media" icon="icon-text-valign-top"></Icon>
+                                    {Device.ios ? 
+                                        <SvgIcon symbolId={IconTextValignTopIos.id} className='icon icon-svg' /> :
+                                        <SvgIcon symbolId={IconTextValignTopAndroid.id} className='icon icon-svg' />
+                                    }
                                 </a>
                                 <a className={'button' + (paragraphValign === 'center' ? ' active' : '')} onClick={() => {props.onParagraphValign('center')}}>
-                                    <Icon slot="media" icon="icon-text-valign-middle"></Icon>
+                                    {Device.ios ?
+                                        <SvgIcon symbolId={IconTextValignMiddleIos.id} className='icon icon-svg' /> :
+                                        <SvgIcon symbolId={IconTextValignMiddleAndroid.id} className='icon icon-svg' />
+                                    }
                                 </a>
                                 <a className={'button' + (paragraphValign === 'bottom' ? ' active' : '')} onClick={() => {props.onParagraphValign('bottom')}}>
-                                    <Icon slot="media" icon="icon-text-valign-bottom"></Icon>
+                                    {Device.ios ? 
+                                        <SvgIcon symbolId={IconTextValignBottomIos.id} className='icon icon-svg' /> :
+                                        <SvgIcon symbolId={IconTextValignBottomAndroid.id} className='icon icon-svg' />
+                                    }
                                 </a>
                             </div>
                         </ListItem>
                         <ListItem className='buttons'>
                             <div className="row">
                                 <a className={'button item-link' + (!canDecreaseIndent ? ' disabled' : '') } onClick={() => {props.onParagraphMove('left')}}>
-                                    <Icon slot="media" icon="icon-de-indent"></Icon>
+                                    {Device.ios ? 
+                                        <SvgIcon symbolId={IconDeIndentIos.id} className='icon icon-svg' /> :
+                                        <SvgIcon symbolId={IconDeIndentAndroid.id} className='icon icon-svg' />
+                                    }
                                 </a>
                                 <a className={'button item-link' + (!canIncreaseIndent ? ' disabled' : '') } onClick={() => {props.onParagraphMove('right')}}>
-                                    <Icon slot="media" icon="icon-in-indent"></Icon>
+                                    {Device.ios ? 
+                                        <SvgIcon symbolId={IconInIndentIos.id} className='icon icon-svg' /> :
+                                        <SvgIcon symbolId={IconInIndentAndroid.id} className='icon icon-svg' />
+                                    }
                                 </a>
                             </div>
                         </ListItem>
@@ -147,7 +210,9 @@ const EditText = props => {
                                 setOrientationTextShape: props.setOrientationTextShape,
                                 shapeObject
                             }}>
-                                {!isAndroid && <Icon slot="media" icon="icon-text-orientation-anglecount"></Icon>}
+                                {!isAndroid && 
+                                    <SvgIcon symbolId={IconTextOrientationAnglecount.id} className='icon icon-svg' />
+                                }
                             </ListItem>
                         }
                         <ListItem title={_t.textBulletsAndNumbers} link='/edit-bullets-and-numbers/' routeProps={{
@@ -159,12 +224,16 @@ const EditText = props => {
                             
                         }}>
                             <div className="preview">{previewList}</div>
-                            {!isAndroid && <Icon slot="media" icon="icon-bullets"></Icon>}
+                            {!isAndroid && 
+                                <SvgIcon symbolId={IconBulletsIos.id} className='icon icon-svg' />
+                            }
                         </ListItem>
                         <ListItem title={_t.textLineSpacing} link='/edit-text-line-spacing/' routeProps={{
                             onLineSpacing: props.onLineSpacing
                         }}>
-                            {!isAndroid && <Icon slot="media" icon="icon-linespacing"></Icon>}
+                            {!isAndroid && 
+                                <SvgIcon symbolId={IconLineSpacingIos.id} className='icon icon-svg' />
+                            }
                         </ListItem>
                     </List>
                     <BlockTitle>{_t.textDistanceFromText}</BlockTitle>
@@ -174,11 +243,15 @@ const EditText = props => {
                             <div slot='after'>
                                 <Segmented>
                                     <Button outline className='decrement item-link' onClick={() => {props.onDistanceBefore(spaceBefore, true)}}>
-                                        {isAndroid ? <Icon icon="icon-expand-down"></Icon> : ' - '}
+                                        {isAndroid ? 
+                                            <SvgIcon symbolId={IconExpandDownAndroid.id} className='icon icon-svg' />
+                                        : ' - '}
                                     </Button>
                                     {isAndroid && <label>{displayBefore}</label>}
                                     <Button outline className='increment item-link' onClick={() => {props.onDistanceBefore(spaceBefore, false)}}>
-                                        {isAndroid ? <Icon icon="icon-expand-up"></Icon> : ' + '}
+                                        {isAndroid ?
+                                            <SvgIcon symbolId={IconExpandUp.id} className='icon icon-svg' />
+                                        : ' + '}
                                     </Button>
                                 </Segmented>
                             </div>
@@ -188,11 +261,15 @@ const EditText = props => {
                             <div slot='after'>
                                 <Segmented>
                                     <Button outline className='decrement item-link' onClick={() => {props.onDistanceAfter(spaceAfter, true)}}>
-                                        {isAndroid ? <Icon icon="icon-expand-down"></Icon> : ' - '}
+                                        {isAndroid ? 
+                                            <SvgIcon symbolId={IconExpandDownAndroid.id} className='icon icon-svg' />
+                                        : ' - '}
                                     </Button>
                                     {isAndroid && <label>{displayAfter}</label>}
                                     <Button outline className='increment item-link' onClick={() => {props.onDistanceAfter(spaceAfter, false)}}>
-                                        {isAndroid ? <Icon icon="icon-expand-up"></Icon> : ' + '}
+                                        {isAndroid ? 
+                                            <SvgIcon symbolId={IconExpandUp.id} className='icon icon-svg' />
+                                        : ' + '}
                                     </Button>
                                 </Segmented>
                             </div>
@@ -216,7 +293,10 @@ const PageOrientationTextShape = props => {
                 {Device.phone &&
                     <NavRight>
                         <Link sheetClose='#edit-sheet'>
-                            <Icon icon='icon-expand-down'/>
+                            {Device.ios ? 
+                                <SvgIcon symbolId={IconExpandDownIos.id} className={'icon icon-svg'} /> :
+                                <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                            }
                         </Link>
                     </NavRight>
                 }
@@ -229,7 +309,7 @@ const PageOrientationTextShape = props => {
                         setDirectionTextShape(Asc.c_oAscVertDrawingText.normal);
                         props.setOrientationTextShape(Asc.c_oAscVertDrawingText.normal);
                 }}>
-                    <Icon slot="media" icon="icon-text-orientation-horizontal"></Icon>
+                    <SvgIcon symbolId={IconTextOrientationHorizontal.id} className='icon icon-svg' />
                 </ListItem>
                 <ListItem title={t('View.Edit.textRotateTextDown')} radio
                     checked={directionTextShape === Asc.c_oAscVertDrawingText.vert}
@@ -238,7 +318,7 @@ const PageOrientationTextShape = props => {
                         setDirectionTextShape(Asc.c_oAscVertDrawingText.vert);
                         props.setOrientationTextShape(Asc.c_oAscVertDrawingText.vert);
                 }}>
-                    <Icon slot="media" icon="icon-text-orientation-rotatedown"></Icon>
+                    <SvgIcon symbolId={IconTextOrientationRotatedown.id} className='icon icon-svg' />
                 </ListItem>
                 <ListItem title={t('View.Edit.textRotateTextUp')} radio
                     checked={directionTextShape === Asc.c_oAscVertDrawingText.vert270}
@@ -247,7 +327,7 @@ const PageOrientationTextShape = props => {
                         setDirectionTextShape(Asc.c_oAscVertDrawingText.vert270);
                         props.setOrientationTextShape(Asc.c_oAscVertDrawingText.vert270);
                 }}>
-                    <Icon slot="media" icon="icon-text-orientation-rotateup"></Icon>
+                    <SvgIcon symbolId={IconTextOrientationRotateup.id} className='icon icon-svg' />
                 </ListItem>
             </List>
         </Page>
@@ -323,7 +403,10 @@ const PageFonts = props => {
                 {Device.phone &&
                     <NavRight>
                         <Link sheetClose='#edit-sheet'>
-                            <Icon icon='icon-expand-down'/>
+                            {Device.ios ? 
+                                <SvgIcon symbolId={IconExpandDownIos.id} className={'icon icon-svg'} /> :
+                                <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                            }
                         </Link>
                     </NavRight>
                 }
@@ -334,11 +417,15 @@ const PageFonts = props => {
                     <div slot='after'>
                         <Segmented>
                             <Button outline className='decrement item-link' onClick={() => {props.changeFontSize(size, true)}}>
-                                {isAndroid ? <Icon icon="icon-expand-down"></Icon> : ' - '}
+                                {isAndroid ? 
+                                    <SvgIcon symbolId={IconExpandDownAndroid.id} className='icon icon-svg' />
+                                : ' - '}
                             </Button>
                             {isAndroid && <label>{displaySize}</label>}
                             <Button outline className='increment item-link' onClick={() => {props.changeFontSize(size, false)}}>
-                                {isAndroid ? <Icon icon="icon-expand-up"></Icon> : ' + '}
+                                {isAndroid ? 
+                                    <SvgIcon symbolId={IconExpandUp.id} className='icon icon-svg' />
+                                : ' + '}
                             </Button>
                         </Segmented>
                     </div>
@@ -412,7 +499,10 @@ const PageFontColor = props => {
                 {Device.phone &&
                     <NavRight>
                         <Link sheetClose='#edit-sheet'>
-                            <Icon icon='icon-expand-down'/>
+                            {Device.ios ? 
+                                <SvgIcon symbolId={IconExpandDownIos.id} className={'icon icon-svg'} /> :
+                                <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                            }
                         </Link>
                     </NavRight>
                 }
@@ -450,7 +540,10 @@ const PageCustomFontColor = props => {
                 {Device.phone &&
                     <NavRight>
                         <Link sheetClose='#edit-sheet'>
-                            <Icon icon='icon-expand-down'/>
+                            {Device.ios ? 
+                                <SvgIcon symbolId={IconExpandDownIos.id} className={'icon icon-svg'} /> :
+                                <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                            }
                         </Link>
                     </NavRight>
                 }
@@ -481,7 +574,10 @@ const PageHighlightColor = props => {
                 {Device.phone &&
                     <NavRight>
                         <Link sheetClose='#edit-sheet'>
-                            <Icon icon='icon-expand-down'/>
+                            {Device.ios ? 
+                                <SvgIcon symbolId={IconExpandDownIos.id} className={'icon icon-svg'} /> :
+                                <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                            }
                         </Link>
                     </NavRight>
                 }
@@ -527,7 +623,10 @@ const PageAdditionalFormatting = props => {
                 {Device.phone &&
                     <NavRight>
                         <Link sheetClose='#edit-sheet'>
-                            <Icon icon='icon-expand-down'/>
+                            {Device.ios ? 
+                                <SvgIcon symbolId={IconExpandDownIos.id} className={'icon icon-svg'} /> :
+                                <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                            }
                         </Link>
                     </NavRight>
                 }
@@ -546,11 +645,15 @@ const PageAdditionalFormatting = props => {
                     <div slot='after'>
                         <Segmented>
                             <Button outline className='decrement item-link' onClick={() => {props.changeLetterSpacing(letterSpacing, true)}}>
-                                {isAndroid ? <Icon icon="icon-expand-down"></Icon> : ' - '}
+                                {isAndroid ? 
+                                    <SvgIcon symbolId={IconExpandDownAndroid.id} className='icon icon-svg' />
+                                : ' - '}
                             </Button>
                             {isAndroid && <label>{(Number.isInteger(letterSpacing) ? letterSpacing : letterSpacing.toFixed(2)) + ' ' + Common.Utils.Metric.getCurrentMetricName()}</label>}
                             <Button outline className='increment item-link' onClick={() => {props.changeLetterSpacing(letterSpacing, false)}}>
-                                {isAndroid ? <Icon icon="icon-expand-up"></Icon> : ' + '}
+                                {isAndroid ? 
+                                    <SvgIcon symbolId={IconExpandUp.id} className='icon icon-svg' />
+                                : ' + '}
                             </Button>
                         </Segmented>
                     </div>
@@ -597,12 +700,18 @@ const PageAddImage = (props) => {
     return (
         <List className='bullet-menu-image'>
             <ListItem title={_t.textPictureFromLibrary} onClick={props.onImageSelect}>
-                <Icon slot="media" icon="icon-image-library" />
+                {Device.ios ? 
+                    <SvgIcon symbolId={IconImageLibraryIos.id} className='icon icon-svg' /> :
+                    <SvgIcon symbolId={IconImageLibraryAndroid.id} className='icon icon-svg' />
+                }
             </ListItem>
             <ListItem title={_t.textPictureFromURL} link="#" onClick={() =>  
                 props.f7router.navigate('/edit-bullets-and-numbers/image-link/',
                 {props: {onInsertByUrl: props.onInsertByUrl}}) }>
-                <Icon slot="media" icon="icon-link" />
+                {Device.ios ? 
+                    <SvgIcon symbolId={IconLinkIos.id} className='icon icon-svg' /> :
+                    <SvgIcon symbolId={IconLinkAndroid.id} className='icon icon-svg' />
+                }
             </ListItem>
         </List>
     )
@@ -718,7 +827,10 @@ const PageBulletsAndNumbers = props => {
                 {Device.phone &&
                     <NavRight>
                         <Link sheetClose='#edit-sheet'>
-                            <Icon icon='icon-expand-down'/>
+                            {Device.ios ? 
+                                <SvgIcon symbolId={IconExpandDownIos.id} className={'icon icon-svg'} /> :
+                                <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                            }
                         </Link>
                     </NavRight>
                 }
@@ -777,7 +889,10 @@ const PageLineSpacing = props => {
                 {Device.phone &&
                     <NavRight>
                         <Link sheetClose='#edit-sheet'>
-                            <Icon icon='icon-expand-down'/>
+                            {Device.ios ?
+                                <SvgIcon symbolId={IconExpandDownIos.id} className={'icon icon-svg'} /> :
+                                <SvgIcon symbolId={IconExpandDownAndroid.id} className={'icon icon-svg'} />
+                            }
                         </Link>
                     </NavRight>
                 }

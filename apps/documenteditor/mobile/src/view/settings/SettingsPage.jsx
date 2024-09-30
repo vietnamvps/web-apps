@@ -22,7 +22,7 @@ import IconDocSetupForIos from '@ios-icons/icon-doc-setup.svg';
 import IconDocSetupForAndroid from '@android-icons/icon-doc-setup.svg';
 import IconDownloadForIos from '@common-ios-icons/icon-download.svg';
 import IconDownloadForAndroid from '@common-android-icons/icon-download.svg';
-import IconAppSettings from '@icons/icon-app-settings.svg';
+import IconAppSettings from '@common-icons/icon-app-settings.svg';
 import IconExport from '@common-icons/icon-export.svg';
 import IconPrint from '@common-icons/icon-print.svg';
 import IconInfo from '@common-icons/icon-info.svg';
