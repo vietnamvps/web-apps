@@ -560,6 +560,19 @@ module.exports = function (grunt, rootpathprefix) {
                     },
                 }
             },
+            docformats: {
+                src: [`${_prefix}apps/common/main/resources/img/doc-formats/*.svg`],
+                dest: `${_prefix}apps/common/main/resources/img/doc-formats`,
+                options: {
+                    mode: {
+                        symbol: {
+                            inline: true,
+                            dest: './',
+                            sprite: `docformats.svg`,
+                        },
+                    },
+                }
+            },
         },
     });
 
