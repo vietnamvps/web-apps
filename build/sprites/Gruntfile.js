@@ -561,15 +561,34 @@ module.exports = function (grunt, rootpathprefix) {
                 }
             },
             docformats: {
-                src: [`${_prefix}apps/common/main/resources/img/doc-formats/*.svg`],
+                src: [`${_prefix}apps/common/main/resources/img/doc-formats/*.svg`,
+                        `!${_prefix}apps/common/main/resources/img/doc-formats/docformats.svg`],
                 dest: `${_prefix}apps/common/main/resources/img/doc-formats`,
                 options: {
+                    svg: {
+                        rootAttributes: {
+                            xmlns:'http://www.w3.org/2000/svg',
+                        },
+                        dimensionAttributes: false,
+                    },
                     mode: {
                         symbol: {
-                            inline: true,
+                            inline: false,
                             dest: './',
                             sprite: `docformats.svg`,
                         },
+                    },
+                    shape: {
+                        id: {
+                            separator: ""
+                        },
+                        transform: [{
+                            svgo: {
+                                plugins: [
+                                    'removeXMLNS',
+                                ]
+                            },
+                        }]
                     },
                 }
             },
